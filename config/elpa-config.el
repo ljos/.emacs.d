@@ -1,23 +1,24 @@
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
 (when (not package-archive-contents)
   (package-refresh-contents))
 
-;;; Add in your own as you wish:
-(defvar my-packages '(auto-complete
-                      starter-kit
-                      starter-kit-lisp
-                      starter-kit-bindings
-                      slime
-                      slime-repl
-                      paredit
+(defvar my-packages '(auctex
+                      auto-complete
                       clojure-mode
                       clojure-test-mode
+                      color-theme
+                      org
                       paredit
-                      color-theme)
+                      slime
+                      slime-repl
+                      starter-kit
+                      starter-kit-bindings
+                      starter-kit-lisp
+                      undo-tree)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
