@@ -2,12 +2,10 @@
 (set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
-(add-hook 'after-init-hook '(lambda () (progn (setq visible-bell nil)
-                                         (menu-bar-mode t))))
-
 (add-to-list 'load-path "~/.emacs.d/config/")
 (load "elpa-config.el")
 (load "face-config.el")
+(load "undotree-config.el")
 (load "modeline-config.el")
 (load "path-config.el")
 (load "writegood-config.el")
@@ -17,3 +15,9 @@
 (load "auctex-config.el")
 (load "screen-config.el")
 
+(setq visible-bell nil)
+(custom-set-variables
+ '(blink-cursor-mode nil)
+ '(show-paren-mode t)
+ '(menu-bar-mode t)
+ '(tool-bar-mode nil))
