@@ -5,6 +5,7 @@
 (add-to-list 'load-path "~/.emacs.d/config/")
 (load "elpa-config.el")
 (load "face-config.el")
+(load "autocomplete-config.el")
 (load "undotree-config.el")
 (load "modeline-config.el")
 (load "path-config.el")
