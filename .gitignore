@@ -1,0 +1,10 @@
+
+auto-save-list/*
+backups/*
+elpa/*
+places
+swank
+url/*
+ac-comphist.dat
+.smex-items
+*.elc
