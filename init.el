@@ -2,15 +2,16 @@
 (set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
+;;;The config files.
 (add-to-list 'load-path "~/.emacs.d/config/")
 (load "elpa-config.el")
 (load "face-config.el")
 (load "autocomplete-config.el")
 (load "undotree-config.el")
 (load "modeline-config.el")
-(load "path-config.el")
 (load "writegood-config.el")
 (load "org-config.el")
+(load "slimerepl-config.el")
 (load "clojure-config.el")
 (load "paredit-config.el")
 (load "auctex-config.el")

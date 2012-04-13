@@ -1,4 +1,5 @@
 ;;; Auctex-mode
+(add-to-list 'exec-path '("/usr/texbin"))
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq-default TeX-master nil)
