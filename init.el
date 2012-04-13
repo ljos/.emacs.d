@@ -20,7 +20,7 @@
 
 ;;;The config files.
 (add-to-list 'load-path "~/.emacs.d/config/")
-(load "paredit-config.el")
+(load "paredit-config.el") ;;needs to be before elpa as we need to fix a few things
 (load "elpa-config.el")
 (load "face-config.el")
 (load "autocomplete-config.el")
