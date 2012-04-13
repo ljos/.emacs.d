@@ -3,5 +3,4 @@
 
 
 (eval-after-load 'clojure-mode-hook
-  '(progn (put-clojure-indent 'update-in 'defun)
-          (add-to-list 'exec-path '("~/.lein/bin"))))
+  '(progn (put-clojure-indent 'update-in 'defun)))

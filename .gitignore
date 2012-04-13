@@ -8,3 +8,7 @@ url/*
 ac-comphist.dat
 .smex-items
 *.elc
+
+config/.#flyspell-config.el
+
+config/flyspell-config.el
