@@ -5,20 +5,26 @@
 (global-set-key "\C-cb" 'org-iswitchb)
 
 (require 'org-latex)
+
 (unless (boundp 'org-export-latex-classes)
   (setq org-export-latex-classes nil))
+
 (add-to-list 'org-export-latex-classes
              '("article"
                "\\documentclass{article}"
                ("\\section{%s}" . "\\section*{%s}")))  
+
 (setq org-latex-to-pdf-process '("texi2dvi --pdf --clean --verbose --batch %f"))
+
 (add-to-list 'org-export-latex-classes
              `("thesis"
                "\\documentclass{report}"
                ("\\chapter{%s}" . "\\chapter*{%s}")
                ("\\section{%s}" . "\\section*{%s}")
                ("\\subsection{%s}" . "\\subsection*{%s}")
-               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
 (require 'org-special-blocks)
 
