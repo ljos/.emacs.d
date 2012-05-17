@@ -19,7 +19,8 @@
                       starter-kit
                       starter-kit-bindings
                       starter-kit-lisp
-                      undo-tree)
+                      undo-tree
+                      writegood-mode)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
