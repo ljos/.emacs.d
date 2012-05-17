@@ -27,6 +27,7 @@
 (load "undotree-config.el")
 (load "modeline-config.el")
 (load "writegood-config.el")
+(load "acejump-config.el")
 (load "org-config.el")
 (load "slimerepl-config.el")
 (load "clojure-config.el")

@@ -8,6 +8,7 @@
 
 (defvar my-packages '(auctex
                       auto-complete
+                      ace-jump-mode
                       clojure-mode
                       clojure-test-mode
                       color-theme
