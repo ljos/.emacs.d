@@ -12,3 +12,5 @@ ac-comphist.dat
 config/.#flyspell-config.el
 
 config/flyspell-config.el
+
+tramp
