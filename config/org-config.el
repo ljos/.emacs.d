@@ -14,7 +14,7 @@
                "\\documentclass{article}"
                ("\\section{%s}" . "\\section*{%s}")))  
 
-(setq org-latex-to-pdf-process '("texi2dvi --pdf --clean --verbose --batch %f"))
+(setq org-latex-to-pdf-process '("texi2dvi --pdf --verbose --batch %f"))
 
 (add-to-list 'org-export-latex-classes
              `("thesis"
