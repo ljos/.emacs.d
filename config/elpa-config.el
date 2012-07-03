@@ -9,11 +9,13 @@
 (defvar my-packages '(auctex
                       auto-complete
                       ace-jump-mode
+                      browse-kill-ring
                       clojure-mode
                       clojure-test-mode
                       color-theme
                       org
                       paredit
+                      prolog
                       slime
                       slime-repl
                       starter-kit

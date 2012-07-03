@@ -20,10 +20,11 @@
 
 ;;;The config files.
 (add-to-list 'load-path "~/.emacs.d/config/")
-(load "paredit-config.el") ;;needs to be before elpa as we need to fix a few things
+(load "paredit-config.el") ;needs to be before elpa as we need to fix a few things
 (load "elpa-config.el")
 (load "face-config.el")
 (load "autocomplete-config.el")
+(load "browsekillring-config.el")
 (load "undotree-config.el")
 (load "modeline-config.el")
 (load "writegood-config.el")
@@ -32,8 +33,11 @@
 (load "slimerepl-config.el")
 (load "clojure-config.el")
 (load "auctex-config.el")
-(load "screen-config.el")
 (load "tramp-config.el")
+(load "prolog-config.el")
+(load "gist-config.el")
+(load "screen-config.el") ;This should be the last to happen
+
 
 (setq visible-bell nil)
 (custom-set-variables
