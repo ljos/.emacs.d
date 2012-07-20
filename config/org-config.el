@@ -29,5 +29,4 @@
 (require 'org-special-blocks)
 
 (add-hook 'org-mode-hook (lambda () (visual-line-mode t)) t)
-(add-hook 'org-mode-hook (lambda () (turn-off-auto-fill)) t)
-(add-hook 'org-mode-hook 'writegood-mode)
+(add-hook 'org-mode-hook (lambda () (set-fill-column 80)) t)
