@@ -11,8 +11,10 @@
   (if (not (file-exists-p themes-folder))
       (make-directory themes-folder)))
 
-(require 'color-theme)
-(add-to-list 'load-path "~/.emacs.d/site-lisp/emacs-color-theme-solarized/")
-(load "color-theme-solarized.el")
-(load-theme 'solarized-light t)
-(setq color-theme-is-global t)
+
+(when (window-system)
+  (require 'color-theme)
+  (add-to-list 'load-path "~/.emacs.d/site-lisp/emacs-color-theme-solarized/")
+  (load "color-theme-solarized.el")
+  (load-theme 'solarized-light t)
+  (setq color-theme-is-global t))
