@@ -36,6 +36,8 @@
 (load "tramp-config.el")
 (load "prolog-config.el")
 (load "gist-config.el")
+(load "langtool-config.el")
+(load "minibuffer-config.el")
 (load "screen-config.el") ;This should be the last to happen
 
 
