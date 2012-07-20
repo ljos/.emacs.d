@@ -13,6 +13,7 @@
                       clojure-mode
                       clojure-test-mode
                       color-theme
+                      langtool
                       org
                       paredit
                       prolog
@@ -21,8 +22,7 @@
                       starter-kit
                       starter-kit-bindings
                       starter-kit-lisp
-                      undo-tree
-                      writegood-mode)
+                      undo-tree)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
