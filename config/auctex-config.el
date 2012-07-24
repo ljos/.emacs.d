@@ -8,3 +8,5 @@
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
 (setq reftex-plug-into-AUCTeX t)
 (setq TeX-PDF-mode t)
+
+(provide 'auctex-config)

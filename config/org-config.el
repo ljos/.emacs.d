@@ -1,5 +1,4 @@
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
-(add-hook 'org-mode-hook 'turn-on-font-lock) ; not needed when global-font-lock-mode is on
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
@@ -28,5 +27,7 @@
 
 (require 'org-special-blocks)
 
-(add-hook 'org-mode-hook (lambda () (visual-line-mode t)) t)
-(add-hook 'org-mode-hook (lambda () (set-fill-column 80)) t)
+(add-hook 'org-mode-hook (lambda () (visual-line-mode t)))
+(add-hook 'org-mode-hook (lambda () (setq fill-column 80)))
+
+(provide 'org-config)

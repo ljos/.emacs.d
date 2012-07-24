@@ -11,3 +11,5 @@
                           (frame-char-height)))))))
 
 (set-frame-size-according-to-resolution)
+
+(provide 'screen-config)

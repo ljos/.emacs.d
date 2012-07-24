@@ -7,5 +7,6 @@
                                 ("\\.m$" . mercury-mode))
                               auto-mode-alist))
 
-;(define-key prolog-mode-map (kbd "C-cC-t") 'prolog-toggle-trace)
+(provide 'prolog-config)
+
 

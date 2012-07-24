@@ -18,3 +18,5 @@
   (load "color-theme-solarized.el")
   (load-theme 'solarized-light t)
   (setq color-theme-is-global t))
+
+(provide 'face-config)

@@ -20,24 +20,23 @@
 
 ;;;The config files.
 (add-to-list 'load-path "~/.emacs.d/config/")
-(load "paredit-config.el") ;needs to be before elpa as we need to fix a few things
-(load "elpa-config.el")
-(load "face-config.el")
-(load "autocomplete-config.el")
-(load "browsekillring-config.el")
-(load "undotree-config.el")
-(load "modeline-config.el")
-(load "acejump-config.el")
-(load "org-config.el")
-(load "slimerepl-config.el")
-(load "clojure-config.el")
-(load "auctex-config.el")
-(load "tramp-config.el")
-(load "prolog-config.el")
-(load "gist-config.el")
-(load "langtool-config.el")
-(load "minibuffer-config.el")
-(load "screen-config.el") ;This should be the last to happen
+(require 'paredit-config) ;needs to be before elpa as we need to fix a few things
+(require 'elpa-config)
+(require 'face-config)
+(require 'autocomplete-config)
+(require 'browsekillring-config)
+(require 'undotree-config)
+(require 'modeline-config)
+(require 'acejump-config)
+(require 'org-config)
+(require 'slimerepl-config)
+(require 'clojure-config)
+(require 'auctex-config)
+(require 'tramp-config)
+(require 'prolog-config)
+(require 'langtool-config)
+(require 'minibuffer-config)
+(require 'screen-config) ;This should be the last to happen
 
 
 (setq visible-bell nil)

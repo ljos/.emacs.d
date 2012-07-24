@@ -24,3 +24,5 @@
         (:propertize global-mode-string)
         "   "
         "-%-"))
+
+(provide 'modeline-config)
