@@ -13,8 +13,8 @@
                       clojure-mode
                       clojure-test-mode
                       color-theme
+                      gist
                       langtool
-                      org
                       paredit
                       prolog
                       slime

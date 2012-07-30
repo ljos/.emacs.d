@@ -1,3 +1,6 @@
+(add-to-list 'load-path "~/.emacs.d/org-mode")
+(require 'org)
+
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
@@ -29,5 +32,6 @@
 
 (add-hook 'org-mode-hook (lambda () (visual-line-mode t)))
 (add-hook 'org-mode-hook (lambda () (setq fill-column 80)))
+(add-hook 'org-mode-hook (lambda () (setq ispell-parser 'tex)))
 
 (provide 'org-config)

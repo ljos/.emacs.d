@@ -2,6 +2,12 @@
 (set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
+(setq message-log-max t)
+
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+
 (defcustom exec-paths '("~/.lein/bin" "/usr/local/bin" "~/.local/bin" "/usr/texbin")
   "Directories to be added to exec-path"
   :type 'string)
@@ -34,8 +40,10 @@
 (require 'auctex-config)
 (require 'tramp-config)
 (require 'prolog-config)
-(require 'langtool-config)
 (require 'minibuffer-config)
+(autoload 'langtool-check-buffer "langtool-config.el" "Langtool config" t)
+(require 'linum-config)
+(require 'gist-config)
 (require 'screen-config) ;This should be the last to happen
 
 

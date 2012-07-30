@@ -1,6 +1,6 @@
 (set-default-font "Monaco-14")
 
-(set-fringe-mode '(4 . 4))
+(set-fringe-mode '(0 . 6))
 (blink-cursor-mode nil)
 (global-linum-mode t)
 
