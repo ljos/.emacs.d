@@ -15,6 +15,7 @@
                       color-theme
                       gist
                       langtool
+                      org
                       paredit
                       prolog
                       slime
