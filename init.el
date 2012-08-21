@@ -37,6 +37,7 @@
 (require 'org-config)
 (require 'slimerepl-config)
 (require 'clojure-config)
+(require 'nrepl-config)
 (require 'auctex-config)
 (require 'tramp-config)
 (require 'prolog-config)
@@ -44,6 +45,8 @@
 (autoload 'langtool-check-buffer "langtool-config.el" "Langtool config" t)
 (require 'linum-config)
 (require 'gist-config)
+(require 'applescript-config)
+(require 'slime-config)
 (require 'screen-config) ;This should be the last to happen
 
 

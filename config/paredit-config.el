@@ -1,3 +1,7 @@
+(autoload 'enable-paredit-mode "paredit"
+  "Turn on pseudo-structural editing of Lisp code."
+  t)
+
 ;;Need to fix some bad keybindings in lisp-starterkit
 (eval-after-load 'paredit 
   '(progn

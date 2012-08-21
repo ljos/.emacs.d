@@ -1,3 +1,3 @@
-(add-hook 'slime-repl-mode-hook 'paredit-mode)
+(add-hook 'slime-repl-mode-hook 'enable-paredit-mode)
 
 (provide 'slimerepl-config)
