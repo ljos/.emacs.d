@@ -29,7 +29,6 @@
 (require 'paredit-config) ;needs to be before elpa as we need to fix a few things
 (require 'elpa-config)
 (require 'face-config)
-(require 'autocomplete-config)
 (require 'browsekillring-config)
 (require 'undotree-config)
 (require 'modeline-config)
@@ -38,6 +37,7 @@
 (require 'slimerepl-config)
 (require 'clojure-config)
 (require 'nrepl-config)
+(require 'acnrepl-config)
 (require 'auctex-config)
 (require 'tramp-config)
 (require 'prolog-config)
@@ -47,6 +47,7 @@
 (require 'gist-config)
 (require 'applescript-config)
 (require 'slime-config)
+(require 'autocomplete-config) ;; needs to after a couple of things.
 (require 'screen-config) ;This should be the last to happen
 
 

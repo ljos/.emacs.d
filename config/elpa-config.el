@@ -9,12 +9,14 @@
 (defvar my-packages '(auctex
                       auto-complete
                       ace-jump-mode
+                      ac-nrepl
                       browse-kill-ring
                       clojure-mode
                       clojure-test-mode
                       color-theme
                       gist
                       langtool
+                      nrepl
                       org
                       paredit
                       prolog
