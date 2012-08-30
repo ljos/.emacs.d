@@ -14,6 +14,7 @@
                       clojure-mode
                       clojure-test-mode
                       color-theme
+                      color-theme-solarized
                       gist
                       langtool
                       nrepl
