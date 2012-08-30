@@ -15,3 +15,5 @@ config/.#flyspell-config.el
 config/flyspell-config.el
 
 tramp
+
+bookmarks

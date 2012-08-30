@@ -5,6 +5,22 @@
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
 
+(setq org-agenda-include-diary t)
+(setq org-agenda-include-all-todo t)
+
+(setq org-agenda-files '("~/Dropbox/org-mode/organizer.org"))
+
+(setq org-tag-persistent-alist
+      '((:startgroup . nil)
+        ("work" . ?o) ("home" . ?h)
+        (:endgroup . nil)
+        ("computer" . ?c) ("project" . ?p) ("reading" . ?r)
+        ("watch" . ?d) ("errand" . ?l)))
+
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "STARTED(s)" "WAITING(w)" "APPT(a)"
+                  "|" "DONE(d)" "CANCELLED(c)" "DEFERRED(f)")))
+
 (require 'org-latex)
 
 (unless (boundp 'org-export-latex-classes)
@@ -32,5 +48,25 @@
 (add-hook 'org-mode-hook (lambda () (visual-line-mode t)))
 (add-hook 'org-mode-hook (lambda () (setq fill-column 80)))
 (add-hook 'org-mode-hook (lambda () (setq ispell-parser 'tex)))
+(add-hook 'org-mode-hook
+          (lambda ()
+            (font-lock-remove-keywords
+             nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)"
+                    1 font-lock-warning-face t)))))
+
+(require 'remember)
+
+(setq org-remember-templates
+      '(("Tasks" ?t "* TODO %?\n  %i\n  %a" "~/Dropbox/org-mode/organizer.org" "TASKS")
+        ("Appointments" ?a "* %?\n   SCHEDULED: %^T\n%i\n  %a"
+         "~/Dropbox/org-mode/organizer.org" "APPOINTMENTS")))
+
+(setq remember-annotation-functions '(org-remember-annotation))
+(setq remember-handler-functions '(org-remember-handler))
+
+(eval-after-load 'remember
+  '(add-hook 'remember-mode-hook 'org-remember-apply-template))
+
+(global-set-key (kbd "C-c r") 'remember)  
 
 (provide 'org-config)
