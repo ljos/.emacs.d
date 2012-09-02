@@ -11,6 +11,7 @@
                       ace-jump-mode
                       ac-nrepl
                       browse-kill-ring
+                      cljdoc
                       clojure-mode
                       clojure-test-mode
                       color-theme
