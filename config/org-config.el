@@ -18,8 +18,13 @@
         ("watch" . ?d) ("errand" . ?l)))
 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "STARTED(s)" "WAITING(w)" "APPT(a)"
-                  "|" "DONE(d)" "CANCELLED(c)" "DEFERRED(f)")))
+      '((sequence "TODO" "STARTED" "WAITING"
+                  "|" "DONE" "CANCELLED" "DEFERRED" "DELEGATED")
+        (sequence "APPT" "|" "FINISHED" "CANCELLED" "MISSED")
+        (sequence "BUG" "|" "FIXED")))
+
+(setq org-refile-targets '(("organizer.org" :maxlevel . 9)))
+(setq org-completion-use-ido t)
 
 (require 'org-latex)
 
@@ -43,6 +48,29 @@
                ("\\paragraph{%s}" . "\\paragraph*{%s}")
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
+;; Configured from:
+;; http://emacs-fu.blogspot.no/2009/10/writing-presentations-with-org-mode-and.html
+(add-to-list 'org-export-latex-classes
+  ;; beamer class, for presentations
+  '("beamer"
+    "\\documentclass[11pt]{beamer}
+     \\mode<{{{beamermode}}}>
+     \\usetheme{{{{beamertheme}}}}
+     \\usecolortheme{{{{beamercolortheme}}}}
+     \\useinnertheme{{{{beamerinnertheme}}}}
+     \\setbeameroption{show notes}
+     \\usepackage[utf8]{inputenc}
+     \\usepackage[T1]{fontenc}
+     \\usepackage{hyperref}
+     \\usepackage{color}
+     \\usepackage{listings}
+     \\usepackage{verbatim}"
+    ("\\section{%s}" . "\\section*{%s}")
+    ("\\begin{frame}[fragile]\\frametitle{%s}"
+     "\\end{frame}"
+     "\\begin{frame}[fragile]\\frametitle{%s}"
+     "\\end{frame}")))
+
 (require 'org-special-blocks)
 
 (add-hook 'org-mode-hook (lambda () (visual-line-mode t)))
@@ -57,9 +85,11 @@
 (require 'remember)
 
 (setq org-remember-templates
-      '(("Tasks" ?t "* TODO %?\n  %i\n  %a" "~/Dropbox/org-mode/organizer.org" "TASKS")
-        ("Appointments" ?a "* %?\n   SCHEDULED: %^T\n%i\n  %a"
-         "~/Dropbox/org-mode/organizer.org" "APPOINTMENTS")))
+      '(("Tasks" ?t "* TODO %?\n  %i\n  %a"
+         "~/Dropbox/org-mode/organizer.org" "TASKS")
+        ("Appointments" ?a "* APPT %?\nSCHEDULED: %^T\n%i\n  %a"
+         "~/Dropbox/org-mode/organizer.org" "APPOINTMENTS")
+        ("New project" ?p "* %?" "~/Dropbox/org-mode/organizer.org" "PROJECTS")))
 
 (setq remember-annotation-functions '(org-remember-annotation))
 (setq remember-handler-functions '(org-remember-handler))
@@ -67,6 +97,6 @@
 (eval-after-load 'remember
   '(add-hook 'remember-mode-hook 'org-remember-apply-template))
 
-(global-set-key (kbd "C-c r") 'remember)  
+(global-set-key (kbd "\C-cr") 'remember)  
 
 (provide 'org-config)
