@@ -48,29 +48,6 @@
                ("\\paragraph{%s}" . "\\paragraph*{%s}")
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-;; Configured from:
-;; http://emacs-fu.blogspot.no/2009/10/writing-presentations-with-org-mode-and.html
-(add-to-list 'org-export-latex-classes
-  ;; beamer class, for presentations
-  '("beamer"
-    "\\documentclass[11pt]{beamer}
-     \\mode<{{{beamermode}}}>
-     \\usetheme{{{{beamertheme}}}}
-     \\usecolortheme{{{{beamercolortheme}}}}
-     \\useinnertheme{{{{beamerinnertheme}}}}
-     \\setbeameroption{show notes}
-     \\usepackage[utf8]{inputenc}
-     \\usepackage[T1]{fontenc}
-     \\usepackage{hyperref}
-     \\usepackage{color}
-     \\usepackage{listings}
-     \\usepackage{verbatim}"
-    ("\\section{%s}" . "\\section*{%s}")
-    ("\\begin{frame}[fragile]\\frametitle{%s}"
-     "\\end{frame}"
-     "\\begin{frame}[fragile]\\frametitle{%s}"
-     "\\end{frame}")))
-
 (require 'org-special-blocks)
 
 (add-hook 'org-mode-hook (lambda () (visual-line-mode t)))
