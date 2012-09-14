@@ -13,10 +13,13 @@
                       browse-kill-ring
                       cljdoc
                       clojure-mode
+                      clojurescript-mode
                       clojure-test-mode
+                      coffee-mode
                       color-theme
                       color-theme-solarized
                       gist
+                      jade-mode
                       langtool
                       nrepl
                       org
@@ -27,6 +30,7 @@
                       starter-kit
                       starter-kit-bindings
                       starter-kit-lisp
+                      sws-mode
                       undo-tree)
   "A list of packages to ensure are installed at launch.")
 
