@@ -4,6 +4,4 @@
 (eval-after-load 'clojure-mode-hook
   '(progn (put-clojure-indent 'update-in 'defun)))
 
-(require 'cljdoc)
-
 (provide 'clojure-config)
