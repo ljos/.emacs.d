@@ -8,6 +8,9 @@
 (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 
+(fset 'yes-or-no-p 'y-or-n-p)
+(winner-mode 1)
+
 (defcustom exec-paths '("~/.lein/bin" "/usr/local/bin" "~/.local/bin" "/usr/texbin")
   "Directories to be added to exec-path"
   :type 'string)
@@ -29,6 +32,7 @@
 (require 'paredit-config) ;needs to be before elpa as we need to fix a few things
 (require 'elpa-config)
 (require 'face-config)
+(require 'popwin-config)
 (require 'browsekillring-config)
 (require 'undotree-config)
 (require 'modeline-config)

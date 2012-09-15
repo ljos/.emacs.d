@@ -24,6 +24,7 @@
                       nrepl
                       org
                       paredit
+                      popwin
                       prolog
                       slime
                       slime-repl
