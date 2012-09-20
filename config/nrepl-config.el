@@ -8,4 +8,6 @@
   (interactive)
   (nrepl-connect "localhost" "50001"))
 
+(define-key nrepl-interaction-mode-map (kbd "C-c C-n") 'nrepl-set-ns)
+
 (provide 'nrepl-config)
