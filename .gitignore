@@ -9,6 +9,7 @@ ac-comphist.dat
 .smex-items
 *.elc
 var/*
+history/*
 
 config/.#flyspell-config.el
 
