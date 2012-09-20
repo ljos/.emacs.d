@@ -32,6 +32,7 @@
 (require 'paredit-config) ;needs to be before elpa as we need to fix a few things
 (require 'elpa-config)
 (require 'face-config)
+(require 'ffip-config)
 (require 'popwin-config)
 (require 'browsekillring-config)
 (require 'undotree-config)
@@ -52,6 +53,7 @@
 (require 'minibuffer-config)
 (autoload 'langtool-check-buffer "langtool-config.el" "Langtool config" t)
 (require 'linum-config)
+(require 'dired-config)
 (require 'gist-config)
 (require 'applescript-config)
 (require 'slime-config)

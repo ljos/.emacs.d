@@ -11,13 +11,13 @@
                       ace-jump-mode
                       ac-nrepl
                       browse-kill-ring
-                      cljdoc
                       clojure-mode
                       clojurescript-mode
                       clojure-test-mode
                       coffee-mode
                       color-theme
                       color-theme-solarized
+                      find-file-in-project
                       gist
                       jade-mode
                       langtool
