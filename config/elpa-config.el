@@ -7,20 +7,23 @@
   (package-refresh-contents))
 
 (defvar my-packages
-  '(auctex
-    auto-complete
-    ace-jump-mode
+  '(
     ac-nrepl
+    ace-jump-mode
+    auctex
+    auto-complete
     browse-kill-ring
     clojure-mode
-    clojurescript-mode
     clojure-test-mode
+    clojurescript-mode
     coffee-mode
     color-theme
     color-theme-solarized
+    expand-region
     find-file-in-project
     gist
     jade-mode
+    js2-mode
     langtool
     nrepl
     org
@@ -33,7 +36,8 @@
     starter-kit-bindings
     starter-kit-lisp
     sws-mode
-    undo-tree)
+    undo-tree
+    )
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
