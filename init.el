@@ -51,6 +51,7 @@
 (require 'linum-config)
 (require 'minibuffer-config)
 (require 'modeline-config)
+(require 'move-config)
 (require 'nrepl-config)
 (require 'org-config)
 (require 'paredit-config)
