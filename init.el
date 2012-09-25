@@ -23,7 +23,8 @@
 
 (defun initialize-exec-path ()
   (interactive)
-  (dolist (dir exec-paths) (add-to-path dir)))
+  (dolist (dir exec-paths)
+    (add-to-path dir)))
 
 (initialize-exec-path)
 

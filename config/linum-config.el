@@ -11,7 +11,7 @@
          (format (concat "%" (number-to-string width) "d ")))
     (setq my-linum-format-string format)))
 
-(setq linum-format 'my-linum-format)
-
 (defun my-linum-format (line-number)
   (propertize (format my-linum-format-string line-number) 'face 'linum))
+
+(setq linum-format 'my-linum-format)
