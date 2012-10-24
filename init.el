@@ -43,6 +43,7 @@
 (require 'expandregion-config)
 (require 'face-config)
 (require 'ffip-config)
+(require 'flyspell-config)
 (require 'gist-config)
 (require 'jade-config)
 (require 'js2mode-config)
