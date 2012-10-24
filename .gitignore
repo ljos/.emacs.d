@@ -18,3 +18,5 @@ config/flyspell-config.el
 tramp
 
 bookmarks
+
+.org-id-locations
