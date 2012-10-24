@@ -59,7 +59,6 @@
 (require 'prolog-config)
 (require 'screen-config)
 (require 'slime-config)
-(require 'slimerepl-config)
 (require 'sws-config)
 (require 'tramp-config)
 (require 'undotree-config)

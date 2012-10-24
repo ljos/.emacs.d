@@ -3,3 +3,4 @@
 
 (load-file (expand-file-name "~/quicklisp/slime-helper.el"))
 
+(add-hook 'slime-repl-mode-hook 'enable-paredit-mode)
