@@ -29,6 +29,7 @@
     org
     paredit
     popwin
+    pomodoro
     prolog
     slime
     slime-repl
