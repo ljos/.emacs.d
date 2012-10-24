@@ -63,24 +63,22 @@
              nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)"
                     1 font-lock-warning-face t)))))
 
+;;org-capture config
+(setq org-default-notes-file (concat org-directory "/organizer.org"))
 
+(define-key global-map "\C-cc" 'org-capture)
 
-
-(require 'remember)
-
-(setq org-remember-templates
-      '(("Tasks" ?t "* TODO %?\n  %i\n  %a"
-         "~/Dropbox/org-mode/organizer.org" "TASKS")
-        ("Appointments" ?a "* APPT %?\nSCHEDULED: %^T\n%i\n  %a"
-         "~/Dropbox/org-mode/organizer.org" "APPOINTMENTS")
-        ("New project" ?p "* %?" "~/Dropbox/org-mode/organizer.org" "PROJECTS")))
-
-(setq remember-annotation-functions '(org-remember-annotation))
-(setq remember-handler-functions '(org-remember-handler))
-
-(eval-after-load 'remember
-  '(add-hook 'remember-mode-hook 'org-remember-apply-template))
-
-(global-set-key (kbd "\C-cr") 'remember)  
+(setq org-capture-templates
+      '(("t" "Todo" entry
+         (file+headline (concat org-directory
+                                "/organizer.org")
+                        "Tasks")
+         "* TODO %?\n  %i\n  %a")
+        ("j" "Journal" entry (file+datetree (concat org-directory
+                                                    "/journal.org"))
+         "* %?\nEntered on %U\n  %i\n  %a")
+        ("d" "Done" entry (file+datetree (concat org-directory
+                                                 "/done.org"))
+         "* %?\nCLOCK: %^U--%U")))
 
 (provide 'org-config)
