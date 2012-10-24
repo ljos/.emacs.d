@@ -1,7 +1,14 @@
 (require 'nrepl)
+(require 'ac-nrepl)
+
+(add-hook 'nrepl-mode 'ac-nrepl-setup)
+(add-hook 'clojure-nrepl-mode-hook 'ac-nrepl-setup)
+
+(eval-after-load "auto-complete"
+  '(add-to-list 'ac-modes 'nrepl-mode))
+
 (add-hook 'nrepl-mode-hook 'enable-paredit-mode)
 
-(setq nrepl-popup-stacktraces nil)
 (setq nrepl-history-file "~/.emacs.d/history/nrepl")
 
 (defun nrepl-local ()

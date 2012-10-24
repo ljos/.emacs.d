@@ -33,7 +33,6 @@
 ;; elpa needs to be first if some packages are missing.
 (require 'elpa-config)
 (require 'acejump-config)
-(require 'acnrepl-config)
 (require 'auctex-config)
 (require 'autocomplete-config)
 (require 'browsekillring-config)
