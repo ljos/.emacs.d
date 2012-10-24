@@ -5,10 +5,14 @@
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
 
+(setq org-directory "~/Dropbox/org")
+(setq org-mobile-inbox-for-pull "~/Dropbox/org/inbox.org")
+(setq org-mobile-directory "~/Dropbox/org/mobile")
+
 (setq org-agenda-include-diary t)
 (setq org-agenda-include-all-todo t)
 
-(setq org-agenda-files '("~/Dropbox/org-mode/organizer.org"))
+(setq org-agenda-files '("~/Dropbox/org/organizer.org"))
 
 (setq org-tag-persistent-alist
       '((:startgroup . nil)
@@ -58,6 +62,9 @@
             (font-lock-remove-keywords
              nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)"
                     1 font-lock-warning-face t)))))
+
+
+
 
 (require 'remember)
 
