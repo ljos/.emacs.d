@@ -38,6 +38,7 @@
 (require 'browsekillring-config)
 (require 'clojure-config)
 (require 'clojurescript-config)
+(require 'cmdfrequency-config)
 (require 'coffee-config)
 (require 'dired-config)
 (require 'expandregion-config)
