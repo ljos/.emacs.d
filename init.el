@@ -50,6 +50,7 @@
 (require 'js2mode-config)
 (require 'langtool-config)
 (require 'linum-config)
+(require 'magit-config)
 (require 'minibuffer-config)
 (require 'modeline-config)
 (require 'move-config)
