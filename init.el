@@ -42,7 +42,7 @@
 (require 'coffee-config)
 (require 'dired-config)
 (require 'elispslimenav-config)
-(require 'expandregion-config)
+;(require 'expandregion-config)
 (require 'face-config)
 (require 'ffip-config)
 (require 'flyspell-config)
