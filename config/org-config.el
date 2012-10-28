@@ -1,6 +1,5 @@
-(require 'org)
+(require 'org-autoloads)
 
-(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
@@ -30,8 +29,6 @@
 (setq org-refile-targets '(("organizer.org" :maxlevel . 9)))
 (setq org-completion-use-ido t)
 
-(require 'org-latex)
-
 (unless (boundp 'org-export-latex-classes)
   (setq org-export-latex-classes nil))
 
@@ -51,8 +48,6 @@
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                ("\\paragraph{%s}" . "\\paragraph*{%s}")
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-(require 'org-special-blocks)
 
 (add-hook 'org-mode-hook (lambda () (visual-line-mode t)))
 (add-hook 'org-mode-hook (lambda () (setq fill-column 80)))

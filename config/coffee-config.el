@@ -1,4 +1,4 @@
-(require 'coffee-mode)
+(require 'coffee-mode-autoloads)
 
 
 

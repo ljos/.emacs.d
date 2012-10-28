@@ -1,4 +1,5 @@
-;;; Auctex-mode
+(require 'auctex-autoloads)
+
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq-default TeX-master nil)

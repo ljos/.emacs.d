@@ -1,6 +1,4 @@
 ;;; Modified from http://stackoverflow.com/questions/11484225/fix-an-auto-complete-mode-and-linum-mode-annoyance/11496199#11496199
-(provide 'linum-config)
-
 (defvar my-linum-format-string "%4d")
 
 (add-hook 'linum-before-numbering-hook 'my-linum-get-format-string)
@@ -15,3 +13,5 @@
   (propertize (format my-linum-format-string line-number) 'face 'linum))
 
 (setq linum-format 'my-linum-format)
+
+(provide 'linum-config)
