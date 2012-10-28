@@ -62,6 +62,7 @@
 (require 'pomodoro-config)
 (require 'popwin-config)
 (require 'prolog-config)
+(require 'python-config)
 (require 'screen-config)
 (require 'slime-config)
 (require 'sws-config)
