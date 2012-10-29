@@ -68,6 +68,7 @@
 (require 'sws-config)
 (require 'tramp-config)
 (require 'undotree-config)
+(require 'yasnippet-config)
 
 (setq visible-bell nil)
 (custom-set-variables
