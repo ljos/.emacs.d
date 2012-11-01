@@ -36,12 +36,17 @@ except it truncates from the start of the list"
                                'mode-line-previous-buffer)
                              map)))
         "  " 
+        (:propertize "%02l")
+        ","
+        (:propertize "%02c") 
         "  ["
         (:propertize mode-name
                      help-echo (format-mode-line minor-mode-alist))
         (:propertize mode-line-process)
         "]  "
-        (:propertize global-mode-string)
+        (:eval (propertize (format-time-string "%a %b %d, %H:%M")
+                           'help-echo (format-time-string
+                                       "%A, %B %d, %Y, %H:%M")))
         "  "
         (:propertize pomodoro-mode-line-string)
         "-%-"))
