@@ -5,17 +5,37 @@
 
 (setq mode-line-in-non-selected-windows nil)
 
+(defun truncate-string-to-length (str end-column
+                                      &optional start-column padding ellipsis)
+  "The same as truncate-string-to-width,
+except it truncates from the start of the list"
+  (concat
+   (reverse
+    (append
+     (truncate-string-to-width
+      (concat (reverse (append (format  str) nil)))
+      end-column start-column padding ellipsis) nil))))
+
 ;;Heavily edited from http://emacs-fu.blogspot.com/2011/08/customizing-mode-line.html
 (setq default-mode-line-format
       '(" "
         mode-line-mule-info
         mode-line-modified
         "  "
-        (:propertize "%b " 'face 'font-lock-keyword-face
-                     help-echo (buffer-file-name))
-        " " 
-        (:propertize "%02l" 'face 'font-lock-type-face) ","
-        (:propertize "%02c" 'face 'font-lock-type-face) 
+        (:eval (propertize 
+                (format "%-27s"
+                        (truncate-string-to-length (or buffer-file-truename
+                                                       (buffer-name))
+                                                   27 nil nil ".."))
+                           'help-echo (buffer-file-name)
+                           'local-map
+                           (let ((map (make-sparse-keymap)))
+                             (define-key map [mode-line mouse-3]
+                               'mode-line-next-buffer)
+                             (define-key map [mode-line mouse-1]
+                               'mode-line-previous-buffer)
+                             map)))
+        "  " 
         "  ["
         (:propertize mode-name
                      help-echo (format-mode-line minor-mode-alist))
