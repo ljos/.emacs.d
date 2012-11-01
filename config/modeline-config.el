@@ -17,6 +17,11 @@ except it truncates from the start of the list"
       end-column start-column padding ellipsis) nil))))
 
 ;;Heavily edited from http://emacs-fu.blogspot.com/2011/08/customizing-mode-line.html
+(defun short-major-mode-name (str)
+  (cond ((string= str "Lisp Interaction")
+         "elI")
+        (t str)))
+
 (setq default-mode-line-format
       '(" "
         mode-line-mule-info
@@ -38,13 +43,18 @@ except it truncates from the start of the list"
         "  " 
         (:propertize "%02l")
         ","
-        (:propertize "%02c") 
-        "  ["
-        (:propertize mode-name
-                     help-echo (format-mode-line minor-mode-alist))
-        (:propertize mode-line-process)
-        "]  "
-        (:eval (propertize (format-time-string "%a %b %d, %H:%M")
+        (:propertize "%02c" )
+        "  "
+        (:eval (propertize
+                (format "%-15s"
+                        (concat "["
+                                (short-major-mode-name mode-name)
+                                "]"))
+                'help-echo
+                '(concat
+                  mode-name ": "
+                  (format-mode-line minor-mode-alist))))
+        ;; (:propertize mode-line-process)
                            'help-echo (format-time-string
                                        "%A, %B %d, %Y, %H:%M")))
         "  "
