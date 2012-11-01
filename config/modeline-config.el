@@ -16,7 +16,6 @@ except it truncates from the start of the list"
       (concat (reverse (append (format  str) nil)))
       end-column start-column padding ellipsis) nil))))
 
-;;Heavily edited from http://emacs-fu.blogspot.com/2011/08/customizing-mode-line.html
 (defun short-major-mode-name (str)
   (cond ((string= str "Lisp Interaction")
          "elI")
