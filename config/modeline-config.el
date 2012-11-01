@@ -59,6 +59,7 @@ except it truncates from the start of the list"
                                        "%A, %B %d, %Y, %H:%M")))
         "  "
         (:propertize pomodoro-mode-line-string)
+        " "
         "-%-"))
 
 (provide 'modeline-config)
