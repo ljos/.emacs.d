@@ -27,10 +27,10 @@ except it truncates from the start of the list"
         mode-line-modified
         "  "
         (:eval (propertize 
-                (format "%-27s"
+                (format "%-20s"
                         (truncate-string-to-length (or buffer-file-truename
                                                        (buffer-name))
-                                                   27 nil nil ".."))
+                                                   20 nil nil ".."))
                            'help-echo (buffer-file-name)
                            'local-map
                            (let ((map (make-sparse-keymap)))
