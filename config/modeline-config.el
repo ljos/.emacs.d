@@ -54,6 +54,7 @@ except it truncates from the start of the list"
                   mode-name ": "
                   (format-mode-line minor-mode-alist))))
         ;; (:propertize mode-line-process)
+        (:eval (propertize (format-time-string "%a %b %d %H:%M")
                            'help-echo (format-time-string
                                        "%A, %B %d, %Y, %H:%M")))
         "  "
