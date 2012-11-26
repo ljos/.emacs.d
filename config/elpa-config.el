@@ -27,6 +27,7 @@
     langtool
     magit
     magithub
+    multi-web-mode
     nrepl
     org
     paredit
