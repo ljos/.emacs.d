@@ -1,7 +1,5 @@
 (require 'js2-mode-autoloads)
 
-(add-hook 'js2-mode-hook 'esk-paredit-nonlisp)
-
 (eval-after-load 'js2-mode
   '(progn
      (setq-default js2-auto-indent-p t)
@@ -11,10 +9,6 @@
                                         "refute" "setTimeout" "clearTimeout"
                                         "setInterval" "clearInterval"
                                         "location" "__dirname" "console" "JSON"))
-
-     (define-key js2-mode-map "{" 'paredit-open-curly)
-     (define-key js2-mode-map "}" 'paredit-close-curly)
-     (define-key js2-mode-map "'" 'paredit-singlequote)
 
      (define-key js2-mode-map (kbd ",") 'self-insert-command)
 
