@@ -31,6 +31,9 @@
     popwin
     pomodoro
     prolog
+    python-mode
+    python-pep8
+    python-pylint
     slime
     slime-repl
     starter-kit
