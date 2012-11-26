@@ -19,6 +19,8 @@ except it truncates from the start of the list"
 (defun short-major-mode-name (str)
   (cond ((string= str "Lisp Interaction")
          "elI")
+        ((string= str "JavaScript-IDE")
+         "JS-IDE")
         (t str)))
 
 (setq default-mode-line-format
