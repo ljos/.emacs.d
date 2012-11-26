@@ -25,6 +25,8 @@
     jade-mode
     js2-mode
     langtool
+    magit
+    magithub
     nrepl
     org
     paredit
