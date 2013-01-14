@@ -43,6 +43,7 @@
 (require 'dired-config)
 (require 'elispslimenav-config)
 ;(require 'expandregion-config)
+(require 'evil-config)
 (require 'face-config)
 (require 'ffip-config)
 (require 'flyspell-config)

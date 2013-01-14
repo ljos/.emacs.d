@@ -23,6 +23,8 @@
     color-theme-solarized
     expand-region
     find-file-in-project
+    evil
+    evil-paredit
     gist
     go-mode
     jade-mode
