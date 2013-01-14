@@ -29,7 +29,9 @@ except it truncates from the start of the list"
       '(" "
         mode-line-mule-info
         mode-line-modified
-        "  "
+        " "
+        (:propertize evil-mode-line-tag)
+        " "  
         (:eval (propertize 
                 (format "%-20s"
                         (truncate-string-to-length (or buffer-file-truename
