@@ -3,8 +3,7 @@
 (autoload 'joc-dired-single-magic-buffer "dired-single" "" t)
 (autoload 'joc-dired-single-toggle-buffer-name "dired-single" "" t)
 
-(if (boundp 'dired-mode-map)
-    (my-dired-init)
+(if  (not (boundp 'dired-mode-map))
   (add-hook 'dired-load-hook
             ( lambda ()
               (define-key dired-mode-map [return]
