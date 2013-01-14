@@ -36,6 +36,7 @@
     nrepl
     org
     paredit
+    php+-mode
     popwin
     pomodoro
     prolog

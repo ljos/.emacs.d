@@ -62,6 +62,7 @@
 (require 'nrepl-config)
 (require 'org-config)
 (require 'paredit-config)
+(require 'php+-config)
 (require 'pomodoro-config)
 (require 'popwin-config)
 (require 'prolog-config)
