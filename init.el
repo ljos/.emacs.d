@@ -2,6 +2,9 @@
 (set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
+;; When opening a new file from OS do not create a new frame.
+(setq ns-pop-up-frames 'nil)
+
 (setq message-log-max t)
 
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
