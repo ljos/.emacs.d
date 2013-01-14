@@ -1,8 +1,8 @@
-(require 'multi-web-mode-autoloads)
+(require 'multi-web-mode)
 
 (setq mweb-default-major-mode 'html-mode)
 (setq mweb-tags
-      '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
+      '((php+-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
         (js2-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>"
                   "</script>")
         (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
