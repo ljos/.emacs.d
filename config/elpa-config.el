@@ -19,6 +19,7 @@
     clojure-test-mode
     clojurescript-mode
     coffee-mode
+    command-frequency
     color-theme
     color-theme-solarized
     expand-region
