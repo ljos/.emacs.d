@@ -22,6 +22,7 @@
     expand-region
     find-file-in-project
     gist
+    go-mode
     jade-mode
     js2-mode
     langtool

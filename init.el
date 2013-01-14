@@ -47,6 +47,7 @@
 (require 'ffip-config)
 (require 'flyspell-config)
 (require 'gist-config)
+(require 'go-config)
 (require 'ielm-config)
 (require 'jade-config)
 (require 'js2mode-config)
