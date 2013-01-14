@@ -16,12 +16,14 @@ except it truncates from the start of the list"
       (concat (reverse (append (format  str) nil)))
       end-column start-column padding ellipsis) nil))))
 
-(defun short-major-mode-name (str)
-  (cond ((string= str "Lisp Interaction")
-         "elI")
-        ((string= str "JavaScript-IDE")
-         "JS-IDE")
-        (t str)))
+(defun short-major-mode-name (str)  
+  (if (stringp str)
+      (cond ((string= str "Lisp Interaction")
+             "elI")
+            ((string= str "JavaScript-IDE")
+             "JS-IDE")
+            (t str))
+    str))
 
 (setq default-mode-line-format
       '(" "
