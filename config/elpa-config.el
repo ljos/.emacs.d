@@ -33,6 +33,7 @@
     magit
     magithub
     multi-web-mode
+    multiple-cursors
     nrepl
     org
     paredit
