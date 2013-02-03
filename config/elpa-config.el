@@ -33,6 +33,7 @@
     langtool
     magit
     magithub
+    midje-mode
     multi-web-mode
     multiple-cursors
     nrepl
