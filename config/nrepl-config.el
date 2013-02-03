@@ -1,5 +1,6 @@
 (require 'nrepl-autoloads)
 (require 'ac-nrepl-autoloads)
+
 (autoload 'nrepl-connect "nrepl"
   "nrepl mode" t nil)
 
@@ -18,6 +19,6 @@
 
 (defun nrepl-local ()
   (interactive)
-    (nrepl-connect "localhost" "50001"))
+  (nrepl-connect "localhost" "50001"))
 
 (provide 'nrepl-config)
