@@ -22,6 +22,8 @@ except it truncates from the start of the list"
              "elI")
             ((string= str "JavaScript-IDE")
              "JS-IDE")
+            ((string= str "ClojureScript")
+             "cljs")
             (t str))
     str))
 
