@@ -11,11 +11,14 @@
   (if (not (file-exists-p themes-folder))
       (make-directory themes-folder)))
 
+(add-to-list 'load-path "~/.emacs.d/site-lisp/tomorrow-theme/")
 
 (when (window-system)
   (require 'color-theme)
-  (require 'color-theme-solarized)
-  (load-theme 'solarized-light t)
+  ;; (require 'color-theme-solarized)
+  ;; (load-theme 'solarized-light t)
+  (require 'color-theme-tomorrow)
+  (color-theme-tomorrow-night)
   (setq color-theme-is-global t))
 
 (provide 'face-config)
