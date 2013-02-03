@@ -15,6 +15,7 @@
     auctex
     auto-complete
     browse-kill-ring
+    cljdoc
     clojure-mode
     clojure-test-mode
     clojurescript-mode

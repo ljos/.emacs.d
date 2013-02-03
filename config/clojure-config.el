@@ -7,6 +7,7 @@
      (put-clojure-indent 'assoc-in 'defun)  
      (put-clojure-indent 'swap! 'defun)
      (require 'clojure-jump-to-file)
+     (require 'cljdoc)
 
 
 (add-hook 'clojure-mode-hook
