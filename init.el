@@ -15,6 +15,8 @@
 (winner-mode t)
 
 (setq require-final-newline t)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
 (defcustom exec-paths '("~/.lein/bin" "/usr/local/bin" "~/.local/bin" "/usr/texbin")
   "Directories to be added to exec-path"
   :type 'string)
