@@ -51,14 +51,17 @@
                ("\\paragraph{%s}" . "\\paragraph*{%s}")
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-(add-hook 'org-mode-hook (lambda () (visual-line-mode t)))
-(add-hook 'org-mode-hook (lambda () (setq fill-column 80)))
-(add-hook 'org-mode-hook (lambda () (setq ispell-parser 'tex)))
+
 (add-hook 'org-mode-hook
           (lambda ()
-            (font-lock-remove-keywords
-             nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)"
-                    1 font-lock-warning-face t)))))
+            (progn
+              (define-key org-mode-map (kbd "M-q") 'org-fill-paragraph)
+              (visual-line-mode t)
+              (setq fill-column 80)
+              (setq ispell-parser 'tex)
+              (font-lock-remove-keywords
+               nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)"
+                      1 font-lock-warning-face t))))))
 
 ;;org-capture config
 (setq org-default-notes-file (concat org-directory "/organizer.org"))
