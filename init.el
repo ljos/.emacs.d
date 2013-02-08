@@ -14,6 +14,7 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (winner-mode t)
 
+(setq require-final-newline t)
 (defcustom exec-paths '("~/.lein/bin" "/usr/local/bin" "~/.local/bin" "/usr/texbin")
   "Directories to be added to exec-path"
   :type 'string)
