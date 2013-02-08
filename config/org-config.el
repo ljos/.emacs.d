@@ -35,7 +35,9 @@
 (add-to-list 'org-export-latex-classes
              '("article"
                "\\documentclass{article}"
-               ("\\section{%s}" . "\\section*{%s}")))  
+               ("\\section*{%s}" . "\\section{%s}")
+               ("\\subsection*{%s}" . "\\subsection{%s}")
+               ("\\subsubsection*{%s}" . "\\subsubsection{%s}")))
 
 (setq org-latex-to-pdf-process '("texi2dvi --pdf --verbose --batch %f"))
 
