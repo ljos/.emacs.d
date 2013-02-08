@@ -22,3 +22,7 @@ bookmarks
 .org-id-locations
 
 .mc-lists.el
+
+eshell/history
+
+eshell/lastdir
