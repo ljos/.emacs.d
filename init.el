@@ -12,7 +12,7 @@
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 
 (fset 'yes-or-no-p 'y-or-n-p)
-(winner-mode 1)
+(winner-mode t)
 
 (defcustom exec-paths '("~/.lein/bin" "/usr/local/bin" "~/.local/bin" "/usr/texbin")
   "Directories to be added to exec-path"
