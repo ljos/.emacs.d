@@ -66,7 +66,7 @@
 ;;org-capture config
 (setq org-default-notes-file (concat org-directory "/organizer.org"))
 
-(define-key global-map "\C-cc" 'org-capture)
+(global-set-key "\C-cc" 'org-capture)
 
 (setq org-capture-templates
       '(("t" "Todo" entry
