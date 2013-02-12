@@ -75,6 +75,7 @@
 (require 'prolog-config)
 (require 'python-config)
 (require 'screen-config)
+(require 'screenplay-config)
 (require 'slime-config)
 (require 'sws-config)
 (require 'tramp-config)
