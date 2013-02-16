@@ -1,5 +1,7 @@
 (require 'pomodoro-autoloads)
 
+(setq pomodoro-mode-line-string "")
+
 (eval-after-load 'pomodoro
   '(progn
      (setq pomodoro-break-start-sound "~/Music/ding.mp3")
