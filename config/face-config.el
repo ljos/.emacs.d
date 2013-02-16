@@ -1,4 +1,4 @@
-(set-face-attribute 'default nil :font "monaco-14")
+(set-face-attribute 'default nil :font "menelo-14")
 
 (set-fringe-mode '(0 . 6))
 (blink-cursor-mode nil)
