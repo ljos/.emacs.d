@@ -52,7 +52,6 @@
 (require 'expandregion-config)
 (require 'face-config)
 (require 'ffip-config)
-(require 'flyspell-config)
 (require 'gist-config)
 (require 'go-config)
 (require 'ielm-config)
