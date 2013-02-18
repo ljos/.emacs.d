@@ -56,6 +56,7 @@
 (require 'gist-config)
 (require 'go-config)
 (require 'ielm-config)
+(require 'ispell-config)
 (require 'jade-config)
 (require 'js2mode-config)
 (require 'langtool-config)
