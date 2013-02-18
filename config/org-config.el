@@ -34,7 +34,9 @@
 
 (add-to-list 'org-export-latex-classes
              '("article"
-               "\\documentclass{article}"
+               "\\documentclass{article}
+                \\usepackage[l2tabu, orthodox]{nag}
+                \\usepackage{microtype}"
                ("\\section*{%s}" . "\\section{%s}")
                ("\\subsection*{%s}" . "\\subsection{%s}")
                ("\\subsubsection*{%s}" . "\\subsubsection{%s}")))
@@ -81,7 +83,7 @@
                                                  "/done.org"))
          "* %?\nCLOCK: %^U--%U")))
 
-(defun org-export-latex-no-toc (depth)  
+(defun org-export-latex-no-toc (depth)
     (when depth
       (format "%% Org-mode is exporting headings to %s levels.\n"
               depth)))
