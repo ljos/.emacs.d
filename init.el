@@ -54,6 +54,7 @@
 (require 'ffip-config)
 (require 'gist-config)
 (require 'go-config)
+(require 'ibuffer-config)
 (require 'ielm-config)
 (require 'ispell-config)
 (require 'jade-config)
