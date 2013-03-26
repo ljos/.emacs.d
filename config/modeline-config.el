@@ -31,7 +31,8 @@ except it truncates from the start of the list"
             (face2 (if active 'powerline-active2 'powerline-inactive2))
             (lhs (list
                   (powerline-raw "%*" nil 'l)
-                  (propertize evil-mode-line-tag)
+                                        ;                  (propertize evil-mode-line-tag)
+                  " "
                   (propertize
                    (concat (format "%-20s"
                                    (truncate-string-to-length (or buffer-file-truename
