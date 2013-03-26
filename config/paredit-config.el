@@ -6,6 +6,12 @@
 (define-key paredit-mode-map (kbd "M-[") 'paredit-wrap-square)
 (define-key paredit-mode-map (kbd "M-{") 'paredit-wrap-curly)
 (define-key paredit-mode-map (kbd "M-}") 'paredit-close-curly-and-newline)
+(define-key paredit-mode-map (kbd "M-j") 'paredit-delete-indentation)
+
+(defun paredit-delete-indentation ()
+  (interactive)
+  (delete-indentation)
+  (prog-indent-sexp))
 
 ;;for modes that have strings in singlequotes.
 (defun paredit-singlequote (&optional n)
