@@ -37,10 +37,12 @@ except it truncates from the start of the list"
 
 (setq-default mode-line-format
   '("%e "
-    "%*" ; file status
+
+    "%*"                                ; file status
+
     " %n " ; narrow status
 
-    "%03l:%2c  "            ; line:column
+    "%03l:%2c  "                        ; line:column
 
     (:eval
      (propertize                        ; file/buffer name
@@ -61,14 +63,17 @@ except it truncates from the start of the list"
         map)))
 
     (:eval
-     (propertize (center-string-in-char
-                  (short-major-mode-name mode-name)
-                  20
-                  ?\s)
-                 'help-echo (format-mode-line minor-mode-alist)))
+     (propertize
+      (center-string-in-char
+       (short-major-mode-name mode-name)
+       20
+       ?\s)
+      'help-echo (format-mode-line minor-mode-alist)))
 
     (:eval (center-string-in-char vc-mode 15 ?\s))
+
     "  "
+
     pomodoro-mode-line-string
 
     (:eval
@@ -76,7 +81,6 @@ except it truncates from the start of the list"
       (propertize " " 'display '((space :align-to (- right 20))))
       (propertize (format-time-string " %a %b %d, %H:%M") ; time
                   'help-echo
-                  (format-time-string "%A, %B %d, %Y, %H:%M")
-                  )))))
+                  (format-time-string "%A, %B %d, %Y, %H:%M"))))))
 
 (provide 'modeline-config)
