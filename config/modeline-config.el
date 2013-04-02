@@ -1,5 +1,3 @@
-(require 'powerline)
-
 (setq mode-line-in-non-selected-windows nil)
 
 (defun truncate-string-to-length (str end-column &optional start-column padding ellipsis)
@@ -23,49 +21,59 @@ except it truncates from the start of the list"
             (t str))
     str))
 
+(make-face 'mode-line-minor-mode-face)
+
+(set-face-attribute 'mode-line nil
+  :box '(:line-width 1
+         :color "gray25"))
+
+(set-face-attribute 'mode-line-minor-mode-face nil
+  :inherit 'mode-line-face
+  :height 110)
+
+(defun center-string-in-char (str len char)
+  (store-substring (make-string len char)
+                   (/ (- len (length str)) 2) str))
+
 (setq-default mode-line-format
-  '("%e"
+  '("%e "
+    "%* " ; file status
+    " %n " ; narrow status
+
     (:eval
-     (let* ((active (eq (frame-selected-window) (selected-window)))
-            (face1 (if active 'powerline-active1 'powerline-inactive1))
-            (face2 (if active 'powerline-active2 'powerline-inactive2))
-            (lhs (list
-                  (powerline-raw "%*" nil 'l)
-                                        ;                  (propertize evil-mode-line-tag)
-                  " "
-                  (propertize
-                   (concat (format "%-20s"
-                                   (truncate-string-to-length (or buffer-file-truename
-                                                                  (buffer-name))
-                                                              20 nil nil "..")))
-                   'help-echo (buffer-file-name)
-                   'local-map
-                   (let ((map (make-sparse-keymap)))
-                     (define-key map [mode-line mouse-3]
-                       'mode-line-next-buffer)
-                     (define-key map [mode-line mouse-1]
-                       'mode-line-previous-buffer)
-                     map))
-                  (powerline-raw " ")
-                  (powerline-arrow-right nil face1)
-                  (powerline-raw " %03l:%2c" face1 'r)
-                  (powerline-arrow-right face1 face2)
-                  (powerline-major-mode face2 'l)
-                  (powerline-raw mode-line-process face2 'l)
-                  (powerline-narrow face1 'l)
-                  (powerline-arrow-right face2 face1)
-                  (powerline-vc face1)))
-            (rhs (list
-                  (powerline-raw global-mode-string face1 'r)
-                  (powerline-raw pomodoro-mode-line-string face1)
-                  (powerline-arrow-right face1 nil)
-                  (propertize (format-time-string " %a %b %d, %H:%M")
-                              'help-echo (format-time-string
-                                          "%A, %B %d, %Y, %H:%M"))
-                  (powerline-raw "  "))))
-       (concat
-        (powerline-render lhs)
-        (powerline-fill face1 (+ 2 (powerline-width rhs)))
-        (powerline-render rhs))))))
+     (propertize                        ; file/buffer name
+      (center-string-in-char
+       (truncate-string-to-length
+        (or buffer-file-truename
+            (buffer-name))
+        20 nil nil "..")
+       20
+       ?\s)
+      'help-echo (buffer-file-name)     ; echo full name
+      'local-map
+      (let ((map (make-sparse-keymap)))
+        (define-key map [mode-line mouse-3]
+          'mode-line-next-buffer)
+        (define-key map [mode-line mouse-1]
+          'mode-line-previous-buffer)
+        map)))
+
+    " %03l:%02c "                        ; line:column
+
+    (:eval
+     (propertize (center-string-in-char
+                  (short-major-mode-name mode-name)
+                  15
+                  ?\s)
+                 'help-echo (format-mode-line minor-mode-alist)))
+
+    vc-mode
+    "  "
+    pomodoro-mode-line-string
+
+    (:eval
+     (propertize (format-time-string " %a %b %d, %H:%M") ; time
+                 'help-echo
+                 (format-time-string "%A, %B %d, %Y, %H:%M")))))
 
 (provide 'modeline-config)
