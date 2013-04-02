@@ -85,6 +85,8 @@
 
 (setq visible-bell nil)
 (setq ring-bell-function #'ignore)
+(fringe-mode 0)
+(set-display-table-slot standard-display-table 'wrap ?↩)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.

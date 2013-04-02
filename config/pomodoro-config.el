@@ -4,8 +4,8 @@
 
 (eval-after-load 'pomodoro
   '(progn
-     (setq pomodoro-break-start-sound "~/Music/ding.mp3")
-     (setq pomodoro-work-start-sound "~/Music/ding.mp3")
+     (setq pomodoro-break-start-sound "~/Music/smw_pause.wav")
+     (setq pomodoro-work-start-sound "~/Music/smw_pause.wav")
      (setq pomodoro-work-start-message "Back to work!")
      (setq pomodoro-work-cycle "労働") ;; work in japanese
      (setq pomodoro-break-cycle "休止") ;; break in japanese

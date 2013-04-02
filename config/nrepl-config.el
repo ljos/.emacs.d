@@ -10,6 +10,7 @@
   '(add-to-list 'ac-modes 'nrepl-mode))
 
 (add-hook 'nrepl-mode-hook 'enable-paredit-mode)
+(add-hook 'nrepl-interaction-mode '(lambda () (require 'nrepl-ritz)))
 
 (eval-after-load 'nrepl
   '(progn
