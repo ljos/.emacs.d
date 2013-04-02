@@ -11,7 +11,6 @@
 (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 
-(fset 'yes-or-no-p 'y-or-n-p)
 (winner-mode t)
 
 (setq require-final-newline t)
@@ -85,6 +84,8 @@
 
 (setq visible-bell nil)
 (setq ring-bell-function #'ignore)
+(fset 'yes-or-no-p 'y-or-n-p)
+
 (fringe-mode 0)
 (set-display-table-slot standard-display-table 'wrap ?↩)
 
