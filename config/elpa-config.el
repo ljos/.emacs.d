@@ -23,6 +23,7 @@
     command-frequency
     color-theme
     color-theme-solarized
+    dired-single
     expand-region
     find-file-in-project
     evil
