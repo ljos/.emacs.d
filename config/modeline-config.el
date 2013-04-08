@@ -10,17 +10,6 @@ except it truncates from the start of the list"
              end-column start-column padding ellipsis)
             nil))))
 
-(defun short-major-mode-name (str)
-  (if (stringp str)
-      (cond ((string= str "Lisp Interaction")
-             "elI")
-            ((string= str "JavaScript-IDE")
-             "JS-IDE")
-            ((string= str "ClojureScript")
-             "CljS")
-            (t str))
-    str))
-
 (make-face 'mode-line-minor-mode-face)
 
 (set-face-attribute 'mode-line nil
@@ -65,7 +54,7 @@ except it truncates from the start of the list"
     (:eval
      (propertize
       (center-string-in-char
-       (short-major-mode-name mode-name)
+       mode-name
        20
        ?\s)
       'help-echo (format-mode-line minor-mode-alist)))
