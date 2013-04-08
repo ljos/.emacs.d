@@ -62,7 +62,7 @@
               (setq fill-column 80)
               (setq ispell-parser 'tex)
               (font-lock-remove-keywords
-               nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)"
+               nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)\\b"
                       1 font-lock-warning-face t))))))
 
 ;;org-capture config
