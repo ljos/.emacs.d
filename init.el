@@ -99,3 +99,4 @@
  '(show-paren-mode t)
  '(menu-bar-mode t)
  '(tool-bar-mode nil))
+(put 'narrow-to-page 'disabled nil)
