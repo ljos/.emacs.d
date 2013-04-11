@@ -48,6 +48,7 @@
 (require 'dired-config)
 (require 'elispslimenav-config)
 ;(require 'evil-config)
+;(require 'emacseclim-config)
 (require 'expandregion-config)
 (require 'face-config)
 (require 'ffip-config)
