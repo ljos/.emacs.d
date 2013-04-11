@@ -32,7 +32,10 @@ except it truncates from the start of the list"
 
     "%*"                                ; file status
 
-    " %n " ; narrow status
+    (:eval
+     (propertize
+      (if (buffer-narrowed-p)
+          " 狭")))
 
     mode-line-position
     "  "
