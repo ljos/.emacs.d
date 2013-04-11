@@ -30,6 +30,7 @@
     evil-paredit
     gist
     go-mode
+    ibuffer-vc
     jade-mode
     js2-mode
     langtool
