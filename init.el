@@ -80,6 +80,7 @@
 (require 'sws-config)
 (require 'tramp-config)
 (require 'undotree-config)
+(require 'workgroups-config)
 (require 'yasnippet-config)
 
 (setq visible-bell nil)
