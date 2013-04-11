@@ -24,6 +24,9 @@ except it truncates from the start of the list"
   (store-substring (make-string len char)
                    (/ (- len (length str)) 2) str))
 
+(setq-default mode-line-position
+              '(" %03l:%2c"))
+
 (setq-default mode-line-format
   '("%e "
 
@@ -31,8 +34,8 @@ except it truncates from the start of the list"
 
     " %n " ; narrow status
 
-    "%03l:%2c  "                        ; line:column
-
+    mode-line-position
+    "  "
     (:eval
      (propertize                        ; file/buffer name
       (center-string-in-char
@@ -51,24 +54,25 @@ except it truncates from the start of the list"
           'mode-line-previous-buffer)
         map)))
 
+    "  "
+
     (:eval
-     (propertize
-      (center-string-in-char
-       mode-name
-       20
-       ?\s)
-      'help-echo (format-mode-line minor-mode-alist)))
-
-    (:eval (center-string-in-char vc-mode 15 ?\s))
-
+     (propertize mode-name
+                 'help-echo (format-mode-line minor-mode-alist)))
+    " "
+    vc-mode
     "  "
 
     pomodoro-mode-line-string
 
     (:eval
      (concat
-      (propertize " " 'display '((space :align-to (- right 20))))
-      (propertize (format-time-string " %a %b %d, %H:%M") ; time
+      (propertize " " 'display
+                 `((space :align-to
+                           (- right ,(if (string= "" pomodoro-mode-line-string) 20 8)))))
+      (propertize (if (string= "" pomodoro-mode-line-string)
+                      (format-time-string " %a %b %d, %H:%M")
+                    (format-time-string " %H:%M"))                 ; time
                   'help-echo
                   (format-time-string "%A, %B %d, %Y, %H:%M"))))))
 
