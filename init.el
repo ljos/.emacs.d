@@ -82,7 +82,7 @@
 (require 'sws-config)
 (require 'tramp-config)
 (require 'undotree-config)
-(require 'workgroups-config)
+;(require 'workgroups-config)
 (require 'yasnippet-config)
 
 ;; Redefining this so we have the font-lock on wordbounderies instead
