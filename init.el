@@ -85,6 +85,13 @@
 (require 'workgroups-config)
 (require 'yasnippet-config)
 
+;; Redefining this so we have the font-lock on wordbounderies instead
+;; of as it is in starter-kit.
+(defun esk-add-watchwords ()
+  (font-lock-add-keywords
+   nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)\\b"
+          1 font-lock-warning-face t))))
+
 (setq visible-bell nil)
 (setq ring-bell-function #'ignore)
 (fset 'yes-or-no-p 'y-or-n-p)
