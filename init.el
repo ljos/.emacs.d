@@ -78,6 +78,7 @@
 (require 'screen-config)
 (require 'screenplay-config)
 (require 'slime-config)
+(require 'sparql-config)
 (require 'sws-config)
 (require 'tramp-config)
 (require 'undotree-config)
