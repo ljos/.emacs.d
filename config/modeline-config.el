@@ -35,7 +35,8 @@ except it truncates from the start of the list"
     (:eval
      (propertize
       (if (buffer-narrowed-p)
-          " 狭")))
+          " 狭"
+        "")))
 
     mode-line-position
     "  "
@@ -45,9 +46,8 @@ except it truncates from the start of the list"
        (truncate-string-to-length
         (or buffer-file-truename
             (buffer-name))
-        20 nil nil "..")
-       20
-       ?\s)
+        25 nil nil  "..")
+       25 ?\s)
       'help-echo (buffer-file-name)     ; echo full name
       'local-map
       (let ((map (make-sparse-keymap)))
