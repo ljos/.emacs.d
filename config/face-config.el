@@ -18,8 +18,6 @@
 
 (when (window-system)
   (require 'color-theme)
-  (require 'color-theme-tomorrow)
-  (color-theme-tomorrow-night)
-  (setq color-theme-is-global t))
+  (require 'color-theme-sanityinc-tomorrow))
 
 (provide 'face-config)

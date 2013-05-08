@@ -24,6 +24,7 @@
     coffee-mode
     command-frequency
     color-theme
+    color-theme-sanityinc-tomorrow
     dired-single
     expand-region
     find-file-in-project
