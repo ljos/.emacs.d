@@ -1,3 +1,6 @@
 [submodule "snippets/clojure-mode"]
 	path = snippets/clojure-mode
 	url = https://github.com/ljos/clojure-snippets
+[submodule "site-lisp/sparql-mode"]
+	path = site-lisp/sparql-mode
+	url = https://github.com/ljos/sparql-mode
