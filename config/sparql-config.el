@@ -11,5 +11,6 @@
 (setq sparql-default-base-url "http://live.dbpedia.org/sparql")
 
 (add-hook 'sparql-result-mode-hook '(lambda () (linum-mode -1)))
+(add-hook 'sparql-result-mode-hook '(lambda () (toggle-truncate-lines 1)))
 
 (provide 'sparql-config)
