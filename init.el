@@ -97,7 +97,7 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 
 (fringe-mode 0)
-(set-display-table-slot standard-display-table 'wrap ?↩)
+;(set-display-table-slot standard-display-table 'wrap ?↩)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
