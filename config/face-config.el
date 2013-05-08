@@ -18,8 +18,6 @@
 
 (when (window-system)
   (require 'color-theme)
-  ;; (require 'color-theme-solarized)
-  ;; (load-theme 'solarized-light t)
   (require 'color-theme-tomorrow)
   (color-theme-tomorrow-night)
   (setq color-theme-is-global t))
