@@ -7,3 +7,6 @@
 [submodule "site-lisp/spotify-el"]
 	path = site-lisp/spotify-el
 	url = https://github.com/ljos/sparql-mode
+[submodule "site-lisp/javert"]
+	path = site-lisp/javert
+	url = https://github.com/technomancy/javert.git
