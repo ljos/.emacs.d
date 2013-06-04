@@ -92,6 +92,13 @@
    nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)\\b"
           1 font-lock-warning-face t))))
 
+;; Convenience function to get all keys in a hash table.
+(defun keys (hashtable)
+  "Return all keys in hashtable."
+  (let (allkeys)
+    (maphash (lambda (kk vv) (setq allkeys (cons kk allkeys))) hashtable)
+    allkeys))
+
 (setq visible-bell nil)
 (setq ring-bell-function #'ignore)
 (fset 'yes-or-no-p 'y-or-n-p)
