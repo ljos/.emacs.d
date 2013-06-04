@@ -8,7 +8,6 @@
 (setq org-mobile-inbox-for-pull "~/Dropbox/org/inbox.org")
 (setq org-mobile-directory "~/Dropbox/org/mobile")
 
-(setq org-agenda-include-diary t)
 (setq org-agenda-include-all-todo t)
 
 (setq org-agenda-files '("~/Dropbox/org/organizer.org"))
