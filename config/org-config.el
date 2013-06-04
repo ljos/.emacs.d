@@ -13,11 +13,7 @@
 (setq org-agenda-files '("~/Dropbox/org/organizer.org"))
 
 (setq org-tag-persistent-alist
-      '((:startgroup . nil)
-        ("work" . ?o) ("home" . ?h)
-        (:endgroup . nil)
-        ("computer" . ?c) ("project" . ?p) ("reading" . ?r)
-        ("watch" . ?d) ("errand" . ?l)))
+      '(("work" . ?w) ("private" . ?p)))
 
 (setq org-todo-keywords
       '((sequence "TODO" "STARTED" "WAITING"
