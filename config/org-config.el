@@ -61,21 +61,21 @@
 
 ;;org-capture config
 (setq org-default-notes-file (concat org-directory "/organizer.org"))
-
 (global-set-key "\C-cc" 'org-capture)
 
 (setq org-capture-templates
-      '(("t" "Todo" entry
-         (file+headline (concat org-directory
-                                "/organizer.org")
-                        "Tasks")
-         "* TODO %?\n  %i\n  %a")
-        ("j" "Journal" entry (file+datetree (concat org-directory
-                                                    "/journal.org"))
+      '(("a" "Appointments" entry
+         (file+headline (concat org-directory "/organizer.org") "Appointments")
+         "* APPT %? %^{WITH}p %^{LOCATION}p\n%^T--%^T\n" :prepend)
+        ("d" "Done" entry
+         (file+datetree (concat org-directory "/done.org"))
+         "* %?\nCLOCK: %^U--%U")
+        ("j" "Journal" entry
+         (file+datetree (concat org-directory "/journal.org"))
          "* %?\nEntered on %U\n  %i\n  %a")
-        ("d" "Done" entry (file+datetree (concat org-directory
-                                                 "/done.org"))
-         "* %?\nCLOCK: %^U--%U")))
+        ("t" "Todo" entry
+         (file+headline (concat org-directory "/organizer.org") "Tasks")
+         "* TODO %?\n  %i\n  %a")))
 
 (defun org-export-latex-no-toc (depth)
   (when depth
