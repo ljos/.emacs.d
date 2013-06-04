@@ -29,9 +29,7 @@ except it truncates from the start of the list"
 
 (setq-default mode-line-format
   '("%e "
-
-    "%*"                                ; file status
-
+    (:eval (if buffer-file-name "%* " "無常"))        ; file status
     (:eval
      (propertize
       (if (buffer-narrowed-p)
