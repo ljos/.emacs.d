@@ -102,6 +102,7 @@
 (setq visible-bell nil)
 (setq ring-bell-function #'ignore)
 (fset 'yes-or-no-p 'y-or-n-p)
+(setq use-dialog-box nil)
 
 (fringe-mode 0)
 ;(set-display-table-slot standard-display-table 'wrap ?↩)
