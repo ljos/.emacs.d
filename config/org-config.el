@@ -23,6 +23,7 @@
 
 (setq org-refile-targets '(("organizer.org" :maxlevel . 9)))
 (setq org-completion-use-ido t)
+(setq org-latex-to-pdf-process '("texi2dvi --pdf --verbose --batch %f"))
 
 (unless (boundp 'org-export-latex-classes)
   (setq org-export-latex-classes nil))
@@ -35,8 +36,6 @@
                ("\\section{%s}" . "\\section*{%s}")
                ("\\subsection{%s}" . "\\subsection*{%s}")
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-
-(setq org-latex-to-pdf-process '("texi2dvi --pdf --verbose --batch %f"))
 
 (add-to-list 'org-export-latex-classes
              `("thesis"
