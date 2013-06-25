@@ -24,7 +24,11 @@
       'js2-mode `(("function *([^)]*) *{ *\\(return\\) "
                    (0 (progn (compose-region (match-beginning 1)
                                              (match-end 1) "\u2190")
-                             nil)))))))
+                             nil)))))
+     (define-key js2-mode-map "{" 'paredit-open-curly)
+     (define-key js2-mode-map "}" 'paredit-close-curly-and-newline)
+     (add-hook 'js2-mode-hook 'esk-paredit-nonlisp)))
 
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 
 (provide 'js2mode-config)
