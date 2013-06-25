@@ -27,9 +27,11 @@
             (puthash k (1+ (gethash k pomodoro-time-spent 0)) pomodoro-time-spent))
         (puthash "nil" (1+ (gethash "nil" pomodoro-time-spent 0)) pomodoro-time-spent))))
 
+;; we need to set this out here as it is used in the modeline
+(setq pomodoro-mode-line-string "")
+
 (eval-after-load 'pomodoro
   '(progn
-     (setq pomodoro-mode-line-string "")
      (setq pomodoro-break-start-sound "~/Music/smw_pause.wav")
      (setq pomodoro-work-start-sound "~/Music/smw_pause.wav")
      (setq pomodoro-work-start-message "Back to work!")
