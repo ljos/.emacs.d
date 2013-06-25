@@ -1,7 +1,8 @@
-(when (and (window-system)
-           (string= "darwin"
-                    system-type))
-  (set-face-attribute 'default nil :font "menelo-14"))
+(if (and (window-system)
+         (string= "darwin"
+                  system-type))
+    (set-face-attribute 'default nil :font "menelo-14")
+  (set-face-attribute 'default nil :font (font-get-system-font)))
 
 (set-fringe-mode '(0 . 6))
 (blink-cursor-mode nil)
