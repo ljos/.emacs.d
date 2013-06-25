@@ -51,6 +51,7 @@
     python-mode
     python-pep8
     python-pylint
+    skewer-mode
     slime
     slime-repl
     starter-kit
