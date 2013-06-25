@@ -77,6 +77,7 @@
 (require 'python-config)
 (require 'screen-config)
 (require 'screenplay-config)
+(require 'skewer-config)
 (require 'slime-config)
 (require 'sparql-config)
 (require 'sws-config)
