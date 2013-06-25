@@ -28,3 +28,4 @@ eshell/history
 eshell/lastdir
 
 workgroups
+/quicklisp.lisp
