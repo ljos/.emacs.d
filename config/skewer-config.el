@@ -1,5 +1,5 @@
 (require 'skewer-mode-autoloads)
 
-(skewer-setup)
+;(skewer-setup)
 
 (provide 'skewer-config)
