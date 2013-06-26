@@ -10,3 +10,6 @@
 [submodule "site-lisp/javert"]
 	path = site-lisp/javert
 	url = https://github.com/technomancy/javert.git
+[submodule "site-lisp/ebnf-mode"]
+	path = site-lisp/ebnf-mode
+	url = https://github.com/jeramey/ebnf-mode
