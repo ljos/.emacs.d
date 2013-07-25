@@ -65,7 +65,7 @@
 
 (setq org-capture-templates
       '(("a" "Appointments" entry
-         (file+headline (concat org-directory "/organizer.org") "Appointments")
+         (file+headline org-default-notes-file "Appointments")
          "* APPT %? %^{WITH}p %^{LOCATION}p\n%^T--%^T\n" :prepend)
         ("d" "Done" entry
          (file+datetree (concat org-directory "/done.org"))
@@ -74,7 +74,7 @@
          (file+datetree (concat org-directory "/journal.org"))
          "* %?\nEntered on %U\n  %i\n  %a")
         ("t" "Todo" entry
-         (file+headline (concat org-directory "/organizer.org") "Tasks")
+         (file+headline org-default-notes-file "Tasks")
          "* TODO %?\n  %i\n  %a")))
 
 (defun org-export-latex-no-toc (depth)
