@@ -21,6 +21,10 @@
         (sequence "APPT" "|" "FINISHED" "CANCELLED" "MISSED")
         (sequence "BUG" "|" "FIXED")))
 
+(setq org-todo-keyword-faces
+      '(("STARTED" . "yellow")
+        ("CANCELLED" . "dim gray")))
+
 (setq org-refile-targets '(("organizer.org" :maxlevel . 9)))
 (setq org-completion-use-ido t)
 (setq org-latex-to-pdf-process '("texi2dvi --pdf --verbose --batch %f"))
