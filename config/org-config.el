@@ -83,7 +83,7 @@
          "* %?\nEntered on %U\n  %i\n  %a")
         ("t" "Todo" entry
          (file+headline org-default-notes-file "Tasks")
-         "* TODO %?\n  %i\n  %a")))
+         "* TODO %?\n  %i\n")))
 
 (defun org-export-latex-no-toc (depth)
   (when depth
