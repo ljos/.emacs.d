@@ -71,6 +71,9 @@
       '(("a" "Appointments" entry
          (file+headline org-default-notes-file "Appointments")
          "* APPT %? %^{WITH}p %^{LOCATION}p\n%^T--%^T\n" :prepend)
+        ("p" "Project" entry
+         (file+headline org-default-notes-file "Projects")
+         "* %?\n")
         ("d" "Done" entry
          (file+datetree (concat org-directory "/done.org"))
          "* %?\nCLOCK: %^U--%U")
