@@ -42,7 +42,7 @@
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
 
 (add-to-list 'org-export-latex-classes
-             `("thesis"
+             '("thesis"
                "\\documentclass{report}"
                ("\\chapter{%s}" . "\\chapter*{%s}")
                ("\\section{%s}" . "\\section*{%s}")
@@ -50,7 +50,6 @@
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                ("\\paragraph{%s}" . "\\paragraph*{%s}")
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
 
 (add-hook 'org-mode-hook
           (lambda ()
