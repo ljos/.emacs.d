@@ -14,4 +14,12 @@
           '(lambda ()
              (setq TeX-view-program-list '(("Shell Default" "open %o")))
              (setq TeX-view-program-selection '((output-pdf "Shell Default")))))
+(defadvice TeX-error (after set-tex-help-buffer-ro)
+  (let ((tex-help (get-buffer "*TeX Help*")))
+    (when tex-help
+      (with-current-buffer tex-help
+        (read-only-mode t)
+        (local-set-key (kbd "q") 'delete-window)))))
+
+(ad-activate 'TeX-error)
 (provide 'auctex-config)
