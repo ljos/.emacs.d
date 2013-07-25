@@ -30,4 +30,14 @@
         (local-set-key (kbd "q") 'delete-window)))))
 
 (ad-activate 'TeX-error)
+
+(defadvice TeX-parse-reset (after make-master-file-default () activate)
+  (push (concat (substring (buffer-name) 1 (- (length (buffer-name)) 8))
+                "."
+                TeX-default-extension)
+        TeX-error-file)
+  (push nil TeX-error-offset))
+
+(ad-activate 'TeX-parse-reset)
+
 (provide 'auctex-config)
