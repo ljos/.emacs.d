@@ -43,7 +43,9 @@
 
 (add-to-list 'org-export-latex-classes
              '("thesis"
-               "\\documentclass{report}"
+               "\\documentclass{report}
+                \\usepackage[l2tabu, orthodox]{nag}
+                \\usepackage{microtype}"
                ("\\chapter{%s}" . "\\chapter*{%s}")
                ("\\section{%s}" . "\\section*{%s}")
                ("\\subsection{%s}" . "\\subsection*{%s}")
