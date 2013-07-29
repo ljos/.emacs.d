@@ -89,6 +89,7 @@
 (require 'ffip-config)
 (require 'gist-config)
 (require 'go-config)
+(require 'hy-config)
 (require 'ibuffer-config)
 (require 'ido-config)
 (require 'ielm-config)
