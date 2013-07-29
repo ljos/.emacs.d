@@ -5,8 +5,6 @@
   (set-face-attribute 'default nil :font (font-get-system-font)))
 
 (set-fringe-mode '(0 . 6))
-(blink-cursor-mode nil)
-(global-linum-mode t)
 
 (let ((themes-folder
        (expand-file-name "themes"
