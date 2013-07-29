@@ -2,13 +2,14 @@
 (set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
-(winner-mode +1)
-(global-hl-line-mode +1)
 (blink-cursor-mode -1)
-(show-paren-mode +1)
-(scroll-bar-mode -1)
-(tool-bar-mode -1)
+(fringe-mode -1)
+(global-hl-line-mode +1)
 (global-linum-mode +1)
+(scroll-bar-mode -1)
+(show-paren-mode +1)
+(tool-bar-mode -1)
+(winner-mode +1)
 
 (if (equal system-type 'gnu/linux)
     (menu-bar-mode -1)
@@ -32,7 +33,6 @@
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(fringe-mode 0)
 ;(set-display-table-slot standard-display-table 'wrap ?↩)
 
 (put 'narrow-to-region 'disabled nil)
