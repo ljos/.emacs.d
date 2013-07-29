@@ -34,6 +34,7 @@
     gist
     go-mode
     ibuffer-vc
+    ido-ubiquitous
     jade-mode
     js2-mode
     langtool
@@ -55,9 +56,7 @@
     skewer-mode
     slime
     slime-repl
-    starter-kit
-    starter-kit-bindings
-    starter-kit-lisp
+    smex
     sws-mode
     undo-tree
     workgroups
