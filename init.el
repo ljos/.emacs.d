@@ -116,6 +116,7 @@
 (require 'saveplace-config)
 (require 'screenplay-config)
 (require 'screen-config)
+(require 'simplehttpd-config)
 (require 'skewer-config)
 (require 'slime-config)
 (require 'smex-config)
