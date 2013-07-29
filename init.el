@@ -33,8 +33,6 @@
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;(set-display-table-slot standard-display-table 'wrap ?↩)
-
 (put 'narrow-to-region 'disabled nil)
 (put 'narrow-to-page 'disabled nil)
 
@@ -125,15 +123,7 @@
 (require 'sws-config)
 (require 'tramp-config)
 (require 'undotree-config)
-;(require 'workgroups-config)
 (require 'yasnippet-config)
-
-;; Redefining this so we have the font-lock on wordbounderies instead
-;; of as it is in starter-kit.
-(defun esk-add-watchwords ()
-  (font-lock-add-keywords
-   nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)\\b"
-          1 font-lock-warning-face t))))
 
 ;; Convenience function to get all keys in a hash table.
 (defun keys (hashtable)
