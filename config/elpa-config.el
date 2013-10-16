@@ -21,7 +21,6 @@
     cljdoc
     clojure-mode
     clojure-test-mode
-    clojurescript-mode
     coffee-mode
     command-frequency
     color-theme
