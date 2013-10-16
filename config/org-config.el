@@ -91,6 +91,9 @@
         ("j" "Journal" entry
          (file+datetree (concat org-directory "/journal.org"))
          "* %?\nEntered on %U\n  %i\n  %a")
+        ("n" "Note" entry
+         (file+headline org-default-notes-file "Notes")
+         "* NOTE %?\n")
         ("t" "Todo" entry
          (file+headline org-default-notes-file "Tasks")
          "* TODO %?\n  %i\n")))
