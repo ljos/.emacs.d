@@ -9,16 +9,13 @@
 
 (eval-after-load "nrepl"
   '(progn
-     (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
-     (add-hook 'nrepl-mode-hook 'enable-paredit-mode)
-     (add-hook 'nrepl-mode-hook 'subword-mode)
+     (add-hook 'nrepl-repl-mode-hook 'ac-nrepl-setup)
+     (add-hook 'nrepl-repl-mode-hook 'enable-paredit-mode)
+     (add-hook 'nrepl-repl-mode-hook 'subword-mode)
      (setq nrepl-hide-special-buffers t)
      (setq nrepl-popup-stacktraces-in-repl t)
      (setq nrepl-history-file "~/.emacs.d/history/nrepl")
-     (define-key nrepl-interaction-mode-map (kbd "C-c C-n") 'nrepl-set-ns)
-     (load-file "~/.emacs.d/site-lisp/javert/nrepl-inspect.el")
-     (define-key nrepl-mode-map (kbd "C-c i") 'nrepl-inspect)
-     ))
+     (define-key nrepl-interaction-mode-map (kbd "C-c C-n") 'nrepl-set-ns)))
 
 (defun nrepl-local ()
   (interactive)
@@ -29,8 +26,8 @@
 (eval-after-load "nrepl-ritz"
   '(progn
      (define-key nrepl-interaction-mode-map (kbd "C-c C-j" 'nrepl-javadoc))
-     (define-key nrepl-mode-map (kbd "C-c C-j" 'nrepl-javadoc))
+     (define-key nrepl-repl-mode-map (kbd "C-c C-j" 'nrepl-javadoc))
      (define-key nrepl-interaction-mode-map (kbd "C-c C-a" 'nrepl-apropos))
-     (define-key nrepl-mode-map (kbd "C-c C-a" 'nrepl-apropos))))
+     (define-key nrepl-repl-mode-map (kbd "C-c C-a" 'nrepl-apropos))))
 
 (provide 'nrepl-config)
