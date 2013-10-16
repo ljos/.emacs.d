@@ -18,6 +18,8 @@
                        (cons ac-source-yasnippet
                              ac-sources))))
 
+(add-hook 'clojure-mode-hook '(lambda () (paredit-mode +1)))
+
 (defadvice cljdoc-get-docstring (after truncate-docstring)
   (setq ad-return-value
         (truncate-string-to-width
