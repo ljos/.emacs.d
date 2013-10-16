@@ -1,5 +1,4 @@
 (require 'clojure-mode-autoloads)
-(require 'midje-mode-autoloads)
 
 (eval-after-load "clojure-mode"
   '(progn
