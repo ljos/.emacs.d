@@ -1,9 +1,9 @@
 [submodule "snippets/clojure-mode"]
 	path = snippets/clojure-mode
-	url = https://github.com/ljos/clojure-snippets
+        url = git@github.com:ljos/clojure-snippets.git
 [submodule "site-lisp/sparql-mode"]
 	path = site-lisp/sparql-mode
-	url = https://github.com/ljos/sparql-mode
+	url = git@github.com:ljos/sparql-mode.git
 [submodule "site-lisp/spotify-el"]
 	path = site-lisp/spotify-el
 	url = https://github.com/remvee/spotify-el.git
