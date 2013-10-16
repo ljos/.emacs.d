@@ -63,6 +63,15 @@
               (font-lock-remove-keywords
                nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)\\b"
                       1 font-lock-warning-face t))))))
+              (org-add-link-type
+               "citet*" 'ebib
+               (lambda (path desc format)
+                 (cond
+                  ((eq format 'latex)
+                   (if (or (not desc) (equal 0 (search "citet*:" desc)))
+                       (format "\\citet*{%s}" path)
+                     (format "\\citet*[%s]{%s}" desc path)))))))))
+
 
 ;;org-capture config
 (setq org-default-notes-file (concat org-directory "/organizer.org"))
