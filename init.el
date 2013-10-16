@@ -64,6 +64,13 @@
 
 (initialize-exec-path)
 
+;; found at http://www.emacswiki.org/emacs/SortWords
+(defun sort-symbols (reverse beg end)
+  "Sort symbols in region alphabetically, in REVERSE if negative.
+    See `sort-words'."
+  (interactive "*P\nr")
+  (sort-regexp-fields reverse "\\(\\sw\\|\\s_\\)+" "\\&" beg end))
+
 ;;;The config files.
 (add-to-list 'load-path "~/.emacs.d/config/")
 ;; elpa needs to be first if some packages are missing.
