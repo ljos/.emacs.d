@@ -17,13 +17,16 @@
 
 (setq org-todo-keywords
       '((sequence "TODO" "STARTED" "WAITING"
-                  "|" "DONE" "CANCELLED" "DEFERRED" "DELEGATED")
+                  "|" "DONE" "CANCELLED" "ON-HOLD" "DEFERRED" "DELEGATED")
         (sequence "APPT" "|" "FINISHED" "CANCELLED" "MISSED")
-        (sequence "BUG" "|" "FIXED")))
+        (sequence "BUG" "|" "FIXED")
+        (sequence "NOTE")))
 
 (setq org-todo-keyword-faces
       '(("STARTED" . "yellow")
-        ("CANCELLED" . "dim gray")))
+        ("ON-HOLD" . "orange")
+        ("CANCELLED" . "dim gray")
+        ("NOTE" . "aqua")))
 
 (setq org-refile-targets '(("organizer.org" :maxlevel . 9)))
 (setq org-completion-use-ido t)
