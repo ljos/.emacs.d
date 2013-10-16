@@ -62,7 +62,8 @@
               (setq ispell-parser 'tex)
               (font-lock-remove-keywords
                nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)\\b"
-                      1 font-lock-warning-face t))))))
+                      1 font-lock-warning-face t)))
+              (add-to-list 'org-latex-packages-alist '("" "microtype"))
               (org-add-link-type
                "citet*" 'ebib
                (lambda (path desc format)
