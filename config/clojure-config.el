@@ -4,7 +4,10 @@
   '(progn
      (put-clojure-indent 'update-in 'defun)
      (put-clojure-indent 'assoc-in 'defun)
+     (put-clojure-indent 'assoc! 'defun)
      (put-clojure-indent 'swap! 'defun)
+     (put-clojure-indent 'run* 'defun)
+     (put-clojure-indent 'fresh 'defun)
      (require 'clojure-jump-to-file)
      (require 'cljdoc)
      (ad-activate 'cljdoc-get-docstring)))
