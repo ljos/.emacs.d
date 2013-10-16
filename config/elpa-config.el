@@ -38,7 +38,6 @@
     js2-mode
     langtool
     magit
-    magithub
     multi-web-mode
     multiple-cursors
     nrepl
