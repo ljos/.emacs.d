@@ -21,7 +21,6 @@
     cider
     cljdoc
     clojure-mode
-    clojure-test-mode
     coffee-mode
     command-frequency
     color-theme
