@@ -13,7 +13,6 @@
 
 (defvar my-packages
   '(
-    ac-nrepl
     ace-jump-mode
     auctex
     auto-complete
