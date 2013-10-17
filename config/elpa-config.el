@@ -18,6 +18,7 @@
     auctex
     auto-complete
     browse-kill-ring
+    cider
     cljdoc
     clojure-mode
     clojure-test-mode
@@ -40,7 +41,6 @@
     magit
     multi-web-mode
     multiple-cursors
-    nrepl
     org
     paredit
     php+-mode
