@@ -15,29 +15,4 @@
              (setq TeX-view-program-list '(("Shell Default" "open %o")))
              (setq TeX-view-program-selection '((output-pdf "Shell Default")))))
 
-(defadvice TeX-next-error (before set-tex-help-buffer-w)
-  (let ((tex-help (get-buffer "*TeX Help*")))
-    (when tex-help
-      (read-only-mode nil))))
-
-(ad-activate 'TeX-next-error)
-
-(defadvice TeX-error (after set-tex-help-buffer-ro)
-  (let ((tex-help (get-buffer "*TeX Help*")))
-    (when tex-help
-      (with-current-buffer tex-help
-        (read-only-mode t)
-        (local-set-key (kbd "q") 'delete-window)))))
-
-(ad-activate 'TeX-error)
-
-(defadvice TeX-parse-reset (after make-master-file-default () activate)
-  (push (concat (substring (buffer-name) 1 (- (length (buffer-name)) 8))
-                "."
-                TeX-default-extension)
-        TeX-error-file)
-  (push nil TeX-error-offset))
-
-(ad-activate 'TeX-parse-reset)
-
 (provide 'auctex-config)
