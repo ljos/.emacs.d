@@ -21,14 +21,14 @@
     cljdoc
     clojure-mode
     coffee-mode
-    command-frequency
     color-theme
     color-theme-sanityinc-tomorrow
+    command-frequency
     dired-single
-    expand-region
-    find-file-in-project
     evil
     evil-paredit
+    expand-region
+    find-file-in-project
     gist
     go-mode
     ibuffer-vc
@@ -42,8 +42,8 @@
     org
     paredit
     php+-mode
-    popwin
     pomodoro
+    popwin
     prolog
     python-mode
     python-pep8
