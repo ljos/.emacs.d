@@ -13,3 +13,6 @@
 [submodule "site-lisp/ebnf-mode"]
 	path = site-lisp/ebnf-mode
 	url = https://github.com/jeramey/ebnf-mode
+[submodule "site-lisp/cider"]
+	path = site-lisp/cider
+	url = git@github.com:ljos/cider.git
