@@ -71,6 +71,13 @@
   (interactive "*P\nr")
   (sort-regexp-fields reverse "\\(\\sw\\|\\s_\\)+" "\\&" beg end))
 
+;; Convenience function to get all keys in a hash table.
+(defun keys (hashtable)
+  "Return all keys in hashtable."
+  (let (allkeys)
+    (maphash (lambda (kk vv) (setq allkeys (cons kk allkeys))) hashtable)
+    allkeys))
+
 ;;;The config files.
 (add-to-list 'load-path "~/.emacs.d/config/")
 ;; elpa needs to be first if some packages are missing.
@@ -131,13 +138,6 @@
 (require 'tramp-config)
 (require 'undotree-config)
 (require 'yasnippet-config)
-
-;; Convenience function to get all keys in a hash table.
-(defun keys (hashtable)
-  "Return all keys in hashtable."
-  (let (allkeys)
-    (maphash (lambda (kk vv) (setq allkeys (cons kk allkeys))) hashtable)
-    allkeys))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
