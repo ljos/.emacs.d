@@ -24,10 +24,12 @@
     color-theme-sanityinc-tomorrow
     command-frequency
     dired-single
+    elisp-slime-nav
     expand-region
     find-file-in-project
     go-mode
     ibuffer-vc
+    idle-highlight-mode
     ido-ubiquitous
     magit
     org
