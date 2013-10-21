@@ -121,6 +121,7 @@
 (require 'smex-config)
 (require 'sparql-config)
 (require 'undotree-config)
+(require 'visualregexp-config)
 (require 'yasnippet-config)
 
 (custom-set-variables
