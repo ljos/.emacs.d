@@ -15,21 +15,22 @@
     (menu-bar-mode -1)
   (menu-bar-mode +1))
 
-(setq-default color-theme-is-global t
-              backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
-              indent-tabs-mode nil
-              inhibit-startup-message t
-              inhibit-startup-screen t
-              message-log-max t
-              mouse-wheel-follow-mouse t ;; scroll window under mouse
-              mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
-              mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; one line at a time
-              ns-pop-up-frames nil
-              require-final-newline t
-              ring-bell-function #'ignore
-              use-dialog-box nil
-              visible-bell nil
-              )
+(setq-default
+ backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
+ color-theme-is-global t
+ indent-tabs-mode nil
+ inhibit-startup-message t
+ inhibit-startup-screen t
+ message-log-max t
+ mouse-wheel-follow-mouse t ;; scroll window under mouse
+ mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
+ mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; one line at a time
+ ns-pop-up-frames nil
+ require-final-newline t
+ ring-bell-function #'ignore
+ use-dialog-box nil
+ visible-bell nil
+ )
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
