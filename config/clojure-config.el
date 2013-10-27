@@ -1,6 +1,7 @@
 (require 'clojure-mode-autoloads)
 (require 'cljdoc-autoloads)
 (require 'clojure-jump-to-file)
+(require 'midje-mode-autoloads)
 
 (defadvice cljdoc-get-docstring (after truncate-docstring)
   (setq ad-return-value
@@ -33,5 +34,8 @@
 (add-hook 'clojure-mode-hook
           '(lambda () (paredit-mode +1)))
 
+(add-hook 'midje-mode-hook
+          '(lambda ()
+             (yas-activate-extra-mode 'midje-mode)))
 
 (provide 'clojure-config)
