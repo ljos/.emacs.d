@@ -1,4 +1,10 @@
 (require 'clojure-mode-autoloads)
+(require 'cljdoc-autoloads)
+
+(defadvice cljdoc-get-docstring (after truncate-docstring)
+  (setq ad-return-value
+        (truncate-string-to-width
+         (concat " " ad-return-value) (- (frame-width) 10) nil nil 't)))
 
 (eval-after-load "clojure-mode"
   '(progn
@@ -18,11 +24,8 @@
                        (cons ac-source-yasnippet
                              ac-sources))))
 
-(add-hook 'clojure-mode-hook '(lambda () (paredit-mode +1)))
+(add-hook 'clojure-mode-hook
+          '(lambda () (paredit-mode +1)))
 
-(defadvice cljdoc-get-docstring (after truncate-docstring)
-  (setq ad-return-value
-        (truncate-string-to-width
-         (concat " " ad-return-value) (- (frame-width) 10) nil nil 't)))
 
 (provide 'clojure-config)
