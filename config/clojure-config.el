@@ -1,5 +1,6 @@
 (require 'clojure-mode-autoloads)
 (require 'cljdoc-autoloads)
+(require 'clojure-jump-to-file)
 
 (defadvice cljdoc-get-docstring (after truncate-docstring)
   (setq ad-return-value
@@ -14,7 +15,6 @@
      (put-clojure-indent 'swap! 'defun)
      (put-clojure-indent 'run* 'defun)
      (put-clojure-indent 'fresh 'defun)
-     (require 'clojure-jump-to-file)
      (require 'cljdoc)
      (ad-activate 'cljdoc-get-docstring)))
 
