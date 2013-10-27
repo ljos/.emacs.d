@@ -45,7 +45,7 @@
     smex
     undo-tree
     visual-regexp
-    yasnippet
+    ;; yasnippet
     )
   "A list of packages to ensure are installed at launch.")
 
