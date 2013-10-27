@@ -20,6 +20,7 @@
     cider
     cljdoc
     clojure-mode
+    clojure-test-mode
     color-theme
     color-theme-sanityinc-tomorrow
     command-frequency
@@ -32,6 +33,7 @@
     idle-highlight-mode
     ido-ubiquitous
     magit
+    midje-mode
     org
     paredit
     pomodoro
