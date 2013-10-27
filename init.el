@@ -15,6 +15,10 @@
     (menu-bar-mode -1)
   (menu-bar-mode +1))
 
+;; The default is already set so it needs to be setq'ed instead. The
+;; reason for setting this is that otherwise emacs starts at /.
+(setq default-directory "~/")
+
 (setq-default
  backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
  color-theme-is-global t
