@@ -1,4 +1,4 @@
-(require 'cider)
+(require 'cider-autoloads)
 
 
 (eval-after-load "cider"
