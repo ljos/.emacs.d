@@ -16,3 +16,6 @@
 [submodule "site-lisp/cider"]
 	path = site-lisp/cider
 	url = git@github.com:ljos/cider.git
+[submodule "site-lisp/yasnippet"]
+	path = site-lisp/yasnippet
+	url = git@github.com:ljos/yasnippet.git
