@@ -24,15 +24,12 @@
      (put-clojure-indent 'run* 'defun)
      (put-clojure-indent 'fresh 'defun)
      (ad-activate 'cljdoc-get-docstring)
-     (define-key clojure-mode-map (kbd "C-x p") 'clojure-jump-to-project-file)))
-
-(add-hook 'clojure-mode-hook
-          '(lambda () (setq ac-sources
-                       (cons ac-source-yasnippet
-                             ac-sources))))
-
-(add-hook 'clojure-mode-hook
-          '(lambda () (paredit-mode +1)))
+     (paredit-mode +1)
+     (setq ac-sources
+           (cons ac-source-yasnippet
+                 ac-sources))
+     (define-key clojure-mode-map (kbd "C-x p")
+       'clojure-jump-to-project-file)))
 
 (add-hook 'midje-mode-hook
           '(lambda ()
