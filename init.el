@@ -529,7 +529,7 @@ except it truncates from the start of the list"
 
     (setq linum-format 'my-linum-format)))
 
-(use-package magit-mode
+(use-package magit
   :bind ("C-x g" . magit-status))
 
 (use-package multiple-cursors
