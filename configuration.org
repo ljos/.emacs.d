@@ -1,32 +1,99 @@
 #+OPTIONS: toc:4 h:4
-
 * Configuration
 This document is the result of me wanting to test literate programming
 and thinking that my emacs configuration was the perfect candidate. It
 is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming-emacs-configuration-file/][a blog post]] by Sacha Chua and others.
 
-** Encoding
+** General configuration
+*** Encoding
+I had some trouble with getting emacs to set the correct encoding in
+OS X at one point. It seemed to go away if I called these functions:
 #+begin_src emacs-lisp
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 #+end_src
-** General configuration
-*** Package.el
+I do not know if I still need these, but they stay as it isn't a
+problem that they're there.
+
+*** Defaults
+The default is already set so it needs to be setq'ed instead. The
+reason for setting this is that otherwise emacs starts at =/=.
+#+begin_src emacs-lisp
+  (setq default-directory "~/")
+#+end_src
+
+Set the file used for the auto-custom configuration to custom.el.
+#+begin_src emacs-lisp
+  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+  (load custom-file)
+#+end_src
+
+#+begin_src emacs-lisp
+(setq-default
+ backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
+ color-theme-is-global t
+ indent-tabs-mode nil
+ inhibit-startup-message t
+ inhibit-startup-screen t
+ message-log-max t
+ mouse-wheel-follow-mouse t ;; scroll window under mouse
+ mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
+ mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; one line at a time
+ ns-pop-up-frames nil
+ require-final-newline t
+ ring-bell-function #'ignore
+ use-dialog-box nil
+ visible-bell nil
+ )
+#+end_src
+
+#+begin_src emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+end_src
+
+#+begin_src emacs-lisp
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+#+end_src
+*** Packaging
+I use the package.el packaging system for emacs.
 #+begin_src emacs-lisp
   (require 'package)
+#+end_src
 
+Usually we should be running on an emacs that is > 24, but on the off
+chance that we are on a new system that has an older version we should
+add the gnu packages.
+#+begin_src emacs-lisp
   (when (< emacs-major-version 24)
     (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+#+end_src
 
+I prefer to get both the marmalade and melpa packages. I like the
+bleeding edge, but I also keep marmalade for the times that melpa does
+not have that package.
+#+begin_src emacs-lisp
   (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+#+end_src
 
+I am not sure if this is needed. Especially with the use-package
+library installed. I think I should figure out a way to use that
+better.
+#+begin_src emacs-lisp
   (package-initialize)
+#+end_src
 
+If this is the first time we are loading or the elpa folder has been
+deleted we need to refresh the archive list.
+#+begin_src emacs-lisp
   (when (not package-archive-contents)
     (package-refresh-contents))
+#+end_src
 
+These are the packages that I install with package.el.
+#+begin_src
   (defvar my-packages
     '(
       ace-jump-mode
@@ -68,16 +135,24 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
       ;; yasnippet
       )
     "A list of packages to ensure are installed at launch.")
+#+end_src
 
+Loop through all of my packages and install them if they are missing.
+TODO: I would like to incorporate a minimal version check here as well.
+#+begin_src
   (dolist (p my-packages)
     (when (not (package-installed-p p))
       (package-install p)))
 #+end_src
 
 *** use-package
+Need to require use-package as soon as possible as it is needed for
+the rest of the configurations.
 #+begin_src emacs-lisp
-(require 'use-package)
+  (require 'use-package)
 #+end_src
+I should look into =:ensure= as I can remove most of the package.el
+code with it.
 *** Interface
 **** Font
 I like the menlo font, so if I am running OS X we should try to load
@@ -94,119 +169,14 @@ that font.
 #+begin_src emacs-lisp
 (set-fringe-mode '(0 . 6))
 #+end_src
-
 **** Color-theme
+
+I like the tomorrow-night color theme.
 #+begin_src emacs-lisp
-(use-package color-theme-sanityinc-tomorrow
-  :if window-system
-  :config
-  (progn
-    (use-package color-theme)
-    (setq custom-enabled-themes '(sanityinc-tomorrow-night))
-    (setq custom-safe-themes
-          '("06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a"
-            default))
-    (color-theme-sanityinc-tomorrow-night)
-    (set-face-attribute 'linum nil :foreground "#969896")))
+  (require 'color-theme-sanityinc-tomorrow)
 #+end_src
 
-*** OS X
-The menu bar is annoying on other sysr
-#+begin_src emacs-lisp
-  (if (equal system-type 'darwin)
-      (menu-bar-mode +1)
-    (menu-bar-mode -1))
-#+end_src
-
-*** Defaults
-The default is already set so it needs to be setq'ed instead. The
-reason for setting this is that otherwise emacs starts at /.
-#+begin_src emacs-lisp
-(setq default-directory "~/")
-#+end_src
-#+begin_src emacs-lisp
-(setq-default
- backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
- color-theme-is-global t
- indent-tabs-mode nil
- inhibit-startup-message t
- inhibit-startup-screen t
- message-log-max t
- mouse-wheel-follow-mouse t ;; scroll window under mouse
- mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
- mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; one line at a time
- ns-pop-up-frames nil
- require-final-newline t
- ring-bell-function #'ignore
- use-dialog-box nil
- visible-bell nil
- )
-#+end_src
-
-#+begin_src emacs-lisp
-(fset 'yes-or-no-p 'y-or-n-p)
-#+end_src
-
-#+begin_src emacs-lisp
-(put 'narrow-to-region 'disabled nil)
-(put 'narrow-to-page 'disabled nil)
-#+end_src
-
-*** Define keys
-#+begin_src emacs-lisp
-(global-set-key (kbd "s--") 'text-scale-decrease)
-(global-set-key (kbd "s-=") 'text-scale-increase)
-(global-set-key (kbd "C-s") 'isearch-forward-regexp)
-(global-set-key (kbd "C-r") 'isearch-backward-regexp)
-(define-key 'help-command "a" 'apropos)
-
-(global-set-key (kbd "s-[") 'backward-paragraph)
-(global-set-key (kbd "s-]") 'forward-paragraph)
-(global-set-key  [C-s-268632091] 'backward-sexp)
-(global-set-key  [C-s-268632093] 'forward-sexp)
-
-(define-key read-expression-map (kbd "TAB") 'lisp-complete-symbol)
-(define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
-#+end_src
-#+begin_src emacs-lisp
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-#+end_src
-
-#+begin_src emacs-lisp
-(defcustom exec-paths '("~/.lein/bin" "/usr/local/bin" "~/.local/bin" "/usr/texbin")
-  "Directories to be added to exec-path"
-  :type 'string)
-
-(defun add-to-path (dir)
-  "Adds a dir to PATH if dir exists."
-  (when (file-exists-p dir)
-    (progn (add-to-list 'exec-path dir)
-           (setenv "PATH" (concat (getenv "PATH") (concat ":" dir))))))
-
-(defun initialize-exec-path ()
-  (interactive)
-  (dolist (dir exec-paths)
-    (add-to-path dir)))
-
-(initialize-exec-path)
-#+end_src
-
-#+begin_src emacs-lisp
-;; found at http://www.emacswiki.org/emacs/SortWords
-(defun sort-symbols (reverse beg end)
-  "Sort symbols in region alphabetically, in REVERSE if negative.
-    See `sort-words'."
-  (interactive "*P\nr")
-  (sort-regexp-fields reverse "\\(\\sw\\|\\s_\\)+" "\\&" beg end))
-
-;; Convenience function to get all keys in a hash table.
-(defun keys (hashtable)
-  "Return all keys in hashtable."
-  (let (allkeys)
-    (maphash (lambda (kk vv) (setq allkeys (cons kk allkeys))) hashtable)
-    allkeys))
-#+end_src
-
+**** Frame size
 #+begin_src emacs-lisp
 ;;; Found at http://stackoverflow.com/a/94277
 (defun set-frame-size-according-to-resolution ()
@@ -235,10 +205,97 @@ reason for setting this is that otherwise emacs starts at /.
 (set-frame-position (next-frame) 0 0)
 #+end_src
 
+*** OS X
+The menu bar is annoying on systems other than OS X.
+#+begin_src emacs-lisp
+  (if (equal system-type 'darwin)
+      (menu-bar-mode +1)
+    (menu-bar-mode -1))
+#+end_src
+
+*** Define keys
+#+begin_src emacs-lisp
+(global-set-key (kbd "s--") 'text-scale-decrease)
+(global-set-key (kbd "s-=") 'text-scale-increase)
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(define-key 'help-command "a" 'apropos)
+
+(global-set-key (kbd "s-[") 'backward-paragraph)
+(global-set-key (kbd "s-]") 'forward-paragraph)
+(global-set-key  [C-s-268632091] 'backward-sexp)
+(global-set-key  [C-s-268632093] 'forward-sexp)
+
+(define-key read-expression-map (kbd "TAB") 'lisp-complete-symbol)
+(define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
+#+end_src
+#+begin_src emacs-lisp
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+#+end_src
+*** Path
+Sometimes emacs is not so good at finding the correct paths to
+everything.
+#+begin_src emacs-lisp
+(defcustom exec-paths '("~/.lein/bin" "/usr/local/bin" "~/.local/bin" "/usr/texbin")
+  "Directories to be added to exec-path"
+  :type 'string)
+#+end_src
+
+Add all of the custom paths to the PATH variable.
+#+begin_src emacs-lisp
+(defun add-to-path (dir)
+  "Adds a dir to PATH if dir exists."
+  (when (file-exists-p dir)
+    (progn (add-to-list 'exec-path dir)
+           (setenv "PATH" (concat (getenv "PATH") (concat ":" dir))))))
+
+(defun initialize-exec-path ()
+  (interactive)
+  (dolist (dir exec-paths)
+    (add-to-path dir)))
+
+(initialize-exec-path)
+#+end_src
+*** Defuns
+**** Sort symbols
+Sort-lines and the other sorts are quite nice, but it is even nicer if
+I am able to also sort symbols that are in a list.
+#+begin_src emacs-lisp
+;; found at http://www.emacswiki.org/emacs/SortWords
+(defun sort-symbols (reverse beg end)
+  "Sort symbols in region alphabetically, in REVERSE if negative.
+    See `sort-words'."
+  (interactive "*P\nr")
+  (sort-regexp-fields reverse "\\(\\sw\\|\\s_\\)+" "\\&" beg end))
+#+end_src
+
+**** Keys
+Convenience function to get all keys in a hash table.
+#+begin_src emacs-lisp
+(defun keys (hashtable)
+  "Return all keys in hashtable."
+  (let (allkeys)
+    (maphash (lambda (kk vv) (setq allkeys (cons kk allkeys))) hashtable)
+    allkeys))
+#+end_src
 *** Mode line
+At some point I didn't like the standard mode line and started to
+experiment with how I wanted it to look. Because of too much time and
+not enough knowledge about alternatives, this monster came to be.
+
+I feel it gets very distracting when the mode line changes depending
+on which window is selected. I don't really need the visual
+conformation that I have changed window. The cursor does that for me.
 #+begin_src emacs-lisp
 (setq mode-line-in-non-selected-windows nil)
+#+end_src
 
+I needed a function that truncated from the start of the list instead
+of at the end. This function takes a string, reverses it, does the
+normal truncate and reverses it again. There is probably a better way
+of doing this, but this was the quick and dirty one I figured out on
+my own.
+#+begin_src emacs-lisp
 (defun truncate-string-to-length (str end-column &optional start-column padding ellipsis)
   "The same as truncate-string-to-width,
 except it truncates from the start of the list"
@@ -248,26 +305,38 @@ except it truncates from the start of the list"
              (concat (reverse (append (format  str) nil)))
              end-column start-column padding ellipsis)
             nil))))
+#+end_src
 
-(make-face 'mode-line-minor-mode-face)
-
+I like to have a box around the mode-line to visually seperate it from
+the rest of the frame.
+#+begin_src emacs-lisp
 (set-face-attribute 'mode-line nil
   :box '(:line-width 1
          :color "gray25"))
+#+end_src
 
-(set-face-attribute 'mode-line-minor-mode-face nil
-  :inherit 'mode-line-face
-  :height 110)
-
+This is a helper function to center a string in a set width.
+#+begin_src emacs-lisp
 (defun center-string-in-char (str len char)
   (store-substring (make-string len char)
                    (/ (- len (length str)) 2) str))
+#+end_src
 
-(setq-default mode-line-position
-              '(" %03l:%2c"))
+This is the format for the buffer position numbers in the mode-line.
+#+begin_src emacs-lisp
+(setq-default mode-line-position '(" %03l:%2c"))
+#+end_src
 
-;;; Modeline configs
+If I want to use the pomodoro-mode-line string in the mode-line I need
+to give it a default of "" as otherwise we will get errors in the
+message log.
+#+begin_src emacs-lisp
 (setq-default pomodoro-mode-line-string "")
+#+end_src
+
+Here we are setting the mode line format. It has a lot of
+configurations. I should get around to commenting it at some point.
+#+begin_src emacs-lisp
 (setq-default mode-line-format
   '("%e "
     (:eval (if buffer-file-name "%* " "無常"))        ; file status
@@ -318,8 +387,10 @@ except it truncates from the start of the list"
                   'help-echo
                   (format-time-string "%A, %B %d, %Y, %H:%M"))))))
 #+end_src
-
 *** Minibuffer
+A small configuration of the minibuffer to conditionally enable
+paredit mode for when I am evaluation an expression rather then
+calling an interactive command.
 #+begin_src emacs-lisp
 (defun conditionally-enable-paredit-mode ()
   "enable paredit-mode during eval-expression"
@@ -331,6 +402,7 @@ except it truncates from the start of the list"
 
 ** Minor modes
 *** Global minor modes
+These are just some global minor modes that I either want on or off.
 #+begin_src emacs-lisp
 (blink-cursor-mode -1)
 (fringe-mode -1)
