@@ -30,3 +30,7 @@ eshell/lastdir
 workgroups
 /quicklisp.lisp
 /configuration.el
+
+projectile-bookmarks.eld
+
+projectile.cache

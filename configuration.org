@@ -39,7 +39,6 @@ problem that they're there.
 There are some of the disabled functions that I actually like to use.
 #+begin_src emacs-lisp
 (put 'narrow-to-region 'disabled nil)
-(put 'narrow-to-page 'disabled nil)
 #+end_src
 *** Packaging
 I use the package.el packaging system for emacs.
@@ -77,67 +76,6 @@ deleted we need to refresh the archive list.
     (package-refresh-contents))
 #+end_src
 
-These are the packages that I install with package.el.
-#+begin_src
-  (defvar my-packages
-    '(
-      ace-jump-mode
-      arduino-mode
-      auctex
-      auto-complete
-      browse-kill-ring
-      cider
-      cljdoc
-      clojure-mode
-      clojure-test-mode
-      color-theme
-      color-theme-sanityinc-tomorrow
-      command-frequency
-      dired-single
-      elisp-slime-nav
-      expand-region
-      find-file-in-project
-      go-mode
-      ibuffer-vc
-      idle-highlight-mode
-      ido-ubiquitous
-      magit
-      midje-mode
-      org
-      paredit
-      pomodoro
-      popwin
-      prolog
-      python-mode
-      python-pep8
-      python-pylint
-      slime
-      slime-repl
-      smex
-      use-package
-      undo-tree
-      visual-regexp
-      ;; yasnippet
-      )
-    "A list of packages to ensure are installed at launch.")
-#+end_src
-
-Loop through all of my packages and install them if they are missing.
-TODO: I would like to incorporate a minimal version check here as well.
-#+begin_src
-  (dolist (p my-packages)
-    (when (not (package-installed-p p))
-      (package-install p)))
-#+end_src
-
-*** use-package
-Need to require use-package as soon as possible as it is needed for
-the rest of the configurations.
-#+begin_src emacs-lisp
-  (require 'use-package)
-#+end_src
-I should look into =:ensure= as I can remove most of the package.el
-code with it.
 *** Interface
 **** Font
 I like the menlo font, so if I am running OS X we should try to load
@@ -146,19 +84,16 @@ that font.
 #+begin_src emacs-lisp
   (if (and (window-system)
            (equal 'darwin system-type))
-      (set-face-attribute 'default nil :font "menlo-14")
-    (set-face-attribute 'default nil :font (font-get-system-font)))
+      (set-face-attribute 'default nil :font "menlo-14"))
 #+end_src
 
-**** Fringe
-#+begin_src emacs-lisp
-(set-fringe-mode '(0 . 6))
-#+end_src
 **** Color-theme
 
 I like the tomorrow-night color theme.
 #+begin_src emacs-lisp
-  (require 'color-theme-sanityinc-tomorrow)
+  (use-package color-theme-sanityinc-tomorrow
+    :ensure t
+    :commands sanityinc-tomorrow-night)
 #+end_src
 
 **** Frame size
@@ -214,9 +149,7 @@ The menu bar is annoying on systems other than OS X.
 (define-key read-expression-map (kbd "TAB") 'lisp-complete-symbol)
 (define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
 #+end_src
-#+begin_src emacs-lisp
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-#+end_src
+
 *** Path
 Sometimes emacs is not so good at finding the correct paths to
 everything.
@@ -228,19 +161,20 @@ everything.
 
 Add all of the custom paths to the PATH variable.
 #+begin_src emacs-lisp
-(defun add-to-path (dir)
-  "Adds a dir to PATH if dir exists."
-  (when (file-exists-p dir)
-    (progn (add-to-list 'exec-path dir)
-           (setenv "PATH" (concat (getenv "PATH") (concat ":" dir))))))
+  (defun add-to-path (dir)
+    "Adds a dir to PATH if dir exists."
+    (when (file-exists-p dir)
+      (progn (add-to-list 'exec-path dir)
+             (setenv "PATH" (concat (getenv "PATH") (concat ":" dir))))))
 
-(defun initialize-exec-path ()
-  (interactive)
-  (dolist (dir exec-paths)
-    (add-to-path dir)))
+  (defun initialize-exec-path ()
+    (interactive)
+    (dolist (dir exec-paths)
+      (add-to-path dir)))
 
-(initialize-exec-path)
+  (initialize-exec-path)
 #+end_src
+
 *** Defuns
 **** Sort symbols
 Sort-lines and the other sorts are quite nice, but it is even nicer if
@@ -386,25 +320,255 @@ calling an interactive command.
 #+end_src
 
 ** Minor modes
-*** Global minor modes
-These are just some global minor modes that I either want on or off.
+*** Ace jump
 #+begin_src emacs-lisp
-(blink-cursor-mode -1)
-(fringe-mode -1)
-(global-hl-line-mode +1)
-(global-linum-mode +1)
-(scroll-bar-mode -1)
-(show-paren-mode +1)
-(tool-bar-mode -1)
-(winner-mode +1)
-#+end_src
-**** Ace jump
-#+begin_src emacs-lisp
-(use-package ace-jump-mode
-  :bind ("C-x SPC" . ace-jump-mode))
+  (use-package ace-jump-mode
+    :ensure t
+    :bind ("C-x SPC" . ace-jump-mode))
 #+end_src
 
-**** Yasnippet
+*** Auto complete
+#+begin_src emacs-lisp
+  (use-package auto-complete-config
+    :ensure auto-complete
+    :init (ac-config-default)
+    :config
+    (progn
+      (setq ac-auto-show-menu 0.3)
+      (setq ac-use-menu-map t)
+      (ac-config-default)
+      (setq ac-sources
+            (cons ac-source-yasnippet
+                  ac-sources))
+      (define-key ac-complete-mode-map "\r" 'ac-expand)
+      (define-key ac-complete-mode-map [return] 'ac-expand)
+      (define-key ac-complete-mode-map "\t" 'ac-complete)
+      (define-key ac-complete-mode-map [tab] 'ac-complete)
+      (global-auto-complete-mode)))
+#+end_src
+
+*** Browse kill ring
+#+begin_src emacs-lisp
+  (use-package browse-kill-ring
+    :ensure t
+    :init (browse-kill-ring-default-keybindings))
+#+end_src
+
+*** Command frequency
+#+begin_src emacs-lisp
+  (use-package command-frequency
+    :ensure t
+    :init (command-frequency-mode +1))
+#+end_src
+*** Dired
+#+begin_src emacs-lisp
+  (use-package dired
+    :init
+    (if  (not (boundp 'dired-mode-map))
+        (add-hook 'dired-load-hook
+                  (lambda ()
+                    (define-key dired-mode-map [return]
+                      'dired-single-buffer)
+                    (define-key dired-mode-map [mouse-1]
+                      'dired-single-buffer-mouse)
+                    (define-key dired-mode-map "^"
+                      (function
+                       (lambda ()
+                         (interactive)
+                         (dired-single-buffer "..")))))))
+    :config
+    (use-package dired-single
+      :ensure t))
+#+end_src
+
+*** Expand-region
+#+begin_src emacs-lisp
+  (use-package expand-region
+    :ensure t
+    :bind (("C-=" . er/expand-region)
+           ("C--" . er/contract-region)))
+#+end_src
+*** Find file at point
+#+begin_src emacs-lisp
+  (use-package ffap
+    :init (ffap-bindings))
+#+end_src
+
+*** ibuffer
+#+begin_src emacs-lisp
+  (use-package ibuffer
+    :bind ("C-x C-b" . ibuffer)
+    :config
+    (progn
+      (use-package ibuffer-vc
+        :ensure t
+        :commands ibuffer-vc-set-filter-groups-by-vc-root)
+      (use-package ibuf-ext
+        :commands ibuffer-do-sort-by-major-mode)
+
+      (defvar ibuffer-initialized nil)
+      (defun my-ibuffer-hook ()
+        (unless ibuffer-initialized
+          (ibuffer-vc-set-filter-groups-by-vc-root)
+
+          (unless (eq ibuffer-sorting-mode 'major-mode)
+            (ibuffer-do-sort-by-major-mode))
+
+          (setq ibuffer-formats
+                '((mark modified read-only vc-status-mini " "
+                        (name 25 25 :left :elide)
+                        " "
+                        (size 9 -1 :right)
+                        " "
+                        (mode 16 16 :left :elide)
+                        " "
+                        (vc-status 16 16 :left)
+                        " "
+                        filename-and-process)))
+          (setq ibuffer-expert t)
+          (setq ibuffer-initialized t)))
+      (add-hook 'ibuffer-hook 'my-ibuffer-hook)))
+#+end_src
+*** ido
+#+begin_src emacs-lisp
+  (use-package ido
+    :init (ido-mode +1)
+    :config
+    (progn
+      (use-package flx-ido
+        :ensure t
+        :commands flx-ido-mode)
+      (use-package ido-vertical-mode
+        :ensure t
+        :commands ido-vertical-mode)
+      (flx-ido-mode +1)
+      (ido-vertical-mode +1)
+      (setq id-use-faces nil
+            ido-auto-merge-work-directories-length nil
+            ido-create-new-buffer 'always
+            ido-enable-flex-matching t
+            ido-enable-prefix nil
+            ido-handle-duplicate-virtual-buffers 2
+            ido-max-prospects 10
+            ido-use-filename-at-point 'guess
+            ido-use-virtual-buffers t)))
+#+end_src
+*** ispell
+#+begin_src emacs-lisp
+  (use-package ispell
+    :config
+    (setq-default ispell-program-name "/usr/local/bin/aspell"))
+#+end_src
+*** linum
+#+begin_src emacs-lisp
+  (use-package linum
+    :init (global-linum-mode +1)
+    :config
+    (progn
+      (defvar my-linum-format-string "%4d")
+
+      (add-hook 'linum-before-numbering-hook 'my-linum-get-format-string)
+
+      (defun my-linum-get-format-string ()
+        (let* ((width (length (number-to-string
+                               (count-lines (point-min) (point-max)))))
+               (format (concat "%" (number-to-string width) "d ")))
+          (setq my-linum-format-string format)))
+
+      (defun my-linum-format (line-number)
+        (propertize (format my-linum-format-string line-number) 'face 'linum))
+
+      (setq linum-format 'my-linum-format)))
+#+end_src
+*** Multiple cursors
+#+begin_src emacs-lisp
+  (use-package multiple-cursors
+    :ensure t
+    :bind (("C->" . mc/mark-next-like-this)
+           ("C-<" . mc/mark-previous-like-this)
+           ("C-c C-<" . mc/mark-all-like-this)))
+#+end_src
+*** Paredit
+#+begin_src emacs-lisp
+  (use-package paredit
+    :ensure t
+    :commands (enable-paredit-mode paredit-mode)
+    :config
+    (progn
+      (defun paredit-delete-indentation ()
+        (interactive)
+        (delete-indentation)
+        (prog-indent-sexp))
+
+      (define-key paredit-mode-map (kbd "M-(") 'paredit-wrap-round)
+      (define-key paredit-mode-map (kbd "M-)") 'paredit-close-round-and-newline)
+      (define-key paredit-mode-map (kbd "M-[") 'paredit-wrap-square)
+      (define-key paredit-mode-map (kbd "M-{") 'paredit-wrap-curly)
+      (define-key paredit-mode-map (kbd "M-}") 'paredit-close-curly-and-newline)
+      (define-key paredit-mode-map (kbd "M-j") 'paredit-delete-indentation)))
+#+end_src
+
+*** pomodoro
+#+begin_src emacs-lisp
+  (use-package pomodoro
+    :ensure t
+    :commands pomodoro-start
+    :bind (("C-x p s" . pomodoro-start)
+           ("C-x p x" . pomodoro-stop))
+    :config
+    (progn
+      (setq pomodoro-break-start-sound "~/Music/smw_pause.wav"
+            pomodoro-work-start-sound "~/Music/smw_pause.wav"
+            pomodoro-work-start-message "Back to work!"
+            pomodoro-work-cycle "行う" ;; work in japanese
+            pomodoro-break-cycle "休憩" ;; break in japanese
+            pomodoro-long-break-time 20
+            pomodoro-break-time 7)))
+#+end_src
+*** popwin
+#+begin_src emacs-lisp
+  (use-package popwin
+    :ensure t
+    :commands popwin:display-buffer
+    :init (setq display-buffer-function 'popwin:display-buffer))
+#+end_src
+
+*** projectile
+
+#+begin_src emacs-lisp
+  (use-package projectile
+    :ensure t
+    :init (projectile-global-mode)
+    :bind ("s-p" . projectile-switch-project)
+    :config (setq projectile-enable-caching t))
+#+end_src
+*** smex
+#+begin_src emacs-lisp
+  (use-package smex
+    :ensure t
+    :init (smex-initialize)
+    :bind ("M-x" . smex)
+    :config
+    (progn
+      (setq smex-save-file (concat user-emacs-directory ".smex-items"))))
+#+end_src
+
+*** undo-tree
+#+begin_src emacs-lisp
+  (use-package undo-tree
+    :ensure t
+    :init (global-undo-tree-mode))
+#+end_src
+
+*** visual-regexp
+#+begin_src emacs-lisp
+  (use-package visual-regexp
+    :ensure t
+    :commands (vr/replace vr/query-replace)
+    :bind (("C-c r" . vr/replace)
+           ("C-c q" . vr/query-replace)))
+#+end_src
+*** Yasnippet
 #+begin_src emacs-lisp
 (use-package yasnippet
   :commands (yas-global-mode yas-activate-extra-mode)
@@ -412,236 +576,11 @@ These are just some global minor modes that I either want on or off.
   :init (yas-global-mode +1))
 #+end_src
 
-*** Expand-region
-#+begin_src emacs-lisp
-(use-package expand-region
-  :bind (("C-=" . er/expand-region)
-         ("C--" . er/contract-region)))
-#+end_src
-*** Auto complete
-#+begin_src emacs-lisp
-   (use-package auto-complete-config
-  :init (ac-config-default)
-  :config
-  (progn
-    (setq ac-auto-show-menu 0.3)
-    (setq ac-use-menu-map t)
-    (ac-config-default)
-    (setq ac-sources
-          (cons ac-source-yasnippet
-                ac-sources))
-    (define-key ac-complete-mode-map "\r" 'ac-expand)
-    (define-key ac-complete-mode-map [return] 'ac-expand)
-    (define-key ac-complete-mode-map "\t" 'ac-complete)
-    (define-key ac-complete-mode-map [tab] 'ac-complete)
-    (global-auto-complete-mode)))
-#+end_src
-
-*** Browse kill ring
-#+begin_src emacs-lisp
-(use-package browse-kill-ring
-  :init (browse-kill-ring-default-keybindings))
-#+end_src
-
-*** Paredit
-#+begin_src emacs-lisp
-(use-package paredit
-  :commands (enable-paredit-mode paredit-mode)
-  :config
-  (progn
-    (defun paredit-delete-indentation ()
-      (interactive)
-      (delete-indentation)
-      (prog-indent-sexp))
-
-    (define-key paredit-mode-map (kbd "M-(") 'paredit-wrap-round)
-    (define-key paredit-mode-map (kbd "M-)") 'paredit-close-round-and-newline)
-    (define-key paredit-mode-map (kbd "M-[") 'paredit-wrap-square)
-    (define-key paredit-mode-map (kbd "M-{") 'paredit-wrap-curly)
-    (define-key paredit-mode-map (kbd "M-}") 'paredit-close-curly-and-newline)
-    (define-key paredit-mode-map (kbd "M-j") 'paredit-delete-indentation)))
-#+end_src
-
-*** Command frequency
-#+begin_src emacs-lisp
-(use-package command-frequency
-  :init (command-frequency-mode +1))
-#+end_src
-*** Dired
-#+begin_src emacs-lisp
-(use-package dired
-  :init
-  (if  (not (boundp 'dired-mode-map))
-      (add-hook 'dired-load-hook
-                (lambda ()
-                  (define-key dired-mode-map [return]
-                    'dired-single-buffer)
-                  (define-key dired-mode-map [mouse-1]
-                    'dired-single-buffer-mouse)
-                  (define-key dired-mode-map "^"
-                    (function
-                     (lambda ()
-                       (interactive)
-                       (dired-single-buffer "..")))))))
-  :config
-  (use-package dired-single))
-#+end_src
-
-*** ibuffer
-#+begin_src emacs-lisp
-(use-package ibuffer
-  :bind ("C-x C-b" . ibuffer)
-  :config
-  (progn
-    (use-package ibuffer-vc
-      :commands ibuffer-vc-set-filter-groups-by-vc-root)
-    (use-package ibuffer-ext
-      :commands ibuffer-do-sort-by-major-mode)
-
-    (defvar ibuffer-initialized nil)
-    (defun my-ibuffer-hook ()
-      (unless ibuffer-initialized
-        (ibuffer-vc-set-filter-groups-by-vc-root)
-
-        (unless (eq ibuffer-sorting-mode 'major-mode)
-          (ibuffer-do-sort-by-major-mode))
-
-        (setq ibuffer-formats
-              '((mark modified read-only vc-status-mini " "
-                      (name 25 25 :left :elide)
-                      " "
-                      (size 9 -1 :right)
-                      " "
-                      (mode 16 16 :left :elide)
-                      " "
-                      (vc-status 16 16 :left)
-                      " "
-                      filename-and-process)))
-        (setq ibuffer-expert t)
-        (setq ibuffer-initialized t)))
-    (add-hook 'ibuffer-hook 'my-ibuffer-hook)))
-#+end_src
-*** Find file at point
-#+begin_src emacs-lisp
-(use-package ffap
-  :init (ffap-bindings))
-#+end_src
-
-*** ido
-#+begin_src emacs-lisp
-(use-package ido
-  :init (ido-mode +1)
-  :config
-  (progn
-    (use-package flx-ido
-      :commands flx-ido-mode)
-    (use-package ido-vertical-mode
-      :commands ido-vertical-mode)
-    (flx-ido-mode +1)
-    (ido-vertical-mode +1)
-    (setq id-use-faces nil
-          ido-auto-merge-work-directories-length nil
-          ido-create-new-buffer 'always
-          ido-enable-flex-matching t
-          ido-enable-prefix nil
-          ido-handle-duplicate-virtual-buffers 2
-          ido-max-prospects 10
-          ido-use-filename-at-point 'guess
-          ido-use-virtual-buffers t)))
-#+end_src
-*** ispell
-#+begin_src emacs-lisp
-(use-package ispell
-  :defer t
-  :config
-  (setq-default ispell-program-name "/usr/local/bin/aspell"))
-#+end_src
-*** linum
-#+begin_src emacs-lisp
-(use-package linum
-  :init (global-linum-mode +1)
-  :config
-  (progn
-    (defvar my-linum-format-string "%4d")
-
-    (add-hook 'linum-before-numbering-hook 'my-linum-get-format-string)
-
-    (defun my-linum-get-format-string ()
-      (let* ((width (length (number-to-string
-                             (count-lines (point-min) (point-max)))))
-             (format (concat "%" (number-to-string width) "d ")))
-        (setq my-linum-format-string format)))
-
-    (defun my-linum-format (line-number)
-      (propertize (format my-linum-format-string line-number) 'face 'linum))
-
-    (setq linum-format 'my-linum-format)))
-#+end_src
-*** popwin
-#+begin_src emacs-lisp
-(use-package popwin
-  :commands popwin:display-buffer
-  :init (setq display-buffer-function 'popwin:display-buffer))
-#+end_src
-
-*** Multiple cursors
-#+begin_src emacs-lisp
-(use-package multiple-cursors
-  :bind (("C->" . mc/mark-next-like-this)
-         ("C-<" . mc/mark-previous-like-this)
-         ("C-c C-<" . mc/mark-all-like-this)))
-#+end_src
-*** pomodoro mode
-#+begin_src emacs-lisp
-(use-package pomodoro
-  :commands pomodoro-start
-  :bind (("C-c p s" . pomodoro-start)
-         ("C-c p x" . pomodoro-stop))
-  :config
-  (progn
-    (setq pomodoro-break-start-sound "~/Music/smw_pause.wav"
-          pomodoro-work-start-sound "~/Music/smw_pause.wav"
-          pomodoro-work-start-message "Back to work!"
-          pomodoro-work-cycle "労働" ;; work in japanese
-          pomodoro-break-cycle "休止" ;; break in japanese
-          pomodoro-long-break-time 20
-          pomodoro-break-time 7)))
-#+end_src
-*** Saveplace
-#+begin_src emacs-lisp
-(use-package saveplace
-  :init
-  (setq-default save-place-file (concat user-emacs-directory "places")
-                save-place t))
-#+end_src
-*** smex
-#+begin_src emacs-lisp
-(use-package smex
-  :init (smex-initialize)
-  :bind ("M-x" . smex)
-  :config
-  (progn
-    (setq smex-save-file (concat user-emacs-directory ".smex-items"))))
-#+end_src
-
-*** undo-tree
-#+begin_src emacs-lisp
-(use-package undo-tree
-  :init (global-undo-tree-mode))
-#+end_src
-
-*** visual-regexp
-#+begin_src emacs-lisp
-(use-package visual-regexp
-  :commands (vr/replace vr/query-replace)
-  :bind (("C-c r" . vr/replace)
-         ("C-c q" . vr/query-replace)))
-#+end_src
-
 ** Major modes
 *** Org
 #+begin_src emacs-lisp
 (use-package org
+  :ensure t
   :bind (("\C-cl" . org-store-link)
          ("\C-ca" . org-agenda)
          ("\C-cb" . org-iswitchb)
@@ -750,123 +689,131 @@ These are just some global minor modes that I either want on or off.
 
 *** Arduino mode
 #+begin_src emacs-lisp
-(use-package arduino-mode
-  :mode ("\\.ino$" . arduino-mode)
-  :config (add-hook 'arduino-mode-hook '(lambda ()
-                                          (idle-highlight-mode +1))))
+  (use-package arduino-mode
+    :ensure t
+    :mode ("\\.ino$" . arduino-mode)
+    :config (add-hook 'arduino-mode-hook '(lambda ()
+                                            (idle-highlight-mode +1))))
 #+end_src
 
 *** Clojure mode
 #+begin_src emacs-lisp
-(use-package cider
-  :config
-  (progn
-    (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
-    (add-hook 'cider-repl-mode-hook 'enable-paredit-mode)
-    (add-hook 'cider-repl-mode-hook 'subword-mode)
-    (setq cider-repl-history-file "~/.emacs.d/history/nrepl")))
+  (use-package dash
+    :ensure t)
+  (use-package cider
+    :ensure t
+    :config
+    (progn
+      (use-package cider-eldoc
+        :config (cider-turn-on-eldoc-mode))
+      (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
+      (add-hook 'cider-repl-mode-hook 'enable-paredit-mode)
+      (add-hook 'cider-repl-mode-hook 'subword-mode)
+      (setq cider-repl-history-file "~/.emacs.d/history/nrepl")))
 
-(use-package clojure-mode
-  :mode (("\\.cljx?$" . clojure-mode)
-         ("\\.dtm$" . clojure-mode)
-         ("\\.edn$" . clojure-mode))
-  :interpreter (("jark" . clojure-mode)
-                ("cake" . clojure-mode))
-  :config
-  (progn
-    (use-package cljdoc
-      :config
-      (progn
-        (defadvice cljdoc-get-docstring (after truncate-docstring)
-          (setq ad-return-value
-                (truncate-string-to-width
-                 (concat " " ad-return-value) (- (frame-width) 10) nil nil 't)))
-        (ad-activate 'cljdoc-get-docstring)))
-    (use-package clojure-jump-to-file)
-    (use-package midje-mode
-      :config (add-hook 'midje-mode-hook '(lambda ()
-                                            (yas-activate-extra-mode 'midje-mode))))
+  (use-package clojure-mode
+    :ensure t
+    :mode (("\\.cljx?$" . clojure-mode)
+           ("\\.dtm$" . clojure-mode)
+           ("\\.edn$" . clojure-mode))
+    :interpreter (("jark" . clojure-mode)
+                  ("cake" . clojure-mode))
+    :config
+    (progn
+      (use-package midje-mode
+        :ensure t
+        :config
+        (progn
+          (add-hook 'midje-mode-hook
+                    '(lambda ()
+                       (yas-activate-extra-mode 'midje-mode)))
+          ;; (use-package clojure-jump-to-file
+          ;;   :init (use-package clojure-test-mode))
+          ))
 
-    (defun clojure-jump-to-project-file ()
-      (interactive)
-      (let ((dir (file-name-as-directory
-                  (locate-dominating-file buffer-file-name "src/"))))
-        (find-file (concat dir "project.clj"))))
+      (defun clojure-jump-to-project-file ()
+        (interactive)
+        (let ((dir (file-name-as-directory
+                    (locate-dominating-file buffer-file-name "src/"))))
+          (find-file (concat dir "project.clj"))))
 
-    (defvar clojure-mode-initialized nil)
+      (defvar clojure-mode-initialized nil)
 
-    (defun my-clojure-mode-hook ()
-      (unless clojure-mode-initialized
-        (define-key clojure-mode-map  (kbd "C-x p") 'clojure-jump-to-project-file)
+      (defun my-clojure-mode-hook ()
+        (unless clojure-mode-initialized
+          (define-key clojure-mode-map  (kbd "C-x p") 'clojure-jump-to-project-file)
 
-        (put-clojure-indent 'update-in 'defun)
-        (put-clojure-indent 'get-in 'defun)
-        (put-clojure-indent 'assoc-in 'defun)
-        (put-clojure-indent 'assoc! 'defun)
-        (put-clojure-indent 'swap! 'defun)
-        (put-clojure-indent 'run* 'defun)
-        (put-clojure-indent 'fresh 'defun)
+          (put-clojure-indent 'update-in 'defun)
+          (put-clojure-indent 'get-in 'defun)
+          (put-clojure-indent 'assoc-in 'defun)
+          (put-clojure-indent 'assoc! 'defun)
+          (put-clojure-indent 'swap! 'defun)
+          (put-clojure-indent 'run* 'defun)
+          (put-clojure-indent 'fresh 'defun)
 
-        (setq clojure-mode-initialized t))
-      (enable-paredit-mode))
+          (setq clojure-mode-initialized t))
+        (enable-paredit-mode))
 
-    (add-hook 'clojure-mode-hook 'my-clojure-mode-hook)))
+      (add-hook 'clojure-mode-hook 'my-clojure-mode-hook)))
 
-(define-derived-mode clojurescript-mode clojure-mode "ClojureScript"
-  "Major mode for ClojureScript")
+  (define-derived-mode clojurescript-mode clojure-mode "ClojureScript"
+    "Major mode for ClojureScript")
 
-(use-package clojurescript-mode
-  :mode ("\\.cljs$" . clojurescript-mode))
+  (use-package clojurescript-mode
+    :mode ("\\.cljs$" . clojurescript-mode))
 #+end_src
 
 *** Emacs lisp
 #+begin_src emacs-lisp
-(use-package lisp-mode
-  :config
-  (progn
-    (use-package elisp-slime-nav
-      :commands elisp-slime-nav-mode)
+  (use-package lisp-mode
+    :config
+    (progn
+      (use-package elisp-slime-nav
+        :ensure t
+        :commands elisp-slime-nav-mode)
 
-    (add-hook 'emacs-lisp-mode-hook
-              (lambda ()
-                (make-local-variable 'after-save-hook)
-                (add-hook 'after-save-hook
-                          (lambda ()
-                            (if (file-exists-p (concat buffer-file-name "c"))
-                                (delete-file (concat buffer-file-name "c")))))))
+      (add-hook 'emacs-lisp-mode-hook
+                (lambda ()
+                  (make-local-variable 'after-save-hook)
+                  (add-hook 'after-save-hook
+                            (lambda ()
+                              (if (file-exists-p (concat buffer-file-name "c"))
+                                  (delete-file (concat buffer-file-name "c")))))))
 
-    (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-    (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
-    (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)))
+      (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+      (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
+      (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)))
 #+end_src
 
 #+begin_src emacs-lisp
 (use-package ielm
-  :defer t
   :config
-  (add-hook ielm-mode-hook 'enable-paredit-mode))
+  (add-hook 'ielm-mode-hook 'enable-paredit-mode))
 #+end_src
 
 *** Go mode
 #+begin_src emacs-lisp
-(use-package go-mode
-  :mode ("\\.go$" . go-mode))
+  (use-package go-mode
+    :ensure t
+    :mode ("\\.go$" . go-mode))
 #+end_src
 *** Haskell mode
 #+begin_src emacs-lisp
-(use-package haskell-mode
-  :mode (("\\.hs$" . haskell-mode)
-         ("\\.lhs$" . literate-haskell-mode))
-  :config
-  (progn
-    (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-    (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)))
+  (use-package haskell-mode
+    :ensure t
+    :mode (("\\.hs$" . haskell-mode)
+           ("\\.lhs$" . literate-haskell-mode))
+    :config
+    (progn
+      (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+      (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)))
 #+end_src
 
 *** Magit
 #+begin_src emacs-lisp
-(use-package magit
-  :bind ("C-x g" . magit-status))
+  (use-package magit
+    :ensure t
+    :bind ("C-x g" . magit-status))
 #+end_src
 *** prog-mode
 #+begin_src emacs-lisp
@@ -876,23 +823,27 @@ These are just some global minor modes that I either want on or off.
 #+end_src
 *** Prolog
 #+begin_src emacs-lisp
-(use-package prolog-mode
-  :commands (run-prolog prolog-mode mercury-mode)
-  :mode (("\\.pl$" . prolog-mode)
-         ("\\.m$" . mercury-mode))
-  :config
-  (setq prolog-system 'swi))
+  (use-package prolog-mode
+    :ensure prolog
+    :commands (run-prolog prolog-mode mercury-mode)
+    :mode (("\\.pl$" . prolog-mode)
+           ("\\.m$" . mercury-mode))
+    :config
+    (setq prolog-system 'swi))
 #+end_src
 *** Python
-#+begin_src emacs-lisp
-(use-package python-mode
-  :commands python-mode
-  :mode ("\\.py$" . python-mode)
-  :config
-  (progn
-    (use-package python-pep8)
-    (use-package python-pylint)))
-#+end_src
+# #+begin_src emacs-lisp
+#     (use-package python-mode
+#       :ensure t
+#       :commands python-mode
+#       :mode ("\\.py$" . python-mode)
+#       :config
+#       (progn
+#         (use-package python-pep8
+#           :ensure t)
+#         (use-package python-pylint
+#           :ensure t)))
+# #+end_src
 
 *** Common lisp
 #+begin_src emacs-lisp
