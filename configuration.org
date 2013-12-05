@@ -6,53 +6,37 @@ and thinking that my emacs configuration was the perfect candidate. It
 is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming-emacs-configuration-file/][a blog post]] by Sacha Chua and others.
 
 ** General configuration
-*** Encoding
-I had some trouble with getting emacs to set the correct encoding in
-OS X at one point. It seemed to go away if I called these functions:
-#+begin_src emacs-lisp
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(prefer-coding-system 'utf-8)
-#+end_src
-I do not know if I still need these, but they stay as it isn't a
-problem that they're there.
-
 *** Defaults
-The default is already set so it needs to be setq'ed instead. The
-reason for setting this is that otherwise emacs starts at =/=.
-#+begin_src emacs-lisp
-  (setq default-directory "~/")
-#+end_src
-
 Set the file used for the auto-custom configuration to custom.el.
 #+begin_src emacs-lisp
   (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
   (load custom-file)
 #+end_src
 
+Set the default-directory so that when we are in buffers that do not
+have a directory we use the home directory. Also set the
+ring-bell-function to ignore so that the bell never rings.
 #+begin_src emacs-lisp
-(setq-default
- backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
- color-theme-is-global t
- indent-tabs-mode nil
- inhibit-startup-message t
- inhibit-startup-screen t
- message-log-max t
- mouse-wheel-follow-mouse t ;; scroll window under mouse
- mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
- mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; one line at a time
- ns-pop-up-frames nil
- require-final-newline t
- ring-bell-function #'ignore
- use-dialog-box nil
- visible-bell nil
- )
+  (setq default-directory     "~/"
+        ring-bell-function    #'ignore)
 #+end_src
 
+This makes it so I can just press =y= or =n= instead of =yes= or =no=.
 #+begin_src emacs-lisp
 (fset 'yes-or-no-p 'y-or-n-p)
 #+end_src
 
+I had some trouble with getting emacs to set the correct encoding in
+OS X at one point. It seemed to go away if I called these functions:
+#+begin_src emacs-lisp
+(set-terminal-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+#+end_src
+I do not know if I still need these, but they stay as it isn't a
+problem that they're there.
+
+*** Enable disables
+There are some of the disabled functions that I actually like to use.
 #+begin_src emacs-lisp
 (put 'narrow-to-region 'disabled nil)
 (put 'narrow-to-page 'disabled nil)
