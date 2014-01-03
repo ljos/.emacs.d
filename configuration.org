@@ -579,113 +579,112 @@ calling an interactive command.
 ** Major modes
 *** Org
 #+begin_src emacs-lisp
-(use-package org
-  :ensure t
-  :bind (("\C-cl" . org-store-link)
-         ("\C-ca" . org-agenda)
-         ("\C-cb" . org-iswitchb)
-         ("\C-cc" . org-capture))
-  :config
-  (progn
-    (defvar org-mode-initialized nil)
-    (defun my-org-mode-hook ()
-      (unless org-mode-initialized
-        (setq org-directory "~/Dropbox/org"
-              org-mobile-inbox-for-pull "~/Dropbox/org/inbox.org"
-              org-mobile-directory "~/Dropbox/org/mobile"
+  (use-package org
+    :ensure t
+    :mode ("\\.org$" . org-mode)
+    :bind (("\C-cl" . org-store-link)
+           ("\C-ca" . org-agenda)
+           ("\C-cb" . org-iswitchb)
+           ("\C-cc" . org-capture))
+    :config
+    (progn
+      (defvar org-mode-initialized nil)
+      (defun ljos/org-mode-hook ()
+        (unless org-mode-initialized
+          (defun org-export-latex-no-toc (depth)
+            (when depth
+              (format "%% Org-mode is exporting headings to %s levels.\n"
+                      depth)))
 
-              org-agenda-include-all-todo t
-              org-agenda-files '("~/Dropbox/org/organizer.org")
+          (setq org-directory "~/Dropbox/org"
+                org-mobile-inbox-for-pull "~/Dropbox/org/inbox.org"
+                org-mobile-directory "~/Dropbox/org/mobile"
 
-              org-tag-persistent-alist '(("work" . ?w) ("private" . ?p))
+                org-src-fontify-natively t
 
-              org-todo-keywords '((sequence "TODO" "STARTED" "WAITING"
-                                            "|" "DONE" "CANCELLED" "ON-HOLD" "DEFERRED" "DELEGATED")
-                                  (sequence "APPT" "|" "FINISHED" "CANCELLED" "MISSED")
-                                  (sequence "BUG" "|" "FIXED")
-                                  (sequence "NOTE"))
+                org-agenda-include-all-todo t
+                org-agenda-files '("~/Dropbox/org/organizer.org")
 
-              org-todo-keyword-faces '(("STARTED" . "yellow")
-                                       ("ON-HOLD" . "orange")
-                                       ("CANCELLED" . "dim gray")
-                                       ("NOTE" . "aqua"))
+                org-tag-persistent-alist '(("work" . ?w) ("private" . ?p))
 
-              org-refile-targets '(("organizer.org" :maxlevel . 9))
-              org-completion-use-ido t
-              org-latex-to-pdf-process '("texi2dvi --pdf --verbose --batch %f"))
+                org-todo-keywords '((sequence "TODO" "STARTED" "WAITING"
+                                              "|" "DONE" "CANCELLED" "ON-HOLD" "DEFERRED" "DELEGATED")
+                                    (sequence "APPT" "|" "FINISHED" "CANCELLED" "MISSED")
+                                    (sequence "BUG" "|" "FIXED")
+                                    (sequence "NOTE"))
 
-       (unless (boundp 'org-export-latex-classes)
-         (setq org-export-latex-classes nil))
+                org-todo-keyword-faces '(("STARTED" . "yellow")
+                                         ("ON-HOLD" . "orange")
+                                         ("CANCELLED" . "dim gray")
+                                         ("NOTE" . "aqua"))
 
-       (add-to-list 'org-export-latex-classes
-                    '("article"
-                      "\\documentclass{article}
-                \\usepackage[l2tabu, orthodox]{nag}
-                \\usepackage{microtype}"
-                      ("\\section{%s}" . "\\section*{%s}")
-                      ("\\subsection{%s}" . "\\subsection*{%s}")
-                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+                org-refile-targets '(("organizer.org" :maxlevel . 9))
+                org-completion-use-ido t
+                org-latex-to-pdf-process '("texi2dvi --pdf --verbose --batch %f")
 
-       (add-to-list 'org-export-latex-classes
-                    '("thesis"
-                      "\\documentclass{report}
-                \\usepackage[l2tabu, orthodox]{nag}
-                \\usepackage{microtype}"
-                      ("\\chapter{%s}" . "\\chapter*{%s}")
-                      ("\\section{%s}" . "\\section*{%s}")
-                      ("\\subsection{%s}" . "\\subsection*{%s}")
-                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                      ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                      ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+                fill-column 80
+                ispell-parser 'tex
 
-       (define-key org-mode-map (kbd "M-q") 'org-fill-paragraph)
-       (visual-line-mode t)
-       (setq fill-column 80)
-       (setq ispell-parser 'tex)
-       (font-lock-remove-keywords
-        nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)\\b"
-               1 font-lock-warning-face t)))
-       (add-to-list 'org-latex-packages-alist '("" "microtype"))
-       (org-add-link-type
-        "citet*" 'ebib
-        (lambda (path desc format)
-          (cond
-           ((eq format 'latex)
-            (if (or (not desc) (equal 0 (search "citet*:" desc)))
-                (format "\\citet*{%s}" path)
-              (format "\\citet*[%s]{%s}" desc path))))))
+                ;;org-capture config
+                org-default-notes-file (concat org-directory "/organizer.org")
 
+                org-capture-templates '(("a" "Appointments" entry
+                                         (file+headline org-default-notes-file "Appointments")
+                                         "* APPT %? %^{WITH}p %^{LOCATION}p\n%^T--%^T\n" :prepend)
+                                        ("p" "Project" entry
+                                         (file+headline org-default-notes-file "Projects")
+                                         "* %?\n")
+                                        ("d" "Done" entry
+                                         (file+datetree (concat org-directory "/done.org"))
+                                         "* %?\nCLOCK: %^U--%U")
+                                        ("j" "Journal" entry
+                                         (file+datetree (concat org-directory "/journal.org"))
+                                         "* %?\nEntered on %U\n  %i\n  %a")
+                                        ("n" "Note" entry
+                                         (file+headline org-default-notes-file "Notes")
+                                         "* NOTE %?\n")
+                                        ("t" "Todo" entry
+                                         (file+headline org-default-notes-file "Tasks")
+                                         "* TODO %?\n  %i\n"))
 
-       ;;org-capture config
-       (setq org-default-notes-file (concat org-directory "/organizer.org"))
+                org-export-latex-format-toc-function 'org-export-latex-no-toc)
 
-       (setq org-capture-templates
-             '(("a" "Appointments" entry
-                (file+headline org-default-notes-file "Appointments")
-                "* APPT %? %^{WITH}p %^{LOCATION}p\n%^T--%^T\n" :prepend)
-               ("p" "Project" entry
-                (file+headline org-default-notes-file "Projects")
-                "* %?\n")
-               ("d" "Done" entry
-                (file+datetree (concat org-directory "/done.org"))
-                "* %?\nCLOCK: %^U--%U")
-               ("j" "Journal" entry
-                (file+datetree (concat org-directory "/journal.org"))
-                "* %?\nEntered on %U\n  %i\n  %a")
-               ("n" "Note" entry
-                (file+headline org-default-notes-file "Notes")
-                "* NOTE %?\n")
-               ("t" "Todo" entry
-                (file+headline org-default-notes-file "Tasks")
-                "* TODO %?\n  %i\n")))
+         (unless (boundp 'org-export-latex-classes)
+           (setq org-export-latex-classes nil))
 
-       (defun org-export-latex-no-toc (depth)
-         (when depth
-           (format "%% Org-mode is exporting headings to %s levels.\n"
-                   depth)))
-       (setq org-export-latex-format-toc-function 'org-export-latex-no-toc)
-       (setq org-mode-initialized t)))))
-#+end_src emacs-lisp
+         (add-to-list 'org-export-latex-classes
+                      '("article"
+                        "\\documentclass{article}
+                         \\usepackage[l2tabu, orthodox]{nag}
+                         \\usepackage{microtype}"
+                        ("\\section{%s}" . "\\section*{%s}")
+                        ("\\subsection{%s}" . "\\subsection*{%s}")
+                        ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+
+         (add-to-list 'org-export-latex-classes
+                      '("thesis"
+                        "\\documentclass{report}
+                         \\usepackage[l2tabu, orthodox]{nag}
+                         \\usepackage{microtype}"
+                        ("\\chapter{%s}" . "\\chapter*{%s}")
+                        ("\\section{%s}" . "\\section*{%s}")
+                        ("\\subsection{%s}" . "\\subsection*{%s}")
+                        ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                        ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                        ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+         (add-to-list 'org-latex-packages-alist '("" "microtype"))
+
+         (define-key org-mode-map (kbd "M-q") 'org-fill-paragraph)
+         (visual-line-mode t)
+
+         (font-lock-remove-keywords
+          nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)\\b"
+                 1 font-lock-warning-face t)))
+
+         (setq org-mode-initialized t)))
+      (add-hook 'org-mode-hook 'ljos/org-mode-hook)))
+#+end_src
 
 *** Arduino mode
 #+begin_src emacs-lisp
