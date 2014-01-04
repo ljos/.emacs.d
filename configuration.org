@@ -563,10 +563,10 @@ calling an interactive command.
 #+end_src
 *** Yasnippet
 #+begin_src emacs-lisp
-(use-package yasnippet
-  :commands (yas-global-mode yas-activate-extra-mode)
-  :load-path "site-lisp/yasnippet"
-  :init (yas-global-mode +1))
+  (use-package yasnippet
+    :ensure t
+    :commands (yas-global-mode yas-activate-extra-mode)
+    :init (yas-global-mode +1))
 #+end_src
 
 ** Major modes
