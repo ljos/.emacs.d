@@ -859,13 +859,15 @@ do clojurescript and not just use the clojure-mode.
 
 *** SPARQL
 #+begin_src emacs-lisp
-(use-package sparql-mode
-  :load-path "site-lisp/sparql-mode"
-  :mode ("\\.sparql$" . sparql-mode)
-  :config
-  (progn
-    (add-to-list 'ac-dictionary-files "~/.emacs.d/site-lisp/sparql-mode/sparql-mode")
-    (setq sparql-default-base-url "http://live.dbpedia.org/sparql")
-    (add-hook 'sparql-result-mode-hook '(lambda () (linum-mode -1)))
-    (add-hook 'sparql-result-mode-hook '(lambda () (toggle-truncate-lines 1)))))
+  (use-package sparql-mode
+    :load-path "site-lisp/sparql-mode"
+    :mode "\\.sparql$"
+    :config
+    (progn
+      (add-to-list 'ac-dictionary-files "~/.emacs.d/site-lisp/sparql-mode/sparql-mode")
+      (setq sparql-default-base-url "http://live.dbpedia.org/sparql")
+      (defun ljos/sparql-result-mode-hook ()
+        (linum-mode -1)
+        (toggle-truncate-lines +1))
+      (add-hook 'sparql-result-mode-hook 'ljos/sparql-result-mode-hook)))
 #+end_src
