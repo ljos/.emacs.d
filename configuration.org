@@ -700,15 +700,17 @@ calling an interactive command.
 
 *** Clojure mode
 #+begin_src emacs-lisp
-  (use-package dash
-    :ensure t)
   (use-package cider
     :ensure t
     :config
     (progn
-      (use-package cider-eldoc
-        :config (cider-turn-on-eldoc-mode))
+      (use-package ac-nrepl
+        :ensure t
+        :commands ac-nrepl-setup)
+
       (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
+      (add-hook 'cider-mode-hook 'ac-nrepl-setup)
+      (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
       (add-hook 'cider-repl-mode-hook 'enable-paredit-mode)
       (add-hook 'cider-repl-mode-hook 'subword-mode)
       (setq cider-repl-history-file "~/.emacs.d/history/nrepl")))
@@ -723,15 +725,14 @@ calling an interactive command.
     :config
     (progn
       (use-package midje-mode
-        :ensure t
+        :load-path "site-lisp/midje-mode"
+        :commands midje-mode-maybe-enable
+        :init (setq midje-keymap-prefix (kbd "C-c m"))
         :config
         (progn
           (add-hook 'midje-mode-hook
                     '(lambda ()
-                       (yas-activate-extra-mode 'midje-mode)))
-          ;; (use-package clojure-jump-to-file
-          ;;   :init (use-package clojure-test-mode))
-          ))
+                       (yas-activate-extra-mode 'midje-mode)))))
 
       (defun clojure-jump-to-project-file ()
         (interactive)
@@ -741,7 +742,7 @@ calling an interactive command.
 
       (defvar clojure-mode-initialized nil)
 
-      (defun my-clojure-mode-hook ()
+      (defun ljos/clojure-mode-hook ()
         (unless clojure-mode-initialized
           (define-key clojure-mode-map  (kbd "C-x p") 'clojure-jump-to-project-file)
 
@@ -754,9 +755,11 @@ calling an interactive command.
           (put-clojure-indent 'fresh 'defun)
 
           (setq clojure-mode-initialized t))
+        (midje-mode-maybe-enable)
         (enable-paredit-mode))
 
-      (add-hook 'clojure-mode-hook 'my-clojure-mode-hook)))
+      (add-hook 'clojure-mode-hook 'ljos/clojure-mode-hook)))
+#+end_src
 
 I like to have a clojurescript-mode to make configurations to when I
 do clojurescript and not just use the clojure-mode.
