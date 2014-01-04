@@ -574,7 +574,7 @@ calling an interactive command.
 #+begin_src emacs-lisp
   (use-package org
     :ensure t
-    :mode ("\\.org$" . org-mode)
+    :mode "\\.org$"
     :bind (("\C-cl" . org-store-link)
            ("\C-ca" . org-agenda)
            ("\C-cb" . org-iswitchb)
@@ -584,6 +584,8 @@ calling an interactive command.
       (defvar org-mode-initialized nil)
       (defun ljos/org-mode-hook ()
         (unless org-mode-initialized
+          (require 'org-publish)
+
           (defun org-export-latex-no-toc (depth)
             (when depth
               (format "%% Org-mode is exporting headings to %s levels.\n"
@@ -640,7 +642,15 @@ calling an interactive command.
                                          (file+headline org-default-notes-file "Tasks")
                                          "* TODO %?\n  %i\n"))
 
-                org-export-latex-format-toc-function 'org-export-latex-no-toc)
+                org-export-latex-format-toc-function 'org-export-latex-no-toc
+
+                org-publish-project-alist '(("ljos.github.io"
+                                             :base-directory "~/workspace/ljos.github.io/org/"
+                                             :publishing-directory "~/workspace/ljos.github.io/"
+                                             :with-toc nil
+                                             :html-preamble nil
+                                             :html-postamble nil
+                                             :publishing-function org-html-publish-to-html)))
 
          (unless (boundp 'org-export-latex-classes)
            (setq org-export-latex-classes nil))
