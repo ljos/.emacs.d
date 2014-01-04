@@ -13,6 +13,9 @@ Set the file used for the auto-custom configuration to custom.el.
   (load custom-file)
 #+end_src
 
+I am trying to do all the configurations that can with the =customize=
+functionality of emacs.
+
 Set the default-directory so that when we are in buffers that do not
 have a directory we use the home directory. Also set the
 ring-bell-function to ignore so that the bell never rings.
@@ -97,36 +100,38 @@ I like the tomorrow-night color theme.
 #+end_src
 
 **** Frame size
+     I am setting the framesize according to the size of the
+     display. These are some helper functions that I found at
+     at http://stackoverflow.com/a/94277 .
 #+begin_src emacs-lisp
-;;; Found at http://stackoverflow.com/a/94277
-(defun set-frame-size-according-to-resolution ()
-  (interactive)
-  (if window-system
-  (progn
-    (add-to-list 'default-frame-alist
-                 (cons 'width
-                       (if (> (x-display-pixel-width) 1280)
-                           100 80)))
-    (add-to-list 'default-frame-alist
-         (cons 'height (/ (- (x-display-pixel-height) 50)
-                          (frame-char-height)))))))
+  (defun set-frame-size-according-to-resolution ()
+    (interactive)
+    (if window-system
+        (progn
+          (add-to-list 'default-frame-alist
+                       (cons 'width
+                             (if (> (x-display-pixel-width) 1280)
+                                 100 80)))
+          (add-to-list 'default-frame-alist
+                       (cons 'height (/ (- (x-display-pixel-height) 50)
+                                        (frame-char-height)))))))
 
-(defun x-maximize-frame ()
+  (defun x-maximize-frame ()
     (interactive)
     (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
                            '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
     (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
                            '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
 
-(if (eq 'x window-system)
-    (x-maximize-frame)
-  (set-frame-size-according-to-resolution))
+  (if (eq 'x window-system)
+      (x-maximize-frame)
+    (set-frame-size-according-to-resolution))
 
-(set-frame-position (next-frame) 0 0)
+  (set-frame-position (next-frame) 0 0)
 #+end_src
 
 *** OS X
-The menu bar is annoying on systems other than OS X.
+    The menu bar is annoying on systems other than OS X.
 #+begin_src emacs-lisp
   (if (equal system-type 'darwin)
       (menu-bar-mode +1)
@@ -151,8 +156,8 @@ The menu bar is annoying on systems other than OS X.
 #+end_src
 
 *** Path
-Sometimes emacs is not so good at finding the correct paths to
-everything.
+    Sometimes emacs is not so good at finding the correct paths to
+    everything.
 #+begin_src emacs-lisp
 (defcustom exec-paths '("~/.lein/bin" "/usr/local/bin" "~/.local/bin" "/usr/texbin")
   "Directories to be added to exec-path"
@@ -321,6 +326,9 @@ calling an interactive command.
 
 ** Minor modes
 *** Ace jump
+    =Ace jump mode= allows me to add activate it and press a
+    character. All the instances of that character is highlighted in
+    the buffer and I can jump to it.
 #+begin_src emacs-lisp
   (use-package ace-jump-mode
     :ensure t
@@ -328,6 +336,8 @@ calling an interactive command.
 #+end_src
 
 *** Auto complete
+    Auto completion is nice, but we need it to not be so slow. It is
+    also nice to have yasnippet completions available as well.
 #+begin_src emacs-lisp
   (use-package auto-complete-config
     :ensure auto-complete
@@ -454,6 +464,11 @@ calling an interactive command.
             ido-use-virtual-buffers t)))
 #+end_src
 *** ispell
+    ispell is nice, but we need to provide it with the path to the
+    program as it is installed using homebrew. I am using aspell as it
+    has better support for my language. This can become a problem on
+    if I want ispell to work on systems other than OS X as I don't
+    provide an alternative path there.
 #+begin_src emacs-lisp
   (use-package ispell
     :config
@@ -481,6 +496,7 @@ calling an interactive command.
       (setq linum-format 'my-linum-format)))
 #+end_src
 *** Multiple cursors
+
 #+begin_src emacs-lisp
   (use-package multiple-cursors
     :ensure t
@@ -489,13 +505,16 @@ calling an interactive command.
            ("C-c C-<" . mc/mark-all-like-this)))
 #+end_src
 *** Paredit
+    The =paredit-delete-indentation= function is just small function
+    that reindents the next sexpr if I want to join the current line
+    with the previous.
 #+begin_src emacs-lisp
   (use-package paredit
     :ensure t
     :commands (enable-paredit-mode paredit-mode)
     :config
     (progn
-      (defun paredit-delete-indentation ()
+      (defun ljos/paredit-delete-indentation ()
         (interactive)
         (delete-indentation)
         (prog-indent-sexp))
@@ -505,10 +524,14 @@ calling an interactive command.
       (define-key paredit-mode-map (kbd "M-[") 'paredit-wrap-square)
       (define-key paredit-mode-map (kbd "M-{") 'paredit-wrap-curly)
       (define-key paredit-mode-map (kbd "M-}") 'paredit-close-curly-and-newline)
-      (define-key paredit-mode-map (kbd "M-j") 'paredit-delete-indentation)))
+      (define-key paredit-mode-map (kbd "M-j") 'ljos/paredit-delete-indentation)))
 #+end_src
 
 *** pomodoro
+    pomodoro is a small mode that makes it easier to follow the
+    pomodoro productivity technique. It makes it possible to start and
+    stop a timer that will play a sound when I need to stop or
+    continue working.
 #+begin_src emacs-lisp
   (use-package pomodoro
     :ensure t
@@ -755,6 +778,9 @@ calling an interactive command.
 
       (add-hook 'clojure-mode-hook 'my-clojure-mode-hook)))
 
+I like to have a clojurescript-mode to make configurations to when I
+do clojurescript and not just use the clojure-mode.
+#+begin_src emacs-lisp
   (define-derived-mode clojurescript-mode clojure-mode "ClojureScript"
     "Major mode for ClojureScript")
 
