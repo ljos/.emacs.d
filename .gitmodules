@@ -13,9 +13,6 @@
 [submodule "site-lisp/ebnf-mode"]
 	path = site-lisp/ebnf-mode
 	url = https://github.com/jeramey/ebnf-mode
-[submodule "site-lisp/yasnippet"]
-	path = site-lisp/yasnippet
-	url = git@github.com:ljos/yasnippet.git
 [submodule "site-lisp/midje-mode"]
 	path = site-lisp/midje-mode
 	url = git@github.com:dnaumov/midje-mode.git
