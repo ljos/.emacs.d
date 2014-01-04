@@ -828,8 +828,7 @@ do clojurescript and not just use the clojure-mode.
 #+end_src
 *** Prolog
 #+begin_src emacs-lisp
-  (use-package prolog-mode
-    :ensure prolog
+  (use-package prolog
     :commands (run-prolog prolog-mode mercury-mode)
     :mode (("\\.pl$" . prolog-mode)
            ("\\.m$" . mercury-mode))
