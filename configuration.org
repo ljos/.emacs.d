@@ -43,41 +43,6 @@ There are some of the disabled functions that I actually like to use.
 #+begin_src emacs-lisp
 (put 'narrow-to-region 'disabled nil)
 #+end_src
-*** Packaging
-I use the package.el packaging system for emacs.
-#+begin_src emacs-lisp
-  (require 'package)
-#+end_src
-
-Usually we should be running on an emacs that is > 24, but on the off
-chance that we are on a new system that has an older version we should
-add the gnu packages.
-#+begin_src emacs-lisp
-  (when (< emacs-major-version 24)
-    (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-#+end_src
-
-I prefer to get both the marmalade and melpa packages. I like the
-bleeding edge, but I also keep marmalade for the times that melpa does
-not have that package.
-#+begin_src emacs-lisp
-  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
-  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-#+end_src
-
-I am not sure if this is needed. Especially with the use-package
-library installed. I think I should figure out a way to use that
-better.
-#+begin_src emacs-lisp
-  (package-initialize)
-#+end_src
-
-If this is the first time we are loading or the elpa folder has been
-deleted we need to refresh the archive list.
-#+begin_src emacs-lisp
-  (when (not package-archive-contents)
-    (package-refresh-contents))
-#+end_src
 
 *** Interface
 **** Font
