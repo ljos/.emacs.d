@@ -16,3 +16,6 @@
 [submodule "site-lisp/yasnippet"]
 	path = site-lisp/yasnippet
 	url = git@github.com:ljos/yasnippet.git
+[submodule "site-lisp/midje-mode"]
+	path = site-lisp/midje-mode
+	url = git@github.com:dnaumov/midje-mode.git
