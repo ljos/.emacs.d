@@ -693,7 +693,7 @@ calling an interactive command.
 #+begin_src emacs-lisp
   (use-package arduino-mode
     :ensure t
-    :mode ("\\.ino$" . arduino-mode)
+    :mode "\\.ino$"
     :config (add-hook 'arduino-mode-hook '(lambda ()
                                             (idle-highlight-mode +1))))
 #+end_src
@@ -765,7 +765,7 @@ do clojurescript and not just use the clojure-mode.
     "Major mode for ClojureScript")
 
   (use-package clojurescript-mode
-    :mode ("\\.cljs$" . clojurescript-mode))
+    :mode "\\.cljs$")
 #+end_src
 
 *** Emacs lisp
@@ -800,7 +800,7 @@ do clojurescript and not just use the clojure-mode.
 #+begin_src emacs-lisp
   (use-package go-mode
     :ensure t
-    :mode ("\\.go$" . go-mode))
+    :mode "\\.go$")
 #+end_src
 *** Haskell mode
 #+begin_src emacs-lisp
