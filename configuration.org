@@ -585,150 +585,36 @@ calling an interactive command.
 #+end_src
 
 ** Major modes
-*** Org
-#+begin_src emacs-lisp
-  (use-package org
-    :ensure t
-    :mode ("\\.org$" . org-mode)
-    :bind (("\C-cl" . org-store-link)
-           ("\C-ca" . org-agenda)
-           ("\C-cb" . org-iswitchb)
-           ("\C-cc" . org-capture))
-    :config
-    (progn
-      (defvar org-mode-initialized nil)
-      (defun ljos/org-mode-hook ()
-        (unless org-mode-initialized
-          (require 'org-publish)
-
-          (defun org-export-latex-no-toc (depth)
-            (when depth
-              (format "%% Org-mode is exporting headings to %s levels.\n"
-                      depth)))
-
-          (setq org-directory "~/Dropbox/org"
-                org-mobile-inbox-for-pull "~/Dropbox/org/inbox.org"
-                org-mobile-directory "~/Dropbox/org/mobile"
-
-                org-src-fontify-natively t
-
-                org-agenda-include-all-todo t
-                org-agenda-files '("~/Dropbox/org/organizer.org")
-
-                org-tag-persistent-alist '(("work" . ?w) ("private" . ?p))
-
-                org-todo-keywords '((sequence "TODO" "STARTED" "WAITING"
-                                              "|" "DONE" "CANCELLED" "ON-HOLD" "DEFERRED" "DELEGATED")
-                                    (sequence "APPT" "|" "FINISHED" "CANCELLED" "MISSED")
-                                    (sequence "BUG" "|" "FIXED")
-                                    (sequence "NOTE"))
-
-                org-todo-keyword-faces '(("STARTED" . "yellow")
-                                         ("ON-HOLD" . "orange")
-                                         ("CANCELLED" . "dim gray")
-                                         ("NOTE" . "aqua"))
-
-                org-refile-targets '(("organizer.org" :maxlevel . 9))
-                org-completion-use-ido t
-                org-latex-to-pdf-process '("texi2dvi --pdf --verbose --batch %f")
-
-                fill-column 80
-                ispell-parser 'tex
-
-                ;;org-capture config
-                org-default-notes-file (concat org-directory "/organizer.org")
-
-                org-capture-templates '(("a" "Appointments" entry
-                                         (file+headline org-default-notes-file "Appointments")
-                                         "* APPT %? %^{WITH}p %^{LOCATION}p\n%^T--%^T\n" :prepend)
-                                        ("p" "Project" entry
-                                         (file+headline org-default-notes-file "Projects")
-                                         "* %?\n")
-                                        ("d" "Done" entry
-                                         (file+datetree (concat org-directory "/done.org"))
-                                         "* %?\nCLOCK: %^U--%U")
-                                        ("j" "Journal" entry
-                                         (file+datetree (concat org-directory "/journal.org"))
-                                         "* %?\nEntered on %U\n  %i\n  %a")
-                                        ("n" "Note" entry
-                                         (file+headline org-default-notes-file "Notes")
-                                         "* NOTE %?\n")
-                                        ("t" "Todo" entry
-                                         (file+headline org-default-notes-file "Tasks")
-                                         "* TODO %?\n  %i\n"))
-
-                org-export-latex-format-toc-function 'org-export-latex-no-toc
-
-                org-publish-project-alist '(("ljos.github.io"
-                                             :base-directory "~/workspace/ljos.github.io/org/"
-                                             :publishing-directory "~/workspace/ljos.github.io/"
-                                             :with-toc nil
-                                             :html-preamble nil
-                                             :html-postamble nil
-                                             :publishing-function org-html-publish-to-html)))
-
-         (unless (boundp 'org-export-latex-classes)
-           (setq org-export-latex-classes nil))
-
-         (add-to-list 'org-export-latex-classes
-                      '("article"
-                        "\\documentclass{article}
-                         \\usepackage[l2tabu, orthodox]{nag}
-                         \\usepackage{microtype}"
-                        ("\\section{%s}" . "\\section*{%s}")
-                        ("\\subsection{%s}" . "\\subsection*{%s}")
-                        ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-
-         (add-to-list 'org-export-latex-classes
-                      '("thesis"
-                        "\\documentclass{report}
-                         \\usepackage[l2tabu, orthodox]{nag}
-                         \\usepackage{microtype}"
-                        ("\\chapter{%s}" . "\\chapter*{%s}")
-                        ("\\section{%s}" . "\\section*{%s}")
-                        ("\\subsection{%s}" . "\\subsection*{%s}")
-                        ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                        ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                        ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-         (add-to-list 'org-latex-packages-alist '("" "microtype"))
-
-         (define-key org-mode-map (kbd "M-q") 'org-fill-paragraph)
-         (visual-line-mode t)
-
-         (font-lock-remove-keywords
-          nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)\\b"
-                 1 font-lock-warning-face t)))
-
-         (setq org-mode-initialized t)))
-      (add-hook 'org-mode-hook 'ljos/org-mode-hook)))
-#+end_src
-
-*** Arduino mode
+*** Arduino
 #+begin_src emacs-lisp
   (use-package arduino-mode
     :ensure t
     :mode "\\.ino$"
-    :config (add-hook 'arduino-mode-hook '(lambda ()
-                                            (idle-highlight-mode +1))))
-#+end_src
-
-*** Clojure mode
-#+begin_src emacs-lisp
-  (use-package cider
-    :ensure t
     :config
     (progn
-      (use-package ac-nrepl
-        :ensure t
-        :commands ac-nrepl-setup)
+      (defvar ljos/arduino-mode-initialized nil)
+      (defun ljos/arduino-mode-hook ()
+        (unless ljos/arduino-mode-activated
+          (idle-highlight-mode t))
+        (setq ljos/arduino-mode-initialized t))
+      (add-hook 'arduino-mode-hook 'ljos/arduino-mode-hook)))
+#+end_src
 
-      (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
-      (add-hook 'cider-mode-hook 'ac-nrepl-setup)
-      (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
-      (add-hook 'cider-repl-mode-hook 'enable-paredit-mode)
-      (add-hook 'cider-repl-mode-hook 'subword-mode)
-      (setq cider-repl-history-file "~/.emacs.d/history/nrepl")))
+*** Clojure
+#+begin_src emacs-lisp
+  (use-package ac-nrepl
+    :ensure t
+    :commands ac-nrepl-setup)
+
+  (use-package midje-mode
+    :load-path "site-lisp/midje-mode"
+    :commands midje-mode-maybe-enable
+    :init (setq midje-keymap-prefix (kbd "C-c m"))
+    :config
+    (progn
+      (add-hook 'midje-mode-hook
+                '(lambda ()
+                   (yas-activate-extra-mode 'midje-mode)))))
 
   (use-package clojure-mode
     :ensure t
@@ -739,15 +625,17 @@ calling an interactive command.
                   ("cake" . clojure-mode))
     :config
     (progn
-      (use-package midje-mode
-        :load-path "site-lisp/midje-mode"
-        :commands midje-mode-maybe-enable
-        :init (setq midje-keymap-prefix (kbd "C-c m"))
+
+      (use-package cider
+        :ensure t
         :config
         (progn
-          (add-hook 'midje-mode-hook
-                    '(lambda ()
-                       (yas-activate-extra-mode 'midje-mode)))))
+          (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
+          (add-hook 'cider-mode-hook 'ac-nrepl-setup)
+          (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+          (add-hook 'cider-repl-mode-hook 'enable-paredit-mode)
+          (add-hook 'cider-repl-mode-hook 'subword-mode)
+          (setq cider-repl-history-file "~/.emacs.d/history/nrepl")))
 
       (defun clojure-jump-to-project-file ()
         (interactive)
@@ -786,42 +674,54 @@ do clojurescript and not just use the clojure-mode.
     :mode "\\.cljs$")
 #+end_src
 
+*** Elastic search
+#+begin_src emacs-lisp
+    (use-package es-mode
+      :load-path "site-lisp/es-mode"
+      :mode "\\.es$")
+#+end_src
 *** Emacs lisp
 #+begin_src emacs-lisp
-  (use-package lisp-mode
-    :config
-    (progn
-      (use-package elisp-slime-nav
-        :ensure t
-        :commands elisp-slime-nav-mode)
+  (use-package elisp-slime-nav
+    :ensure t
+    :commands elisp-slime-nav-mode)
 
-      (add-hook 'emacs-lisp-mode-hook
-                (lambda ()
-                  (make-local-variable 'after-save-hook)
-                  (add-hook 'after-save-hook
-                            (lambda ()
-                              (if (file-exists-p (concat buffer-file-name "c"))
-                                  (delete-file (concat buffer-file-name "c")))))))
+  (add-hook 'emacs-lisp-mode-hook
+            (lambda ()
+              (make-local-variable 'after-save-hook)
+              (add-hook 'after-save-hook
+                        (lambda ()
+                          (if (file-exists-p (concat buffer-file-name "c"))
+                              (delete-file (concat buffer-file-name "c")))))))
 
-      (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-      (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
-      (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)))
+  (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+  (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
+  (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package ielm
-  :config
-  (add-hook 'ielm-mode-hook 'enable-paredit-mode))
+  (use-package ielm
+    :config
+    (add-hook 'ielm-mode-hook 'enable-paredit-mode))
 #+end_src
 
-*** Go mode
+*** eshell
+    #+begin_src emacs-lisp
+      (use-package eshell
+        :bind ("C-c s" . eshell))
+    #+end_src
+*** Go
 #+begin_src emacs-lisp
   (use-package go-mode
     :ensure t
     :mode "\\.go$")
 #+end_src
-*** Haskell mode
+*** Haskell
 #+begin_src emacs-lisp
+  (use-package shm
+    :ensure t
+    :commands structured-haskell-mode)
+
   (use-package haskell-mode
     :ensure t
     :mode (("\\.hs$" . haskell-mode)
@@ -832,11 +732,162 @@ do clojurescript and not just use the clojure-mode.
       (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)))
 #+end_src
 
+*** Julia
+#+begin_src emacs-lisp
+  (use-package julia-mode
+    :load-path "site-lisp/julia-mode"
+    :mode "\\.jl$"
+    :config
+    (progn
+      (defvar ljos/julia-mode-initialized nil)
+
+      (defun ljos/julia-mode-hook ()
+        (unless ljos/julia-mode-initialized
+          (setq julia-inferior-program "/usr/local/bin/julia-basic")
+          (define-key julia-mode-map (kbd "C-c C-k") 'julia-inferior-reload-buffer)
+          (define-key julia-mode-map (kbd "C-c C-l") 'julia-inferior-send-line-or-region)
+          (define-key julia-mode-map (kbd "C-c M-j") 'julia-inferior-run)))
+
+      (add-hook 'julia-mode-hook 'ljos/julia-mode-hook)))
+#+end_src
+
+*** Lisp
+#+begin_src emacs-lisp
+  (use-package lisp-mode
+    :mode "\\.li?sp$"
+    :config
+    (progn
+      (defvar ljos/lisp-mode-initialized nil)
+      (defun ljos/lisp-mode-hook ()
+        (unless ljos/lisp-mode-initialized
+          (setq inferior-lisp-program "sbcl")
+          (load-file (expand-file-name "~/quicklisp/slime-helper.el"))
+          (add-hook 'slime-repl-mode-hook 'enable-paredit-mode)))
+      (add-hook 'lisp-mode-hook 'ljos/lisp-mode-hook)))
+#+end_src
+
 *** Magit
 #+begin_src emacs-lisp
   (use-package magit
     :ensure t
     :bind ("C-x g" . magit-status))
+#+end_src
+*** Org
+#+begin_src emacs-lisp
+  (use-package org
+    :ensure t
+    :mode ("\\.org$" . org-mode)
+    :bind (("\C-cl" . org-store-link)
+           ("\C-ca" . org-agenda)
+           ("\C-cb" . org-iswitchb)
+           ("\C-cc" . org-capture))
+    :config
+    (progn
+      (defvar ljos/org-mode-initialized nil)
+      (defun ljos/org-mode-hook ()
+        (unless ljos/org-mode-initialized
+          (require 'org-publish)
+
+          (defun org-export-latex-no-toc (depth)
+            (when depth
+              (format "%% Org-mode is exporting headings to %s levels.\n"
+                      depth)))
+
+          (setq org-directory "~/Dropbox/org"
+                org-mobile-inbox-for-pull "~/Dropbox/org/inbox.org"
+                org-mobile-directory "~/Dropbox/org/mobile"
+
+                org-src-fontify-natively t
+
+                org-agenda-include-all-todo t
+                org-agenda-files '("~/Dropbox/org/organizer.org")
+
+                org-tag-persistent-alist '(("work" . ?w) ("private" . ?p))
+
+                org-todo-keywords '((sequence "TODO" "STARTED" "WAITING"
+                                              "|" "DONE" "CANCELLED" "ON-HOLD" "DEFERRED" "DELEGATED")
+                                    (sequence "APPT" "|" "FINISHED" "CANCELLED" "MISSED")
+                                    (sequence "BUG" "|" "FIXED")
+                                    (sequence "NOTE"))
+
+                org-todo-keyword-faces '(("STARTED" . "yellow")
+                                         ("ON-HOLD" . "orange")
+                                         ("CANCELLED" . "dim gray")
+                                         ("NOTE" . "aqua"))
+
+                org-refile-targets '(("organizer.org" :maxlevel . 9))
+                org-completion-use-ido t
+                org-latex-pdf-process '("latexmk -bibtex -pdf %f")
+
+                fill-column 80
+                ispell-parser 'tex
+
+                ;;org-capture config
+                org-default-notes-file (concat org-directory "/organizer.org")
+
+                org-capture-templates '(("a" "Appointments" entry
+                                         (file+headline org-default-notes-file "Appointments")
+                                         "* APPT %? %^{WITH}p %^{LOCATION}p\n%^T--%^T\n" :prepend)
+                                        ("p" "Project" entry
+                                         (file+headline org-default-notes-file "Projects")
+                                         "* %?\n")
+                                        ("d" "Done" entry
+                                         (file+datetree (concat org-directory "/done.org"))
+                                         "* %?\nCLOCK: %^U--%U")
+                                        ("j" "Journal" entry
+                                         (file+datetree (concat org-directory "/journal.org"))
+                                         "* %?\nEntered on %U\n  %i\n  %a")
+                                        ("n" "Note" entry
+                                         (file+headline org-default-notes-file "Notes")
+                                         "* NOTE %?\n")
+                                        ("t" "Todo" entry
+                                         (file+headline org-default-notes-file "Tasks")
+                                         "* TODO %?\n  %i\n"))
+
+                org-export-latex-format-toc-function 'org-export-latex-no-toc
+
+                org-publish-project-alist '(("ljos.github.io"
+                                             :base-directory "~/workspace/ljos.github.io/org/"
+                                             :publishing-directory "~/workspace/ljos.github.io/"
+                                             :with-toc nil
+                                             :html-preamble nil
+                                             :html-postamble nil
+                                             :publishing-function org-html-publish-to-html)))
+
+          (add-to-list 'org-latex-packages-alist '("" "microtype"))
+          (add-to-list 'org-latex-packages-alist '("l2tabu, orthodox" "nag"))
+
+          (unless (boundp 'org-export-latex-classes)
+            (setq org-export-latex-classes nil))
+
+          (add-to-list 'org-export-latex-classes
+                       '("article"
+                         "\\documentclass{article}
+                         \\usepackage[round,authoryear,comma]{natbib}"
+                         ("\\section{%s}" . "\\section*{%s}")
+                         ("\\subsection{%s}" . "\\subsection*{%s}")
+                         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+
+          (add-to-list 'org-export-latex-classes
+                       '("thesis"
+                         "\\documentclass{report}"
+                         ("\\chapter{%s}" . "\\chapter*{%s}")
+                         ("\\section{%s}" . "\\section*{%s}")
+                         ("\\subsection{%s}" . "\\subsection*{%s}")
+                         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                         ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                         ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+          (define-key org-mode-map (kbd "M-q") 'org-fill-paragraph)
+          (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
+
+          (font-lock-remove-keywords
+           nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)\\b"
+                  1 font-lock-warning-face t)))
+
+          (setq ljos/org-mode-initialized t))
+          (auto-fill-mode))
+      (add-hook 'org-mode-hook 'ljos/org-mode-hook)))
 #+end_src
 *** prog-mode
 #+begin_src emacs-lisp
@@ -866,13 +917,6 @@ do clojurescript and not just use the clojure-mode.
 #         (use-package python-pylint
 #           :ensure t)))
 # #+end_src
-
-*** Common lisp
-#+begin_src emacs-lisp
-(setq inferior-lisp-program "sbcl")
-(load-file (expand-file-name "~/quicklisp/slime-helper.el"))
-(add-hook 'slime-repl-mode-hook 'enable-paredit-mode)
-#+end_src
 
 *** SPARQL
 #+begin_src emacs-lisp
