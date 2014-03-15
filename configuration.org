@@ -536,12 +536,10 @@ calling an interactive command.
             pomodoro-break-time 7)))
 #+end_src
 *** popwin
-#+begin_src emacs-lisp
-  (use-package popwin
-    :ensure t
-    :commands popwin:display-buffer
-    :init (setq display-buffer-function 'popwin:display-buffer))
-#+end_src
+    #+begin_src emacs-lisp
+      ;; (require 'popwin)
+      ;; (popwin-mode +1)
+    #+end_src
 
 *** projectile
 
