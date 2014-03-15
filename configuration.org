@@ -316,6 +316,10 @@ calling an interactive command.
     Auto completion is nice, but we need it to not be so slow. It is
     also nice to have yasnippet completions available as well.
 #+begin_src emacs-lisp
+  (use-package fuzzy
+    :ensure t
+    :commands fuzzy-all-completions)
+
   (use-package auto-complete-config
     :ensure auto-complete
     :init (ac-config-default)
@@ -323,6 +327,7 @@ calling an interactive command.
     (progn
       (setq ac-auto-show-menu 0.3)
       (setq ac-use-menu-map t)
+      (setq ac-fuzzy-enable t)
       (ac-config-default)
       (setq ac-sources
             (cons ac-source-yasnippet
