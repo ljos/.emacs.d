@@ -69,7 +69,13 @@ I like the tomorrow-night color theme.
      display. These are some helper functions that I found at
      at http://stackoverflow.com/a/94277 .
 #+begin_src emacs-lisp
-  (defun set-frame-size-according-to-resolution ()
+  (defun ljos/set-frame-size-according-to-resolution ()
+    "Sets the size of the frame according to the screen size. If the
+  width is less then 1280 we stick to 80 character width for the
+  frame. If it is larger we make frame 100 characters wide.
+
+  The height of the frame is 50px less than the height of the
+  screen."
     (interactive)
     (if window-system
         (progn
@@ -81,7 +87,8 @@ I like the tomorrow-night color theme.
                        (cons 'height (/ (- (x-display-pixel-height) 50)
                                         (frame-char-height)))))))
 
-  (defun x-maximize-frame ()
+  (defun ljos/x-maximize-frame ()
+    "Sends a message to an X Server to maximize the frame."
     (interactive)
     (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
                            '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
@@ -89,8 +96,8 @@ I like the tomorrow-night color theme.
                            '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
 
   (if (eq 'x window-system)
-      (x-maximize-frame)
-    (set-frame-size-according-to-resolution))
+      (ljos/x-maximize-frame)
+    (ljos/set-frame-size-according-to-resolution))
 
   (set-frame-position (next-frame) 0 0)
 #+end_src
@@ -124,9 +131,14 @@ I like the tomorrow-night color theme.
     Sometimes emacs is not so good at finding the correct paths to
     everything.
 #+begin_src emacs-lisp
-(defcustom exec-paths '("~/.lein/bin" "/usr/local/bin" "~/.local/bin" "/usr/texbin")
-  "Directories to be added to exec-path"
-  :type 'string)
+  (defcustom exec-paths
+    '("~/.lein/bin"
+      "~/.cabal/bin"
+      "~/.local/bin"
+      "/usr/local/bin"
+      "/usr/texbin")
+    "Directories to be added to exec-path"
+    :type 'string)
 #+end_src
 
 Add all of the custom paths to the PATH variable.
