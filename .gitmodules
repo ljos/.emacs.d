@@ -16,3 +16,6 @@
 [submodule "site-lisp/midje-mode"]
 	path = site-lisp/midje-mode
 	url = git@github.com:dnaumov/midje-mode.git
+[submodule "site-lisp/es-mode"]
+	path = site-lisp/es-mode
+	url = git@github.com:dakrone/es-mode.git
