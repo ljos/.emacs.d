@@ -709,6 +709,11 @@ do clojurescript and not just use the clojure-mode.
       (use-package eshell
         :bind ("C-c s" . eshell))
     #+end_src
+*** ESS
+    #+BEGIN_SRC emacs-lisp
+      (use-package ess-site
+        :load-path "site-lisp/ESS/lisp")
+    #+END_SRC
 *** Go
 #+begin_src emacs-lisp
   (use-package go-mode
