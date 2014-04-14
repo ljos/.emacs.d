@@ -889,15 +889,15 @@ do clojurescript and not just use the clojure-mode.
                          ("\\paragraph{%s}" . "\\paragraph*{%s}")
                          ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-          (define-key org-mode-map (kbd "M-q") 'org-fill-paragraph)
-          (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
-
           (font-lock-remove-keywords
            nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)\\b"
                   1 font-lock-warning-face t)))
 
-          (setq ljos/org-mode-initialized t))
-          (auto-fill-mode))
+          (define-key org-mode-map (kbd "M-q") 'org-fill-paragraph)
+          (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
+
+          (setq ljos/org-mode-initialized t)))
+      (auto-fill-mode)
       (add-hook 'org-mode-hook 'ljos/org-mode-hook)))
 #+end_src
 *** prog-mode
