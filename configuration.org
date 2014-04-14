@@ -907,14 +907,16 @@ do clojurescript and not just use the clojure-mode.
   (add-hook 'prog-mode-hook (lambda () (idle-highlight-mode +1))))
 #+end_src
 *** Prolog
-#+begin_src emacs-lisp
-  (use-package prolog
-    :commands (run-prolog prolog-mode mercury-mode)
-    :mode (("\\.pl$" . prolog-mode)
-           ("\\.m$" . mercury-mode))
-    :config
-    (setq prolog-system 'swi))
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package prolog
+        :ensure t
+        :commands (run-prolog prolog-mode mercury-mode)
+        :mode (("\\.pl$" . prolog-mode)
+               ("\\.m$" . mercury-mode)
+               ("\\.plt$" . prolog-mode))
+        :config
+        (setq prolog-system 'swi))
+    #+end_src
 *** Python
 # #+begin_src emacs-lisp
 #     (use-package python-mode
