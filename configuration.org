@@ -815,8 +815,10 @@ do clojurescript and not just use the clojure-mode.
                 org-tag-persistent-alist '(("work" . ?w) ("private" . ?p))
 
                 org-todo-keywords '((sequence "TODO" "STARTED" "WAITING"
-                                              "|" "DONE" "CANCELLED" "ON-HOLD" "DEFERRED" "DELEGATED")
-                                    (sequence "APPT" "|" "FINISHED" "CANCELLED" "MISSED")
+                                              "|" "DONE" "CANCELLED" "ON-HOLD"
+                                                  "DEFERRED" "DELEGATED")
+                                    (sequence "APPT" "|" "FINISHED"
+                                                         "CANCELLED" "MISSED")
                                     (sequence "BUG" "|" "FIXED")
                                     (sequence "NOTE"))
 
