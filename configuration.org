@@ -796,8 +796,6 @@ do clojurescript and not just use the clojure-mode.
       (defvar ljos/org-mode-initialized nil)
       (defun ljos/org-mode-hook ()
         (unless ljos/org-mode-initialized
-          (require 'org-publish)
-
           (defun org-export-latex-no-toc (depth)
             (when depth
               (format "%% Org-mode is exporting headings to %s levels.\n"
@@ -858,13 +856,6 @@ do clojurescript and not just use the clojure-mode.
 
                 org-export-latex-format-toc-function 'org-export-latex-no-toc
 
-                org-publish-project-alist '(("ljos.github.io"
-                                             :base-directory "~/workspace/ljos.github.io/org/"
-                                             :publishing-directory "~/workspace/ljos.github.io/"
-                                             :with-toc nil
-                                             :html-preamble nil
-                                             :html-postamble nil
-                                             :publishing-function org-html-publish-to-html)))
 
           (add-to-list 'org-latex-packages-alist '("" "microtype"))
           (add-to-list 'org-latex-packages-alist '("l2tabu, orthodox" "nag"))
