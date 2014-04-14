@@ -854,7 +854,7 @@ do clojurescript and not just use the clojure-mode.
                                          (file+headline org-default-notes-file "Tasks")
                                          "* TODO %?\n  %i\n"))
 
-                org-export-latex-format-toc-function 'org-export-latex-no-toc
+                org-export-latex-format-toc-function 'org-export-latex-no-toc)
 
 
           (add-to-list 'org-latex-packages-alist '("" "microtype"))
