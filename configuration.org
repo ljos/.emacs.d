@@ -856,6 +856,9 @@ do clojurescript and not just use the clojure-mode.
 
                 org-export-latex-format-toc-function 'org-export-latex-no-toc)
 
+          (org-babel-do-load-languages
+           'org-babel-load-languages
+           '((latex . t)))
 
           (add-to-list 'org-latex-packages-alist '("" "microtype"))
           (add-to-list 'org-latex-packages-alist '("l2tabu, orthodox" "nag"))
