@@ -714,6 +714,12 @@ do clojurescript and not just use the clojure-mode.
       (use-package ess-site
         :load-path "site-lisp/ESS/lisp")
     #+END_SRC
+*** Gnuplot
+    #+BEGIN_SRC emacs-lisp
+      (org-babel-do-load-languages
+       'org-babel-load-languages
+       '((gnuplot . t)))
+    #+END_SRC
 *** Go
 #+begin_src emacs-lisp
   (use-package go-mode
