@@ -104,11 +104,10 @@ I like the tomorrow-night color theme.
 
 *** OS X
     The menu bar is annoying on systems other than OS X.
-#+begin_src emacs-lisp
-  (if (equal system-type 'darwin)
-      (menu-bar-mode +1)
-    (menu-bar-mode -1))
-#+end_src
+    #+begin_src emacs-lisp -r
+      (unless (equal system-type 'darwin)
+        (menu-bar-mode nil))
+    #+end_src
 
 *** Define keys
 #+begin_src emacs-lisp
