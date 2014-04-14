@@ -860,8 +860,13 @@ do clojurescript and not just use the clojure-mode.
            'org-babel-load-languages
            '((latex . t)))
 
+          (unless (boundp 'org-latex-packages-alist)
+            (setq org-latex-packages-alist nil))
+
           (add-to-list 'org-latex-packages-alist '("" "microtype"))
           (add-to-list 'org-latex-packages-alist '("l2tabu, orthodox" "nag"))
+          (add-to-list 'org-latex-packages-alist '("round" "natbib"))
+          (add-to-list 'org-latex-packages-alist '("utf8" "inputenc"))
 
           (unless (boundp 'org-export-latex-classes)
             (setq org-export-latex-classes nil))
