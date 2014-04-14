@@ -674,11 +674,16 @@ do clojurescript and not just use the clojure-mode.
 #+end_src
 
 *** Elastic search
-#+begin_src emacs-lisp
-    (use-package es-mode
-      :load-path "site-lisp/es-mode"
-      :mode "\\.es$")
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package es-mode
+        :load-path "site-lisp/es-mode"
+        :mode "\\.es$"
+        :config
+        (progn
+          (org-babel-do-load-languages
+           'org-babel-load-languages
+           '((elasticsearch . t)))))
+    #+end_src
 *** Emacs lisp
 #+begin_src emacs-lisp
   (use-package elisp-slime-nav
