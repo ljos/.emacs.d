@@ -352,26 +352,24 @@ calling an interactive command.
     :init (command-frequency-mode +1))
 #+end_src
 *** Dired
-#+begin_src emacs-lisp
-  (use-package dired
-    :init
-    (if  (not (boundp 'dired-mode-map))
-        (add-hook 'dired-load-hook
-                  (lambda ()
-                    (define-key dired-mode-map [return]
-                      'dired-single-buffer)
-                    (define-key dired-mode-map [mouse-1]
-                      'dired-single-buffer-mouse)
-                    (define-key dired-mode-map "^"
-                      (function
-                       (lambda ()
-                         (interactive)
-                         (dired-single-buffer "..")))))))
-    :config
-    (use-package dired-single
-      :ensure t))
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package dired-single
+        :ensure t
+        :commands (dired-single-buffer
+                   dired-single-buffer-mouse))
 
+      (use-package dired
+        :init
+        (unless (boundp 'dired-mode-map)
+          (defun ljos/dired-load-hook ()
+            (define-key dired-mode-map [return] 'dired-single-buffer)
+            (define-key dired-mode-map [mouse-1] 'dired-single-buffer-mouse)
+            (define-key dired-mode-map "^" (function
+                                            (lambda ()
+                                              (interactive)
+                                              (dired-single-buffer "..")))))
+          (add-hook 'dired-load-hook 'ljos/dired-load-hook)))
+    #+end_src
 *** Expand-region
 #+begin_src emacs-lisp
   (use-package expand-region
@@ -541,14 +539,13 @@ calling an interactive command.
     #+end_src
 
 *** projectile
-
-#+begin_src emacs-lisp
-  (use-package projectile
-    :ensure t
-    :init (projectile-global-mode)
-    :bind ("s-p" . projectile-switch-project)
-    :config (setq projectile-enable-caching t))
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package projectile
+        :ensure t
+        :init (projectile-global-mode)
+        :bind ("s-p" . projectile-switch-project)
+        :config (setq projectile-enable-caching t))
+    #+end_src
 *** smex
 #+begin_src emacs-lisp
   (use-package smex
@@ -782,11 +779,17 @@ do clojurescript and not just use the clojure-mode.
 #+end_src
 
 *** Magit
-#+begin_src emacs-lisp
-  (use-package magit
-    :ensure t
-    :bind ("C-x g" . magit-status))
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package magit-annex
+        :ensure t
+        :defer t)
+
+      (use-package magit
+        :ensure t
+        :bind ("C-x g" . magit-status)
+        :config
+        (require 'magit-annex))
+    #+end_src
 *** Org
 #+begin_src emacs-lisp
   (use-package org
@@ -906,11 +909,11 @@ do clojurescript and not just use the clojure-mode.
       (add-hook 'org-mode-hook 'ljos/org-mode-hook)))
 #+end_src
 *** prog-mode
-#+begin_src emacs-lisp
-(use-package prog-mode
-  :config
-  (add-hook 'prog-mode-hook (lambda () (idle-highlight-mode +1))))
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package prog-mode
+        :config
+        (add-hook 'prog-mode-hook (lambda () (idle-highlight-mode +1))))
+    #+end_src
 *** Prolog
     #+begin_src emacs-lisp
       (use-package prolog
