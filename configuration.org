@@ -794,123 +794,217 @@ do clojurescript and not just use the clojure-mode.
         (require 'magit-annex))
     #+end_src
 *** Org
-#+begin_src emacs-lisp
-  (use-package org
-    :ensure t
-    :mode ("\\.org$" . org-mode)
-    :bind (("\C-cl" . org-store-link)
-           ("\C-ca" . org-agenda)
-           ("\C-cb" . org-iswitchb)
-           ("\C-cc" . org-capture))
-    :config
-    (progn
-      (defvar ljos/org-mode-initialized nil)
-      (defun ljos/org-mode-hook ()
-        (unless ljos/org-mode-initialized
-          (defun org-export-latex-no-toc (depth)
-            (when depth
-              (format "%% Org-mode is exporting headings to %s levels.\n"
-                      depth)))
+    Found this at [[http://orgmode.org/worg/org-hacks.html#sec-1-3-7][Count words in an Org buffer]].
+    #+begin_src emacs-lisp
+      (defun org-word-count (beg end
+                                 &optional count-latex-macro-args?
+                                 count-footnotes?)
+        "Report the number of words in the Org mode buffer or selected region.
+      Ignores:
+      - comments
+      - tables
+      - source code blocks (#+BEGIN_SRC ... #+END_SRC, and inline blocks)
+      - hyperlinks (but does count words in hyperlink descriptions)
+      - tags, priorities, and TODO keywords in headers
+      - sections tagged as 'not for export'.
 
-          (setq org-directory "~/Dropbox/org"
-                org-mobile-inbox-for-pull "~/Dropbox/org/inbox.org"
-                org-mobile-directory "~/Dropbox/org/mobile"
+      The text of footnote definitions is ignored, unless the optional argument
+      COUNT-FOOTNOTES? is non-nil.
 
-                org-src-fontify-natively t
+      If the optional argument COUNT-LATEX-MACRO-ARGS? is non-nil, the word count
+      includes LaTeX macro arguments (the material between {curly braces}).
+      Otherwise, and by default, every LaTeX macro counts as 1 word regardless
+      of its arguments."
+        (interactive "r")
+        (unless mark-active
+          (setf beg (point-min)
+                end (point-max)))
+        (let ((wc 0)
+              (latex-macro-regexp "\\\\[A-Za-z]+\\(\\[[^]]*\\]\\|\\){\\([^}]*\\)}"))
+          (save-excursion
+            (goto-char beg)
+            (while (< (point) end)
+              (cond
+               ;; Ignore comments.
+               ((or (org-in-commented-line) (org-at-table-p))
+                nil)
+               ;; Ignore hyperlinks. But if link has a description, count
+               ;; the words within the description.
+               ((looking-at org-bracket-link-analytic-regexp)
+                (when (match-string-no-properties 5)
+                  (let ((desc (match-string-no-properties 5)))
+                    (save-match-data
+                      (incf wc (length (remove "" (org-split-string
+                                                   desc "\\W")))))))
+                (goto-char (match-end 0)))
+               ((looking-at org-any-link-re)
+                (goto-char (match-end 0)))
+               ;; Ignore source code blocks.
+               ((org-in-block-p '("SRC"))
+                nil)
+               ;; Ignore inline source blocks, counting them as 1 word.
+               ((save-excursion
+                  (backward-char)
+                  (looking-at org-babel-inline-src-block-regexp))
+                (goto-char (match-end 0))
+                (setf wc (+ 2 wc)))
+               ;; Count latex macros as 1 word, ignoring their arguments.
+               ((save-excursion
+                  (backward-char)
+                  (looking-at latex-macro-regexp))
+                (goto-char (if count-latex-macro-args?
+                               (match-beginning 2)
+                             (match-end 0)))
+                (setf wc (+ 2 wc)))
+               ;; Ignore footnotes.
+               ((and (not count-footnotes?)
+                     (or (org-footnote-at-definition-p)
+                         (org-footnote-at-reference-p)))
+                nil)
+               (t
+                (let ((contexts (org-context)))
+                  (cond
+                   ;; Ignore tags and TODO keywords, etc.
+                   ((or (assoc :todo-keyword contexts)
+                        (assoc :priority contexts)
+                        (assoc :keyword contexts)
+                        (assoc :checkbox contexts))
+                    nil)
+                   ;; Ignore sections marked with tags that are
+                   ;; excluded from export.
+                   ((assoc :tags contexts)
+                    (if (intersection (org-get-tags-at) org-export-exclude-tags
+                                      :test 'equal)
+                        (org-forward-same-level 1)
+                      nil))
+                   (t
+                    (incf wc))))))
+              (re-search-forward "\\w+\\W*")))
+          (message (format "%d words in %s." wc
+                           (if mark-active "region" "buffer")))))
+    #+end_src
 
-                org-agenda-include-all-todo t
-                org-agenda-files '("~/Dropbox/org/organizer.org")
+    #+begin_src emacs-lisp
+      (use-package org
+        :ensure t
+        :mode ("\\.org$" . org-mode)
+        :bind (("\C-cl" . org-store-link)
+               ("\C-ca" . org-agenda)
+               ("\C-cb" . org-iswitchb)
+               ("\C-cc" . org-capture))
+        :config
+        (progn
+          (defvar ljos/org-mode-initialized nil)
+          (defun ljos/org-mode-hook ()
+            (unless ljos/org-mode-initialized
+              (defun org-export-latex-no-toc (depth)
+                (when depth
+                  (format "%% Org-mode is exporting headings to %s levels.\n"
+                          depth)))
 
-                org-tag-persistent-alist '(("work" . ?w) ("private" . ?p))
+              (setq org-directory "~/Dropbox/org"
+                    org-mobile-inbox-for-pull "~/Dropbox/org/inbox.org"
+                    org-mobile-directory "~/Dropbox/org/mobile"
 
-                org-todo-keywords '((sequence "TODO" "STARTED" "WAITING"
-                                              "|" "DONE" "CANCELLED" "ON-HOLD"
-                                                  "DEFERRED" "DELEGATED")
-                                    (sequence "APPT" "|" "FINISHED"
-                                                         "CANCELLED" "MISSED")
-                                    (sequence "BUG" "|" "FIXED")
-                                    (sequence "NOTE"))
+                    org-src-fontify-natively t
+                    org-src-window-setup 'current-window
 
-                org-todo-keyword-faces '(("STARTED" . "yellow")
-                                         ("ON-HOLD" . "orange")
-                                         ("CANCELLED" . "dim gray")
-                                         ("NOTE" . "aqua"))
+                    org-agenda-include-all-todo t
+                    org-agenda-files '("~/Dropbox/org/organizer.org")
 
-                org-refile-targets '(("organizer.org" :maxlevel . 9))
-                org-completion-use-ido t
-                org-latex-pdf-process '("latexmk -bibtex -pdf %f")
+                    org-tag-persistent-alist '(("work" . ?w) ("private" . ?p))
 
-                fill-column 80
-                ispell-parser 'tex
+                    org-todo-keywords '((sequence "TODO" "STARTED" "WAITING"
+                                                  "|" "DONE" "CANCELLED" "ON-HOLD"
+                                                      "DEFERRED" "DELEGATED")
+                                        (sequence "APPT" "|" "FINISHED"
+                                                             "CANCELLED" "MISSED")
+                                        (sequence "BUG" "|" "FIXED")
+                                        (sequence "NOTE"))
 
-                ;;org-capture config
-                org-default-notes-file (concat org-directory "/organizer.org")
+                    org-todo-keyword-faces '(("STARTED" . "yellow")
+                                             ("ON-HOLD" . "orange")
+                                             ("CANCELLED" . "dim gray")
+                                             ("NOTE" . "aqua"))
 
-                org-capture-templates '(("a" "Appointments" entry
-                                         (file+headline org-default-notes-file "Appointments")
-                                         "* APPT %? %^{WITH}p %^{LOCATION}p\n%^T--%^T\n" :prepend)
-                                        ("p" "Project" entry
-                                         (file+headline org-default-notes-file "Projects")
-                                         "* %?\n")
-                                        ("d" "Done" entry
-                                         (file+datetree (concat org-directory "/done.org"))
-                                         "* %?\nCLOCK: %^U--%U")
-                                        ("j" "Journal" entry
-                                         (file+datetree (concat org-directory "/journal.org"))
-                                         "* %?\nEntered on %U\n  %i\n  %a")
-                                        ("n" "Note" entry
-                                         (file+headline org-default-notes-file "Notes")
-                                         "* NOTE %?\n")
-                                        ("t" "Todo" entry
-                                         (file+headline org-default-notes-file "Tasks")
-                                         "* TODO %?\n  %i\n"))
+                    org-refile-targets '(("organizer.org" :maxlevel . 9))
+                    org-completion-use-ido t
+                    org-latex-pdf-process '("latexmk -bibtex -pdf %f")
 
-                org-export-latex-format-toc-function 'org-export-latex-no-toc)
+                    fill-column 80
+                    ispell-parser 'tex
 
-          (org-babel-do-load-languages
-           'org-babel-load-languages
-           '((latex . t)))
+                    ;;org-capture config
+                    org-default-notes-file (concat org-directory "/organizer.org")
 
-          (unless (boundp 'org-latex-packages-alist)
-            (setq org-latex-packages-alist nil))
+                    org-capture-templates '(("a" "Appointments" entry
+                                             (file+headline org-default-notes-file "Appointments")
+                                             "* APPT %? %^{WITH}p %^{LOCATION}p\n%^T--%^T\n"
+                                             :prepend)
+                                            ("p" "Project" entry
+                                             (file+headline org-default-notes-file "Projects")
+                                             "* %?\n")
+                                            ("d" "Done" entry
+                                             (file+datetree (concat org-directory "/done.org"))
+                                             "* %?\nCLOCK: %^U--%U")
+                                            ("j" "Journal" entry
+                                             (file+datetree (concat org-directory "/journal.org"))
+                                             "* %?\nEntered on %U\n  %i\n  %a")
+                                            ("n" "Note" entry
+                                             (file+headline org-default-notes-file "Notes")
+                                             "* NOTE %?\n")
+                                            ("t" "Todo" entry
+                                             (file+headline org-default-notes-file "Tasks")
+                                             "* TODO %?\n  %i\n"))
 
-          (add-to-list 'org-latex-packages-alist '("" "microtype"))
-          (add-to-list 'org-latex-packages-alist '("l2tabu, orthodox" "nag"))
-          (add-to-list 'org-latex-packages-alist '("round" "natbib"))
-          (add-to-list 'org-latex-packages-alist '("utf8" "inputenc"))
+                    org-export-latex-format-toc-function 'org-export-latex-no-toc
 
-          (unless (boundp 'org-export-latex-classes)
-            (setq org-export-latex-classes nil))
+                    org-use-speed-commands t)
 
-          (add-to-list 'org-export-latex-classes
-                       '("article"
-                         "\\documentclass{article}
-                         \\usepackage[round,authoryear,comma]{natbib}"
-                         ("\\section{%s}" . "\\section*{%s}")
-                         ("\\subsection{%s}" . "\\subsection*{%s}")
-                         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+              (org-babel-do-load-languages
+               'org-babel-load-languages
+               '((latex . t)))
 
-          (add-to-list 'org-export-latex-classes
-                       '("thesis"
-                         "\\documentclass{report}"
-                         ("\\chapter{%s}" . "\\chapter*{%s}")
-                         ("\\section{%s}" . "\\section*{%s}")
-                         ("\\subsection{%s}" . "\\subsection*{%s}")
-                         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                         ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                         ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+              (unless (boundp 'org-latex-packages-alist)
+                (setq org-latex-packages-alist nil))
 
-          (font-lock-remove-keywords
-           nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)\\b"
-                  1 font-lock-warning-face t)))
+              (add-to-list 'org-latex-packages-alist '("" "microtype"))
+              (add-to-list 'org-latex-packages-alist '("l2tabu, orthodox" "nag"))
+              (add-to-list 'org-latex-packages-alist '("round" "natbib"))
+              (add-to-list 'org-latex-packages-alist '("utf8" "inputenc"))
 
-          (define-key org-mode-map (kbd "M-q") 'org-fill-paragraph)
-          (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
+              (unless (boundp 'org-export-latex-classes)
+                (setq org-export-latex-classes nil))
 
-          (setq ljos/org-mode-initialized t)))
-      (auto-fill-mode)
-      (add-hook 'org-mode-hook 'ljos/org-mode-hook)))
-#+end_src
+              (add-to-list 'org-export-latex-classes
+                           '("article"
+                             "\\documentclass{article}
+                             \\usepackage[round,authoryear,comma]{natbib}"
+                             ("\\section{%s}" . "\\section*{%s}")
+                             ("\\subsection{%s}" . "\\subsection*{%s}")
+                             ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+
+              (add-to-list 'org-export-latex-classes
+                           '("thesis"
+                             "\\documentclass{report}"
+                             ("\\chapter{%s}" . "\\chapter*{%s}")
+                             ("\\section{%s}" . "\\section*{%s}")
+                             ("\\subsection{%s}" . "\\subsection*{%s}")
+                             ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                             ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                             ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+              (font-lock-remove-keywords
+               nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)\\b"
+                      1 font-lock-warning-face t)))
+
+              (define-key org-mode-map (kbd "M-q") 'org-fill-paragraph)
+              (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
+
+              (setq ljos/org-mode-initialized t)))
+          (auto-fill-mode)
+          (add-hook 'org-mode-hook 'ljos/org-mode-hook)))
+    #+end_src
 *** prog-mode
     #+begin_src emacs-lisp
       (use-package prog-mode
