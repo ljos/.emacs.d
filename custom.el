@@ -11,7 +11,6 @@
  '(focus-follows-mouse nil)
  '(fringe-mode nil nil (fringe))
  '(global-hl-line-mode t)
- '(global-linum-mode nil)
  '(indent-tabs-mode nil)
  '(inhibit-startup-echo-area-message "bjarte")
  '(inhibit-startup-screen t)
