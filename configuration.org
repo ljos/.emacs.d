@@ -652,6 +652,24 @@ calling an interactive command.
                 '(lambda ()
                    (yas-activate-extra-mode 'midje-mode)))))
 
+  (use-package cider
+    :ensure t
+    :commands cider-jack-in
+    :config
+    (progn
+      (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
+      (add-hook 'cider-mode-hook 'ac-nrepl-setup)
+      (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+      (add-hook 'cider-repl-mode-hook 'enable-paredit-mode)
+      (add-hook 'cider-repl-mode-hook 'subword-mode)
+      (setq cider-repl-history-file "~/.emacs.d/history/nrepl")))
+
+  (defun clojure-jump-to-project-file ()
+        (interactive)
+        (let ((dir (file-name-as-directory
+                    (locate-dominating-file buffer-file-name "src/"))))
+          (find-file (concat dir "project.clj"))))
+
   (use-package clojure-mode
     :ensure t
     :mode (("\\.cljx?$" . clojure-mode)
@@ -661,23 +679,6 @@ calling an interactive command.
                   ("cake" . clojure-mode))
     :config
     (progn
-
-      (use-package cider
-        :ensure t
-        :config
-        (progn
-          (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
-          (add-hook 'cider-mode-hook 'ac-nrepl-setup)
-          (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
-          (add-hook 'cider-repl-mode-hook 'enable-paredit-mode)
-          (add-hook 'cider-repl-mode-hook 'subword-mode)
-          (setq cider-repl-history-file "~/.emacs.d/history/nrepl")))
-
-      (defun clojure-jump-to-project-file ()
-        (interactive)
-        (let ((dir (file-name-as-directory
-                    (locate-dominating-file buffer-file-name "src/"))))
-          (find-file (concat dir "project.clj"))))
 
       (defvar clojure-mode-initialized nil)
 
