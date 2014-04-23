@@ -38,6 +38,12 @@ OS X at one point. It seemed to go away if I called these functions:
 I do not know if I still need these, but they stay as it isn't a
 problem that they're there.
 
+Use the coreutils =ls= program when using emacs on OS X.
+#+BEGIN_SRC emacs-lisp
+  (when (eq 'darwin system-type)
+    (setq insert-directory-program "gls"))
+#+END_SRC
+
 *** Enable disables
 There are some of the disabled functions that I actually like to use.
 #+begin_src emacs-lisp
