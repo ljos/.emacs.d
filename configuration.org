@@ -364,17 +364,31 @@ calling an interactive command.
         :commands (dired-single-buffer
                    dired-single-buffer-mouse))
 
+      (use-package dired-x
+        :commands dired-omit-mode
+        :config
+        (progn
+          (setq-default dired-omit-files-p t)
+          (setq dired-omit-files
+                (concat dired-omit-files "\\|^\\..+$"))))
+
       (use-package dired
-        :init
-        (unless (boundp 'dired-mode-map)
-          (defun ljos/dired-load-hook ()
-            (define-key dired-mode-map [return] 'dired-single-buffer)
-            (define-key dired-mode-map [mouse-1] 'dired-single-buffer-mouse)
-            (define-key dired-mode-map "^" (function
-                                            (lambda ()
-                                              (interactive)
-                                              (dired-single-buffer "..")))))
-          (add-hook 'dired-load-hook 'ljos/dired-load-hook)))
+        :commands dired-at-point
+        :config
+        (progn
+          (defvar ljos/dired-mode-initialized nil)
+          (defun ljos/dired-mode-hook ()
+            (dired-omit-mode t)
+            (unless ljos/dired-mode-initialized
+              (define-key dired-mode-map "h" 'dired-omit-mode)
+              (define-key dired-mode-map [return] 'dired-single-buffer)
+              (define-key dired-mode-map [mouse-1] 'dired-single-buffer-mouse)
+              (define-key dired-mode-map "^" (function
+                                              (lambda ()
+                                                (interactive)
+                                                (dired-single-buffer ".."))))
+              (setq ljos/dired-mode-initialized)))
+          (add-hook 'dired-mode-hook 'ljos/dired-mode-hook)))
     #+end_src
 *** Expand-region
 #+begin_src emacs-lisp
