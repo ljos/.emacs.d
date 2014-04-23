@@ -563,11 +563,18 @@ calling an interactive command.
 
 *** projectile
     #+begin_src emacs-lisp
+      (defun projectile-ztree-dir ()
+        "Open `ztree-dir' at the root of the project."
+        (interactive)
+        (ztree-dir (projectile-project-root)))
+
       (use-package projectile
         :ensure t
         :init (projectile-global-mode)
         :bind ("s-p" . projectile-switch-project)
-        :config (setq projectile-enable-caching t))
+        :config
+        (progn
+          (setq projectile-switch-project-action 'projectile-ztree-dir)))
     #+end_src
 *** smex
 #+begin_src emacs-lisp
@@ -603,6 +610,16 @@ calling an interactive command.
     :init (yas-global-mode +1))
 #+end_src
 
+*** ztree
+    #+BEGIN_SRC emacs-lisp
+      (use-package ztree-dir
+        :ensure ztree
+        :commands ztree-dir
+        :config
+        (progn
+          (define-key ztree-mode-map (kbd "n") 'next-line)
+          (define-key ztree-mode-map (kbd "p") 'previous-line)))
+    #+END_SRC
 ** Major modes
 *** Arduino
 #+begin_src emacs-lisp
