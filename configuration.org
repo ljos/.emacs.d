@@ -116,21 +116,24 @@ I like the tomorrow-night color theme.
     #+end_src
 
 *** Define keys
-#+begin_src emacs-lisp
-(global-set-key (kbd "s--") 'text-scale-decrease)
-(global-set-key (kbd "s-=") 'text-scale-increase)
-(global-set-key (kbd "C-s") 'isearch-forward-regexp)
-(global-set-key (kbd "C-r") 'isearch-backward-regexp)
-(define-key 'help-command "a" 'apropos)
+    #+begin_src emacs-lisp
+      (global-set-key (kbd "s--") 'text-scale-decrease)
+      (global-set-key (kbd "s-=") 'text-scale-increase)
+      (global-set-key (kbd "C-s") 'isearch-forward-regexp)
+      (global-set-key (kbd "C-r") 'isearch-backward-regexp)
+      (define-key 'help-command "a" 'apropos)
 
-(global-set-key (kbd "s-[") 'backward-paragraph)
-(global-set-key (kbd "s-]") 'forward-paragraph)
-(global-set-key  [C-s-268632091] 'backward-sexp)
-(global-set-key  [C-s-268632093] 'forward-sexp)
+      (global-set-key (kbd "s-[") 'backward-paragraph)
+      (global-set-key (kbd "s-]") 'forward-paragraph)
+      (global-set-key  [C-s-268632091] 'backward-sexp)
+      (global-set-key  [C-s-268632093] 'forward-sexp)
 
-(define-key read-expression-map (kbd "TAB") 'lisp-complete-symbol)
-(define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
-#+end_src
+      (global-set-key (kbd "M-p") 'scroll-down)
+      (global-set-key (kbd "M-n") 'scroll-up)
+
+      (define-key read-expression-map (kbd "TAB") 'lisp-complete-symbol)
+      (define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
+    #+end_src
 
 *** Path
     Sometimes emacs is not so good at finding the correct paths to
