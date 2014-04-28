@@ -994,6 +994,7 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
 
               (define-key org-mode-map (kbd "M-q") 'org-fill-paragraph)
               (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
+              (define-key org-mode-map (kbd "C-c M-n") 'ljos/org-end-of-block)
 
               (setq ljos/org-mode-initialized t)))
 
@@ -1001,6 +1002,22 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
           (add-hook 'org-mode-hook 'ljos/org-mode-hook)))
     #+end_src
 **** ljos/org extra functions
+***** org-end-of-src-block
+      Got tired of not being able to move to the end of a block.
+
+      #+BEGIN_SRC emacs-lisp
+        (defun ljos/org-end-of-block ()
+          (interactive)
+          (let ((case-fold-search t)
+                (lim-up (save-excursion (outline-previous-heading)))
+                (lim-down (save-excursion (outline-next-heading))))
+            (when (and (org-between-regexps-p (concat "^[ \t]*#\\+begin_\\w+")
+                                              (concat "^[ \t]*#\\+end_\\w+")
+                                              lim-up
+                                              lim-down)
+                       (search-forward-regexp "#\\+end_\\w+"))
+              (end-of-line))))
+      #+END_SRC
 ***** org-word-count
       Found this at [[http://orgmode.org/worg/org-hacks.html#sec-1-3-7][Count words in an Org buffer]].
 
