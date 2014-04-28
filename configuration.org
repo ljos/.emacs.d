@@ -7,115 +7,127 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
 
 ** General configuration
 *** Defaults
-Set the file used for the auto-custom configuration to custom.el.
-#+begin_src emacs-lisp
-  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-  (load custom-file)
-#+end_src
+    Set the file used for the auto-custom configuration to custom.el.
 
-I am trying to do all the configurations that can with the =customize=
-functionality of emacs.
+    #+begin_src emacs-lisp
+      (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+      (load custom-file)
+    #+end_src
 
-Set the default-directory so that when we are in buffers that do not
-have a directory we use the home directory. Also set the
-ring-bell-function to ignore so that the bell never rings.
-#+begin_src emacs-lisp
-  (setq default-directory     "~/"
-        ring-bell-function    #'ignore)
-#+end_src
+    I am trying to do all the configurations that can with the
+    =customize= functionality of emacs.
 
-This makes it so I can just press =y= or =n= instead of =yes= or =no=.
-#+begin_src emacs-lisp
-(fset 'yes-or-no-p 'y-or-n-p)
-#+end_src
+    Set the default-directory so that when we are in buffers that do
+    not have a directory we use the home directory. Also set the
+    ring-bell-function to ignore so that the bell never rings.
 
-I had some trouble with getting emacs to set the correct encoding in
-OS X at one point. It seemed to go away if I called these functions:
-#+begin_src emacs-lisp
-(set-terminal-coding-system 'utf-8)
-(prefer-coding-system 'utf-8)
-#+end_src
-I do not know if I still need these, but they stay as it isn't a
-problem that they're there.
+    #+begin_src emacs-lisp
+      (setq default-directory     "~/"
+            ring-bell-function    #'ignore)
+    #+end_src
 
-Use the coreutils =ls= program when using emacs on OS X.
-#+BEGIN_SRC emacs-lisp
-  (when (eq 'darwin system-type)
-    (setq insert-directory-program "gls"))
-#+END_SRC
+    This makes it so I can just press =y= or =n= instead of =yes= or
+    =no=.
+
+    #+begin_src emacs-lisp
+      (fset 'yes-or-no-p 'y-or-n-p)
+    #+end_src
+
+    I had some trouble with getting emacs to set the correct encoding
+    in OS X at one point. It seemed to go away if I called these
+    functions:
+
+    #+begin_src emacs-lisp
+      (set-terminal-coding-system 'utf-8)
+      (prefer-coding-system 'utf-8)
+    #+end_src
+
+    I do not know if I still need these, but they stay as it isn't a
+    problem that they're there.
+
+    Use the coreutils =ls= program when using emacs on OS X.
+
+    #+BEGIN_SRC emacs-lisp
+      (when (eq 'darwin system-type)
+        (setq insert-directory-program "gls"))
+    #+END_SRC
 
 *** Enable disables
-There are some of the disabled functions that I actually like to use.
-#+begin_src emacs-lisp
-(put 'narrow-to-region 'disabled nil)
-#+end_src
+    There are some of the disabled functions that I actually like to use.
+
+    #+begin_src emacs-lisp
+      (put 'narrow-to-region 'disabled nil)
+    #+end_src
 
 *** Interface
 **** Font
-I like the menlo font, so if I am running OS X we should try to load
-that font.
+     I like the menlo font, so if I am running OS X we should try to load
+     that font.
 
-#+begin_src emacs-lisp
-  (if (and (window-system)
-           (equal 'darwin system-type))
-      (set-face-attribute 'default nil :font "menlo-14"))
-#+end_src
+     #+begin_src emacs-lisp
+       (if (and (window-system)
+                (equal 'darwin system-type))
+           (set-face-attribute 'default nil :font "menlo-14"))
+     #+end_src
 
 **** Color-theme
+     I like the tomorrow-night color theme.
 
-I like the tomorrow-night color theme.
-#+begin_src emacs-lisp
-  (use-package color-theme-sanityinc-tomorrow
-    :ensure t
-    :commands sanityinc-tomorrow-night)
-#+end_src
+     #+begin_src emacs-lisp
+       (use-package color-theme-sanityinc-tomorrow
+         :ensure t
+         :commands sanityinc-tomorrow-night)
+     #+end_src
 
 **** Frame size
      I am setting the framesize according to the size of the
-     display. These are some helper functions that I found at
-     at http://stackoverflow.com/a/94277 .
-#+begin_src emacs-lisp
-  (defun ljos/set-frame-size-according-to-resolution ()
-    "Sets the size of the frame according to the screen size. If the
-  width is less then 1280 we stick to 80 character width for the
-  frame. If it is larger we make frame 100 characters wide.
+     display. These are some helper functions that I found at at
+     http://stackoverflow.com/a/94277 .
 
-  The height of the frame is 50px less than the height of the
-  screen."
-    (interactive)
-    (if window-system
-        (progn
-          (add-to-list 'default-frame-alist
-                       (cons 'width
-                             (if (> (x-display-pixel-width) 1280)
-                                 100 80)))
-          (add-to-list 'default-frame-alist
-                       (cons 'height (/ (- (x-display-pixel-height) 50)
-                                        (frame-char-height)))))))
+     #+begin_src emacs-lisp
+       (defun ljos/set-frame-size-according-to-resolution ()
+         "Sets the size of the frame according to the screen size. If the
+       width is less then 1280 we stick to 80 character width for the
+       frame. If it is larger we make frame 100 characters wide.
 
-  (defun ljos/x-maximize-frame ()
-    "Sends a message to an X Server to maximize the frame."
-    (interactive)
-    (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-                           '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
-    (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-                           '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
+       The height of the frame is 50px less than the height of the
+       screen."
+         (interactive)
+         (if window-system
+             (progn
+               (add-to-list 'default-frame-alist
+                            (cons 'width
+                                  (if (> (x-display-pixel-width) 1280)
+                                      100 80)))
+               (add-to-list 'default-frame-alist
+                            (cons 'height (/ (- (x-display-pixel-height) 50)
+                                             (frame-char-height)))))))
 
-  (if (eq 'x window-system)
-      (ljos/x-maximize-frame)
-    (ljos/set-frame-size-according-to-resolution))
+       (defun ljos/x-maximize-frame ()
+         "Sends a message to an X Server to maximize the frame."
+         (interactive)
+         (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+                                '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
+         (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+                                '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
 
-  (set-frame-position (next-frame) 0 0)
-#+end_src
+       (if (eq 'x window-system)
+           (ljos/x-maximize-frame)
+         (ljos/set-frame-size-according-to-resolution))
+
+       (set-frame-position (next-frame) 0 0)
+     #+end_src
 
 *** OS X
     The menu bar is annoying on systems other than OS X.
+
     #+begin_src emacs-lisp -r
       (unless (equal system-type 'darwin)
         (menu-bar-mode nil))
     #+end_src
 
 *** Define keys
+
     #+begin_src emacs-lisp
       (global-set-key (kbd "s--") 'text-scale-decrease)
       (global-set-key (kbd "s-=") 'text-scale-increase)
@@ -138,228 +150,234 @@ I like the tomorrow-night color theme.
 *** Path
     Sometimes emacs is not so good at finding the correct paths to
     everything.
-#+begin_src emacs-lisp
-  (defcustom exec-paths
-    '("~/.lein/bin"
-      "~/.cabal/bin"
-      "~/.local/bin"
-      "/usr/local/bin"
-      "/usr/texbin")
-    "Directories to be added to exec-path"
-    :type 'string)
-#+end_src
 
-Add all of the custom paths to the PATH variable.
-#+begin_src emacs-lisp
-  (defun add-to-path (dir)
-    "Adds a dir to PATH if dir exists."
-    (when (file-exists-p dir)
-      (progn (add-to-list 'exec-path dir)
-             (setenv "PATH" (concat (getenv "PATH") (concat ":" dir))))))
+    #+begin_src emacs-lisp
+      (defcustom exec-paths
+        '("~/.lein/bin"
+          "~/.cabal/bin"
+          "~/.local/bin"
+          "/usr/local/bin"
+          "/usr/texbin")
+        "Directories to be added to exec-path"
+        :type 'string)
+    #+end_src
 
-  (defun initialize-exec-path ()
-    (interactive)
-    (dolist (dir exec-paths)
-      (add-to-path dir)))
+    Add all of the custom paths to the PATH variable.
 
-  (initialize-exec-path)
-#+end_src
+    #+begin_src emacs-lisp
+      (defun add-to-path (dir)
+        "Adds a dir to PATH if dir exists."
+        (when (file-exists-p dir)
+          (progn (add-to-list 'exec-path dir)
+                 (setenv "PATH" (concat (getenv "PATH") (concat ":" dir))))))
+
+      (defun initialize-exec-path ()
+        (interactive)
+        (dolist (dir exec-paths)
+          (add-to-path dir)))
+
+      (initialize-exec-path)
+    #+end_src
 
 *** Defuns
 **** Sort symbols
-Sort-lines and the other sorts are quite nice, but it is even nicer if
-I am able to also sort symbols that are in a list.
-#+begin_src emacs-lisp
-;; found at http://www.emacswiki.org/emacs/SortWords
-(defun sort-symbols (reverse beg end)
-  "Sort symbols in region alphabetically, in REVERSE if negative.
-    See `sort-words'."
-  (interactive "*P\nr")
-  (sort-regexp-fields reverse "\\(\\sw\\|\\s_\\)+" "\\&" beg end))
-#+end_src
+     Sort-lines and the other sorts are quite nice, but it is even
+     nicer if I am able to also sort symbols that are in a list.
 
-**** Keys
-Convenience function to get all keys in a hash table.
-#+begin_src emacs-lisp
-(defun keys (hashtable)
-  "Return all keys in hashtable."
-  (let (allkeys)
-    (maphash (lambda (kk vv) (setq allkeys (cons kk allkeys))) hashtable)
-    allkeys))
-#+end_src
+     #+begin_src emacs-lisp
+       ;; found at http://www.emacswiki.org/emacs/SortWords
+       (defun sort-symbols (reverse beg end)
+         "Sort symbols in region alphabetically, in REVERSE if negative.
+           See `sort-words'."
+         (interactive "*P\nr")
+         (sort-regexp-fields reverse "\\(\\sw\\|\\s_\\)+" "\\&" beg end))
+     #+end_src
+
 *** Mode line
-At some point I didn't like the standard mode line and started to
-experiment with how I wanted it to look. Because of too much time and
-not enough knowledge about alternatives, this monster came to be.
+    At some point I didn't like the standard mode line and started to
+    experiment with how I wanted it to look. Because of too much time
+    and not enough knowledge about alternatives, this monster came to
+    be.
 
-I feel it gets very distracting when the mode line changes depending
-on which window is selected. I don't really need the visual
-conformation that I have changed window. The cursor does that for me.
-#+begin_src emacs-lisp
-(setq mode-line-in-non-selected-windows nil)
-#+end_src
+    I feel it gets very distracting when the mode line changes
+    depending on which window is selected. I don't really need the
+    visual conformation that I have changed window. The cursor does
+    that for me.
 
-I needed a function that truncated from the start of the list instead
-of at the end. This function takes a string, reverses it, does the
-normal truncate and reverses it again. There is probably a better way
-of doing this, but this was the quick and dirty one I figured out on
-my own.
-#+begin_src emacs-lisp
-(defun truncate-string-to-length (str end-column &optional start-column padding ellipsis)
-  "The same as truncate-string-to-width,
-except it truncates from the start of the list"
-  (concat
-   (reverse
-    (append (truncate-string-to-width
-             (concat (reverse (append (format  str) nil)))
-             end-column start-column padding ellipsis)
-            nil))))
-#+end_src
+    #+begin_src emacs-lisp
+      (setq mode-line-in-non-selected-windows nil)
+    #+end_src
 
-I like to have a box around the mode-line to visually seperate it from
-the rest of the frame.
-#+begin_src emacs-lisp
-(set-face-attribute 'mode-line nil
-  :box '(:line-width 1
-         :color "gray25"))
-#+end_src
+    I needed a function that truncated from the start of the list
+    instead of at the end. This function takes a string, reverses it,
+    does the normal truncate and reverses it again. There is probably
+    a better way of doing this, but this was the quick and dirty one I
+    figured out on my own.
 
-This is a helper function to center a string in a set width.
-#+begin_src emacs-lisp
-(defun center-string-in-char (str len char)
-  (store-substring (make-string len char)
-                   (/ (- len (length str)) 2) str))
-#+end_src
+    #+begin_src emacs-lisp
+      (defun truncate-string-to-length (str end-column &optional start-column padding ellipsis)
+        "The same as truncate-string-to-width,
+      except it truncates from the start of the list"
+        (concat
+         (reverse
+          (append (truncate-string-to-width
+                   (concat (reverse (append (format  str) nil)))
+                   end-column start-column padding ellipsis)
+                  nil))))
+    #+end_src
 
-This is the format for the buffer position numbers in the mode-line.
-#+begin_src emacs-lisp
-(setq-default mode-line-position '(" %03l:%2c"))
-#+end_src
+    I like to have a box around the mode-line to visually seperate it
+    from the rest of the frame.
 
-If I want to use the pomodoro-mode-line string in the mode-line I need
-to give it a default of "" as otherwise we will get errors in the
-message log.
-#+begin_src emacs-lisp
-(setq-default pomodoro-mode-line-string "")
-#+end_src
+    #+begin_src emacs-lisp
+      (set-face-attribute 'mode-line nil
+        :box '(:line-width 1
+               :color "gray25"))
+    #+end_src
 
-Here we are setting the mode line format. It has a lot of
-configurations. I should get around to commenting it at some point.
-#+begin_src emacs-lisp
-(setq-default mode-line-format
-  '("%e "
-    (:eval (if buffer-file-name "%* " "無常"))        ; file status
-    (:eval
-     (propertize
-      (if (buffer-narrowed-p)
-          " 狭"
-        "")))
+    This is a helper function to center a string in a set width.
+    #+begin_src emacs-lisp
+      (defun center-string-in-char (str len char)
+        (store-substring (make-string len char)
+                         (/ (- len (length str)) 2) str))
+    #+end_src
 
-    mode-line-position
-    "  "
-    (:eval
-     (propertize                        ; file/buffer name
-      (center-string-in-char
-       (truncate-string-to-length
-        (or buffer-file-truename
-            (buffer-name))
-        25 nil nil  "..")
-       25 ?\s)
-      'help-echo (buffer-file-name)     ; echo full name
-      'local-map
-      (let ((map (make-sparse-keymap)))
-        (define-key map [mode-line mouse-3]
-          'mode-line-next-buffer)
-        (define-key map [mode-line mouse-1]
-          'mode-line-previous-buffer)
-        map)))
+    This is the format for the buffer position numbers in the
+    mode-line.
 
-    "  "
+    #+begin_src emacs-lisp
+      (setq-default mode-line-position '(" %03l:%2c"))
+    #+end_src
 
-    (:eval
-     (propertize mode-name
-                 'help-echo (format-mode-line minor-mode-alist)))
-    " "
-    vc-mode
-    "  "
+    If I want to use the pomodoro-mode-line string in the mode-line I
+    need to give it a default of "" as otherwise we will get errors in
+    the message log.
 
-    pomodoro-mode-line-string
+    #+begin_src emacs-lisp
+      (setq-default pomodoro-mode-line-string "")
+    #+end_src
 
-    (:eval
-     (concat
-      (propertize " " 'display
-                 `((space :align-to
-                           (- right ,(if (string= "" pomodoro-mode-line-string) 20 8)))))
-      (propertize (if (string= "" pomodoro-mode-line-string)
-                      (format-time-string " %a %b %d, %H:%M")
-                    (format-time-string " %H:%M"))                 ; time
-                  'help-echo
-                  (format-time-string "%A, %B %d, %Y, %H:%M"))))))
-#+end_src
+    Here we are setting the mode line format. It has a lot of
+    configurations. I should get around to commenting it at some
+    point.
+
+    #+begin_src emacs-lisp
+      (setq-default mode-line-format
+        '("%e "
+          (:eval (if buffer-file-name "%* " "無常"))        ; file status
+          (:eval
+           (propertize
+            (if (buffer-narrowed-p)
+                " 狭"
+              "")))
+
+          mode-line-position
+          "  "
+          (:eval
+           (propertize                        ; file/buffer name
+            (center-string-in-char
+             (truncate-string-to-length
+              (or buffer-file-truename
+                  (buffer-name))
+              25 nil nil  "..")
+             25 ?\s)
+            'help-echo (buffer-file-name)     ; echo full name
+            'local-map
+            (let ((map (make-sparse-keymap)))
+              (define-key map [mode-line mouse-3]
+                'mode-line-next-buffer)
+              (define-key map [mode-line mouse-1]
+                'mode-line-previous-buffer)
+              map)))
+
+          "  "
+
+          (:eval
+           (propertize mode-name
+                       'help-echo (format-mode-line minor-mode-alist)))
+          " "
+          vc-mode
+          "  "
+
+          pomodoro-mode-line-string
+
+          (:eval
+           (concat
+            (propertize " " 'display
+                       `((space :align-to
+                                 (- right ,(if (string= "" pomodoro-mode-line-string) 20 8)))))
+            (propertize (if (string= "" pomodoro-mode-line-string)
+                            (format-time-string " %a %b %d, %H:%M")
+                          (format-time-string " %H:%M"))                 ; time
+                        'help-echo
+                        (format-time-string "%A, %B %d, %Y, %H:%M"))))))
+    #+end_src
 *** Minibuffer
-A small configuration of the minibuffer to conditionally enable
-paredit mode for when I am evaluation an expression rather then
-calling an interactive command.
-#+begin_src emacs-lisp
-(defun conditionally-enable-paredit-mode ()
-  "enable paredit-mode during eval-expression"
-  (if (eq this-command 'eval-expression)
-      (paredit-mode 1)))
+    A small configuration of the minibuffer to conditionally enable
+    paredit mode for when I am evaluation an expression rather then
+    calling an interactive command.
 
-(add-hook 'minibuffer-setup-hook 'conditionally-enable-paredit-mode)
-#+end_src
+    #+begin_src emacs-lisp
+      (defun conditionally-enable-paredit-mode ()
+        "enable paredit-mode during eval-expression"
+        (if (eq this-command 'eval-expression)
+            (paredit-mode 1)))
+
+      (add-hook 'minibuffer-setup-hook 'conditionally-enable-paredit-mode)
+    #+end_src
 
 ** Minor modes
 *** Ace jump
     =Ace jump mode= allows me to add activate it and press a
     character. All the instances of that character is highlighted in
     the buffer and I can jump to it.
-#+begin_src emacs-lisp
-  (use-package ace-jump-mode
-    :ensure t
-    :bind ("C-x SPC" . ace-jump-mode))
-#+end_src
+
+    #+begin_src emacs-lisp
+      (use-package ace-jump-mode
+        :ensure t
+        :bind ("C-x SPC" . ace-jump-mode))
+    #+end_src
 
 *** Auto complete
     Auto completion is nice, but we need it to not be so slow. It is
     also nice to have yasnippet completions available as well.
-#+begin_src emacs-lisp
-  (use-package fuzzy
-    :ensure t
-    :commands fuzzy-all-completions)
 
-  (use-package auto-complete-config
-    :ensure auto-complete
-    :init (ac-config-default)
-    :config
-    (progn
-      (setq ac-auto-show-menu 0.3)
-      (setq ac-use-menu-map t)
-      (setq ac-fuzzy-enable t)
-      (ac-config-default)
-      (setq ac-sources
-            (cons ac-source-yasnippet
-                  ac-sources))
-      (define-key ac-complete-mode-map "\r" 'ac-expand)
-      (define-key ac-complete-mode-map [return] 'ac-expand)
-      (define-key ac-complete-mode-map "\t" 'ac-complete)
-      (define-key ac-complete-mode-map [tab] 'ac-complete)
-      (global-auto-complete-mode)))
+    #+begin_src emacs-lisp
+      (use-package fuzzy
+        :ensure t
+        :commands fuzzy-all-completions)
+
+      (use-package auto-complete-config
+        :ensure auto-complete
+        :init (ac-config-default)
+        :config
+        (progn
+          (setq ac-auto-show-menu 0.3)
+          (setq ac-use-menu-map t)
+          (setq ac-fuzzy-enable t)
+          (ac-config-default)
+          (setq ac-sources
+                (cons ac-source-yasnippet
+                      ac-sources))
+          (define-key ac-complete-mode-map "\r" 'ac-expand)
+          (define-key ac-complete-mode-map [return] 'ac-expand)
+          (define-key ac-complete-mode-map "\t" 'ac-complete)
+          (define-key ac-complete-mode-map [tab] 'ac-complete)
+          (global-auto-complete-mode)))
 #+end_src
 
 *** Browse kill ring
-#+begin_src emacs-lisp
-  (use-package browse-kill-ring
-    :ensure t
-    :init (browse-kill-ring-default-keybindings))
-#+end_src
-
+    #+begin_src emacs-lisp
+      (use-package browse-kill-ring
+        :ensure t
+        :init (browse-kill-ring-default-keybindings))
+    #+end_src
 *** Command frequency
-#+begin_src emacs-lisp
-  (use-package command-frequency
-    :ensure t
-    :init (command-frequency-mode +1))
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package command-frequency
+        :ensure t
+        :init (command-frequency-mode +1))
+    #+end_src
 *** Dired
     #+begin_src emacs-lisp
       (use-package dired-single
@@ -394,53 +412,54 @@ calling an interactive command.
           (add-hook 'dired-mode-hook 'ljos/dired-mode-hook)))
     #+end_src
 *** Expand-region
-#+begin_src emacs-lisp
-  (use-package expand-region
-    :ensure t
-    :bind (("C-=" . er/expand-region)
-           ("C--" . er/contract-region)))
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package expand-region
+        :ensure t
+        :bind (("C-=" . er/expand-region)
+               ("C--" . er/contract-region)))
+    #+end_src
 *** Find file at point
-#+begin_src emacs-lisp
-  (use-package ffap
-    :init (ffap-bindings))
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package ffap
+        :init (ffap-bindings))
+    #+end_src
 
 *** ibuffer
-#+begin_src emacs-lisp
-  (use-package ibuffer
-    :bind ("C-x C-b" . ibuffer)
-    :config
-    (progn
+    #+begin_src emacs-lisp
       (use-package ibuffer-vc
         :ensure t
         :commands ibuffer-vc-set-filter-groups-by-vc-root)
+
       (use-package ibuf-ext
         :commands ibuffer-do-sort-by-major-mode)
 
-      (defvar ibuffer-initialized nil)
-      (defun my-ibuffer-hook ()
-        (unless ibuffer-initialized
-          (ibuffer-vc-set-filter-groups-by-vc-root)
+      (use-package ibuffer
+        :bind ("C-x C-b" . ibuffer)
+        :config
+        (progn
+          (defvar ibuffer-initialized nil)
+          (defun ljos/ibuffer-hook ()
+            (unless ibuffer-initialized
+              (ibuffer-vc-set-filter-groups-by-vc-root)
 
-          (unless (eq ibuffer-sorting-mode 'major-mode)
-            (ibuffer-do-sort-by-major-mode))
+              (unless (eq ibuffer-sorting-mode 'major-mode)
+                (ibuffer-do-sort-by-major-mode))
 
-          (setq ibuffer-formats
-                '((mark modified read-only vc-status-mini " "
-                        (name 25 25 :left :elide)
-                        " "
-                        (size 9 -1 :right)
-                        " "
-                        (mode 16 16 :left :elide)
-                        " "
-                        (vc-status 16 16 :left)
-                        " "
-                        filename-and-process)))
-          (setq ibuffer-expert t)
-          (setq ibuffer-initialized t)))
-      (add-hook 'ibuffer-hook 'my-ibuffer-hook)))
-#+end_src
+              (setq ibuffer-formats
+                    '((mark modified read-only vc-status-mini " "
+                            (name 25 25 :left :elide)
+                            " "
+                            (size 9 -1 :right)
+                            " "
+                            (mode 16 16 :left :elide)
+                            " "
+                            (vc-status 16 16 :left)
+                            " "
+                            filename-and-process)))
+              (setq ibuffer-expert t)
+              (setq ibuffer-initialized t)))
+          (add-hook 'ibuffer-hook 'ljos/ibuffer-hook)))
+    #+end_src
 *** ido
     #+begin_src emacs-lisp
       (use-package flx-ido
@@ -474,103 +493,119 @@ calling an interactive command.
     has better support for my language. This can become a problem on
     if I want ispell to work on systems other than OS X as I don't
     provide an alternative path there.
-#+begin_src emacs-lisp
-  (use-package ispell
-    :config
-    (setq-default ispell-program-name "/usr/local/bin/aspell"))
-#+end_src
+
+    #+begin_src emacs-lisp
+      (use-package ispell
+        :config
+        (setq-default ispell-program-name "/usr/local/bin/aspell"))
+    #+end_src
+
 *** linum
     I used to use =global-linum-mode= but I was made aware that linum
     is a major resource hog and that it why some large buffers where
     acting really slow. I still keep this configuration because when I
     do use linum I don't like that the margin changes size when
     scrolling.
-#+begin_src emacs-lisp
-  (use-package linum
-    :commands linum-mode
-    :config
-    (progn
-      (defvar ljos/linum-format-string "%4d")
 
-      (defun ljos/linum-get-format-string ()
-        (let* ((width (length (number-to-string
-                               (count-lines (point-min) (point-max)))))
-               (format (concat "%" (number-to-string width) "d ")))
-          (setq ljos/linum-format-string format)))
+    #+begin_src emacs-lisp :tangle no
+      (use-package linum
+        :commands linum-mode
+        :init (global-linum-mode)
+        :config
+        (progn
+          (defvar ljos/linum-format-string "%4d")
 
-      (add-hook 'linum-before-numbering-hook 'ljos/linum-get-format-string)
+          (defun ljos/linum-get-format-string ()
+            (let* ((width (length (number-to-string
+                                   (count-lines (point-min) (point-max)))))
+                   (format (concat "%" (number-to-string width) "d ")))
+              (setq ljos/linum-format-string format)))
 
-      (defun ljos/linum-format (line-number)
-        (propertize (format ljos/linum-format-string line-number) 'face 'linum))
+          (add-hook 'linum-before-numbering-hook 'ljos/linum-get-format-string)
 
-      (setq linum-format 'ljos/linum-format)))
-#+end_src
+          (defun ljos/linum-format (line-number)
+            (propertize (format ljos/linum-format-string line-number) 'face 'linum))
+
+          (setq linum-format 'ljos/linum-format)))
+    #+end_src
+
 *** Multiple cursors
-
-#+begin_src emacs-lisp
-  (use-package multiple-cursors
-    :ensure t
-    :bind (("C->" . mc/mark-next-like-this)
-           ("C-<" . mc/mark-previous-like-this)
-           ("C-c C-<" . mc/mark-all-like-this)))
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package multiple-cursors
+        :ensure t
+        :bind (("C->" . mc/mark-next-like-this)
+               ("C-<" . mc/mark-previous-like-this)
+               ("C-c C-<" . mc/mark-all-like-this)))
+    #+end_src
 *** Paredit
     The =paredit-delete-indentation= function is just small function
     that reindents the next sexpr if I want to join the current line
     with the previous.
-#+begin_src emacs-lisp
-  (use-package paredit
-    :ensure t
-    :commands (enable-paredit-mode paredit-mode)
-    :config
-    (progn
-      (defun ljos/paredit-delete-indentation ()
-        (interactive)
-        (delete-indentation)
-        (prog-indent-sexp))
 
-      (define-key paredit-mode-map (kbd "M-(") 'paredit-wrap-round)
-      (define-key paredit-mode-map (kbd "M-)") 'paredit-close-round-and-newline)
-      (define-key paredit-mode-map (kbd "M-[") 'paredit-wrap-square)
-      (define-key paredit-mode-map (kbd "M-{") 'paredit-wrap-curly)
-      (define-key paredit-mode-map (kbd "M-}") 'paredit-close-curly-and-newline)
-      (define-key paredit-mode-map (kbd "M-j") 'ljos/paredit-delete-indentation)))
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package paredit
+        :ensure t
+        :commands (enable-paredit-mode paredit-mode)
+        :config
+        (progn
+          (defun ljos/paredit-delete-indentation ()
+            (interactive)
+            (delete-indentation)
+            (prog-indent-sexp))
+
+          (define-key paredit-mode-map (kbd "M-(") 'paredit-wrap-round)
+          (define-key paredit-mode-map (kbd "M-)") 'paredit-close-round-and-newline)
+          (define-key paredit-mode-map (kbd "M-[") 'paredit-wrap-square)
+          (define-key paredit-mode-map (kbd "M-{") 'paredit-wrap-curly)
+          (define-key paredit-mode-map (kbd "M-}") 'paredit-close-curly-and-newline)
+          (define-key paredit-mode-map (kbd "M-j") 'ljos/paredit-delete-indentation)))
+    #+end_src
 
 *** pomodoro
     pomodoro is a small mode that makes it easier to follow the
     pomodoro productivity technique. It makes it possible to start and
     stop a timer that will play a sound when I need to stop or
     continue working.
-#+begin_src emacs-lisp
-  (use-package pomodoro
-    :ensure t
-    :commands pomodoro-start
-    :bind (("C-x p s" . pomodoro-start)
-           ("C-x p x" . pomodoro-stop))
-    :config
-    (progn
-      (setq pomodoro-break-start-sound "~/Music/smw_pause.wav"
-            pomodoro-work-start-sound "~/Music/smw_pause.wav"
-            pomodoro-work-start-message "Back to work!"
-            pomodoro-work-cycle "行う" ;; work in japanese
-            pomodoro-break-cycle "休憩" ;; break in japanese
-            pomodoro-long-break-time 20
-            pomodoro-break-time 7)))
+
+    #+begin_src emacs-lisp
+      (use-package pomodoro
+        :ensure t
+        :commands pomodoro-start
+        :bind (("C-x p s" . pomodoro-start)
+               ("C-x p x" . pomodoro-stop))
+        :config
+        (progn
+          (setq pomodoro-break-start-sound "~/Music/smw_pause.wav"
+                pomodoro-work-start-sound "~/Music/smw_pause.wav"
+                pomodoro-work-start-message "Back to work!"
+                pomodoro-work-cycle "行う" ;; work in japanese
+                pomodoro-break-cycle "休憩" ;; break in japanese
+                pomodoro-long-break-time 20
+                pomodoro-break-time 7)))
 #+end_src
 *** popwin
-    #+begin_src emacs-lisp
-      ;; (require 'popwin)
-      ;; (popwin-mode +1)
+    I used to use popwin, but it doesn't work correctly with
+    =magit-ediff=.
+
+    #+begin_src emacs-lisp :tangle no
+      (require 'popwin)
+      (popwin-mode +1)
     #+end_src
 
 *** projectile
+    I am trying to use projectile for moving around in different
+    projects.
+
+    =ztree-dir= gives a nice tree-view of the directory in the
+    project.
     #+begin_src emacs-lisp
       (defun projectile-ztree-dir ()
         "Open `ztree-dir' at the root of the project."
         (interactive)
         (ztree-dir (projectile-project-root)))
+    #+end_src
 
+    #+begin_src emacs-lisp
       (use-package projectile
         :ensure t
         :init (projectile-global-mode)
@@ -580,38 +615,37 @@ calling an interactive command.
           (setq projectile-switch-project-action 'projectile-ztree-dir)))
     #+end_src
 *** smex
-#+begin_src emacs-lisp
-  (use-package smex
-    :ensure t
-    :init (smex-initialize)
-    :bind ("M-x" . smex)
-    :config
-    (progn
-      (setq smex-save-file (concat user-emacs-directory ".smex-items"))))
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package smex
+        :ensure t
+        :init (smex-initialize)
+        :bind ("M-x" . smex)
+        :config
+        (setq smex-save-file (concat user-emacs-directory ".smex-items")))
+    #+end_src
 
 *** undo-tree
-#+begin_src emacs-lisp
-  (use-package undo-tree
-    :ensure t
-    :init (global-undo-tree-mode))
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package undo-tree
+        :ensure t
+        :init (global-undo-tree-mode))
+    #+end_src
 
 *** visual-regexp
-#+begin_src emacs-lisp
-  (use-package visual-regexp
-    :ensure t
-    :commands (vr/replace vr/query-replace)
-    :bind (("C-c r" . vr/replace)
-           ("C-c q" . vr/query-replace)))
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package visual-regexp
+        :ensure t
+        :commands (vr/replace vr/query-replace)
+        :bind (("C-c r" . vr/replace)
+               ("C-c q" . vr/query-replace)))
+    #+end_src
 *** Yasnippet
-#+begin_src emacs-lisp
-  (use-package yasnippet
-    :ensure t
-    :commands (yas-global-mode yas-activate-extra-mode)
-    :init (yas-global-mode +1))
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package yasnippet
+        :ensure t
+        :commands (yas-global-mode yas-activate-extra-mode)
+        :init (yas-global-mode +1))
+    #+end_src
 
 *** ztree
     #+BEGIN_SRC emacs-lisp
@@ -623,96 +657,101 @@ calling an interactive command.
           (define-key ztree-mode-map (kbd "n") 'next-line)
           (define-key ztree-mode-map (kbd "p") 'previous-line)))
     #+END_SRC
+**** TODO dired functionality for ztree
+***** TODO rename file
+***** TODO delete file
+***** TODO move file
 ** Major modes
 *** Arduino
-#+begin_src emacs-lisp
-  (use-package arduino-mode
-    :ensure t
-    :mode "\\.ino$"
-    :config
-    (progn
-      (defvar ljos/arduino-mode-initialized nil)
-      (defun ljos/arduino-mode-hook ()
-        (unless ljos/arduino-mode-activated
-          (idle-highlight-mode t))
-        (setq ljos/arduino-mode-initialized t))
-      (add-hook 'arduino-mode-hook 'ljos/arduino-mode-hook)))
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package arduino-mode
+        :ensure t
+        :mode "\\.ino$"
+        :config
+        (progn
+          (defvar ljos/arduino-mode-initialized nil)
+          (defun ljos/arduino-mode-hook ()
+            (unless ljos/arduino-mode-activated
+              (idle-highlight-mode t))
+            (setq ljos/arduino-mode-initialized t))
+          (add-hook 'arduino-mode-hook 'ljos/arduino-mode-hook)))
+    #+end_src
 
 *** Clojure
-#+begin_src emacs-lisp
-  (use-package ac-nrepl
-    :ensure t
-    :commands ac-nrepl-setup)
+    #+begin_src emacs-lisp
+      (use-package ac-nrepl
+        :ensure t
+        :commands ac-nrepl-setup)
 
-  (use-package midje-mode
-    :load-path "site-lisp/midje-mode"
-    :commands midje-mode-maybe-enable
-    :init (setq midje-keymap-prefix (kbd "C-c m"))
-    :config
-    (progn
-      (add-hook 'midje-mode-hook
-                '(lambda ()
-                   (yas-activate-extra-mode 'midje-mode)))))
+      (use-package midje-mode
+        :load-path "site-lisp/midje-mode"
+        :commands midje-mode-maybe-enable
+        :init (setq midje-keymap-prefix (kbd "C-c m"))
+        :config
+        (progn
+          (add-hook 'midje-mode-hook
+                    '(lambda ()
+                       (yas-activate-extra-mode 'midje-mode)))))
 
-  (use-package cider
-    :ensure t
-    :commands cider-jack-in
-    :config
-    (progn
-      (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
-      (add-hook 'cider-mode-hook 'ac-nrepl-setup)
-      (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
-      (add-hook 'cider-repl-mode-hook 'enable-paredit-mode)
-      (add-hook 'cider-repl-mode-hook 'subword-mode)
-      (setq cider-repl-history-file "~/.emacs.d/history/nrepl")))
+      (use-package cider
+        :ensure t
+        :commands cider-jack-in
+        :config
+        (progn
+          (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
+          (add-hook 'cider-mode-hook 'ac-nrepl-setup)
+          (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+          (add-hook 'cider-repl-mode-hook 'enable-paredit-mode)
+          (add-hook 'cider-repl-mode-hook 'subword-mode)
+          (setq cider-repl-history-file "~/.emacs.d/history/nrepl")))
 
-  (defun clojure-jump-to-project-file ()
-        (interactive)
-        (let ((dir (file-name-as-directory
-                    (locate-dominating-file buffer-file-name "src/"))))
-          (find-file (concat dir "project.clj"))))
+      (defun clojure-jump-to-project-file ()
+            (interactive)
+            (let ((dir (file-name-as-directory
+                        (locate-dominating-file buffer-file-name "src/"))))
+              (find-file (concat dir "project.clj"))))
 
-  (use-package clojure-mode
-    :ensure t
-    :mode (("\\.cljx?$" . clojure-mode)
-           ("\\.dtm$" . clojure-mode)
-           ("\\.edn$" . clojure-mode))
-    :interpreter (("jark" . clojure-mode)
-                  ("cake" . clojure-mode))
-    :config
-    (progn
+      (use-package clojure-mode
+        :ensure t
+        :mode (("\\.cljx?$" . clojure-mode)
+               ("\\.dtm$" . clojure-mode)
+               ("\\.edn$" . clojure-mode))
+        :interpreter (("jark" . clojure-mode)
+                      ("cake" . clojure-mode))
+        :config
+        (progn
 
-      (defvar clojure-mode-initialized nil)
+          (defvar clojure-mode-initialized nil)
 
-      (defun ljos/clojure-mode-hook ()
-        (unless clojure-mode-initialized
-          (define-key clojure-mode-map  (kbd "C-x p") 'clojure-jump-to-project-file)
+          (defun ljos/clojure-mode-hook ()
+            (unless clojure-mode-initialized
+              (define-key clojure-mode-map  (kbd "C-x p") 'clojure-jump-to-project-file)
 
-          (put-clojure-indent 'update-in 'defun)
-          (put-clojure-indent 'get-in 'defun)
-          (put-clojure-indent 'assoc-in 'defun)
-          (put-clojure-indent 'assoc! 'defun)
-          (put-clojure-indent 'swap! 'defun)
-          (put-clojure-indent 'run* 'defun)
-          (put-clojure-indent 'fresh 'defun)
+              (put-clojure-indent 'update-in 'defun)
+              (put-clojure-indent 'get-in 'defun)
+              (put-clojure-indent 'assoc-in 'defun)
+              (put-clojure-indent 'assoc! 'defun)
+              (put-clojure-indent 'swap! 'defun)
+              (put-clojure-indent 'run* 'defun)
+              (put-clojure-indent 'fresh 'defun)
 
-          (setq clojure-mode-initialized t))
-        (midje-mode-maybe-enable)
-        (enable-paredit-mode))
+              (setq clojure-mode-initialized t))
+            (midje-mode-maybe-enable)
+            (enable-paredit-mode))
 
-      (add-hook 'clojure-mode-hook 'ljos/clojure-mode-hook)))
-#+end_src
+          (add-hook 'clojure-mode-hook 'ljos/clojure-mode-hook)))
+    #+end_src
 
-I like to have a clojurescript-mode to make configurations to when I
-do clojurescript and not just use the clojure-mode.
-#+begin_src emacs-lisp
-  (define-derived-mode clojurescript-mode clojure-mode "ClojureScript"
-    "Major mode for ClojureScript")
+    I like to have a clojurescript-mode to make configurations to when
+    I do clojurescript and not just use the clojure-mode.
 
-  (use-package clojurescript-mode
-    :mode "\\.cljs$")
-#+end_src
+    #+begin_src emacs-lisp
+      (define-derived-mode clojurescript-mode clojure-mode "ClojureScript"
+        "Major mode for ClojureScript")
+
+      (use-package clojurescript-mode
+        :mode "\\.cljs$")
+    #+end_src
 
 *** Elastic search
     #+begin_src emacs-lisp
@@ -726,29 +765,29 @@ do clojurescript and not just use the clojure-mode.
            '((elasticsearch . t)))))
     #+end_src
 *** Emacs lisp
-#+begin_src emacs-lisp
-  (use-package elisp-slime-nav
-    :ensure t
-    :commands elisp-slime-nav-mode)
+    #+begin_src emacs-lisp
+      (use-package elisp-slime-nav
+        :ensure t
+        :commands elisp-slime-nav-mode)
 
-  (add-hook 'emacs-lisp-mode-hook
-            (lambda ()
-              (make-local-variable 'after-save-hook)
-              (add-hook 'after-save-hook
-                        (lambda ()
-                          (if (file-exists-p (concat buffer-file-name "c"))
-                              (delete-file (concat buffer-file-name "c")))))))
+      (add-hook 'emacs-lisp-mode-hook
+                (lambda ()
+                  (make-local-variable 'after-save-hook)
+                  (add-hook 'after-save-hook
+                            (lambda ()
+                              (if (file-exists-p (concat buffer-file-name "c"))
+                                  (delete-file (concat buffer-file-name "c")))))))
 
-  (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-  (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
-  (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-#+end_src
+      (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+      (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
+      (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+    #+end_src
 
-#+begin_src emacs-lisp
-  (use-package ielm
-    :config
-    (add-hook 'ielm-mode-hook 'enable-paredit-mode))
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package ielm
+        :config
+        (add-hook 'ielm-mode-hook 'enable-paredit-mode))
+    #+end_src
 
 *** eshell
     #+begin_src emacs-lisp
@@ -767,60 +806,60 @@ do clojurescript and not just use the clojure-mode.
        '((gnuplot . t)))
     #+END_SRC
 *** Go
-#+begin_src emacs-lisp
-  (use-package go-mode
-    :ensure t
-    :mode "\\.go$")
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package go-mode
+        :ensure t
+        :mode "\\.go$")
+    #+end_src
 *** Haskell
-#+begin_src emacs-lisp
-  (use-package shm
-    :ensure t
-    :commands structured-haskell-mode)
+    #+begin_src emacs-lisp
+      (use-package shm
+        :ensure t
+        :commands structured-haskell-mode)
 
-  (use-package haskell-mode
-    :ensure t
-    :mode (("\\.hs$" . haskell-mode)
-           ("\\.lhs$" . literate-haskell-mode))
-    :config
-    (progn
-      (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-      (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)))
-#+end_src
+      (use-package haskell-mode
+        :ensure t
+        :mode (("\\.hs$" . haskell-mode)
+               ("\\.lhs$" . literate-haskell-mode))
+        :config
+        (progn
+          (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+          (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)))
+    #+end_src
 
 *** Julia
-#+begin_src emacs-lisp
-  (use-package julia-mode
-    :load-path "site-lisp/julia-mode"
-    :mode "\\.jl$"
-    :config
-    (progn
-      (defvar ljos/julia-mode-initialized nil)
+    #+begin_src emacs-lisp
+      (use-package julia-mode
+        :load-path "site-lisp/julia-mode"
+        :mode "\\.jl$"
+        :config
+        (progn
+          (defvar ljos/julia-mode-initialized nil)
 
-      (defun ljos/julia-mode-hook ()
-        (unless ljos/julia-mode-initialized
-          (setq julia-inferior-program "/usr/local/bin/julia-basic")
-          (define-key julia-mode-map (kbd "C-c C-k") 'julia-inferior-reload-buffer)
-          (define-key julia-mode-map (kbd "C-c C-l") 'julia-inferior-send-line-or-region)
-          (define-key julia-mode-map (kbd "C-c M-j") 'julia-inferior-run)))
+          (defun ljos/julia-mode-hook ()
+            (unless ljos/julia-mode-initialized
+              (setq julia-inferior-program "/usr/local/bin/julia-basic")
+              (define-key julia-mode-map (kbd "C-c C-k") 'julia-inferior-reload-buffer)
+              (define-key julia-mode-map (kbd "C-c C-l") 'julia-inferior-send-line-or-region)
+              (define-key julia-mode-map (kbd "C-c M-j") 'julia-inferior-run)))
 
-      (add-hook 'julia-mode-hook 'ljos/julia-mode-hook)))
-#+end_src
+          (add-hook 'julia-mode-hook 'ljos/julia-mode-hook)))
+    #+end_src
 
 *** Lisp
-#+begin_src emacs-lisp
-  (use-package lisp-mode
-    :mode "\\.li?sp$"
-    :config
-    (progn
-      (defvar ljos/lisp-mode-initialized nil)
-      (defun ljos/lisp-mode-hook ()
-        (unless ljos/lisp-mode-initialized
-          (setq inferior-lisp-program "sbcl")
-          (load-file (expand-file-name "~/quicklisp/slime-helper.el"))
-          (add-hook 'slime-repl-mode-hook 'enable-paredit-mode)))
-      (add-hook 'lisp-mode-hook 'ljos/lisp-mode-hook)))
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package lisp-mode
+        :mode "\\.li?sp$"
+        :config
+        (progn
+          (defvar ljos/lisp-mode-initialized nil)
+          (defun ljos/lisp-mode-hook ()
+            (unless ljos/lisp-mode-initialized
+              (setq inferior-lisp-program "sbcl")
+              (load-file (expand-file-name "~/quicklisp/slime-helper.el"))
+              (add-hook 'slime-repl-mode-hook 'enable-paredit-mode)))
+          (add-hook 'lisp-mode-hook 'ljos/lisp-mode-hook)))
+    #+end_src
 
 *** Magit
     #+begin_src emacs-lisp
@@ -1064,29 +1103,32 @@ do clojurescript and not just use the clojure-mode.
         (setq prolog-system 'swi))
     #+end_src
 *** Python
-# #+begin_src emacs-lisp
-#     (use-package python-mode
-#       :ensure t
-#       :commands python-mode
-#       :mode ("\\.py$" . python-mode)
-#       :config
-#       (progn
-#         (use-package python-pep8
-#           :ensure t)
-#         (use-package python-pylint
-#           :ensure t)))
-# #+end_src
+    When I start using python again I need to revisit this
+    configuration.
+
+    #+begin_src emacs-lisp :tangle no
+      (use-package python-mode
+        :ensure t
+        :commands python-mode
+        :mode ("\\.py$" . python-mode)
+        :config
+        (progn
+          (use-package python-pep8
+            :ensure t)
+          (use-package python-pylint
+            :ensure t)))
+    #+end_src
 
 *** SPARQL
-#+begin_src emacs-lisp
-  (use-package sparql-mode
-    :load-path "site-lisp/sparql-mode"
-    :mode "\\.sparql$"
-    :config
-    (progn
-      (add-to-list 'ac-dictionary-files "~/.emacs.d/site-lisp/sparql-mode/sparql-mode")
-      (setq sparql-default-base-url "http://live.dbpedia.org/sparql")
-      (defun ljos/sparql-result-mode-hook ()
-        (toggle-truncate-lines +1))
-      (add-hook 'sparql-result-mode-hook 'ljos/sparql-result-mode-hook)))
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package sparql-mode
+        :load-path "site-lisp/sparql-mode"
+        :mode "\\.sparql$"
+        :config
+        (progn
+          (add-to-list 'ac-dictionary-files "~/.emacs.d/site-lisp/sparql-mode/sparql-mode")
+          (setq sparql-default-base-url "http://live.dbpedia.org/sparql")
+          (defun ljos/sparql-result-mode-hook ()
+            (toggle-truncate-lines +1))
+          (add-hook 'sparql-result-mode-hook 'ljos/sparql-result-mode-hook)))
+    #+end_src
