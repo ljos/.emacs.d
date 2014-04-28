@@ -1014,7 +1014,6 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
                     org-completion-use-ido t
                     org-latex-pdf-process '("latexmk -bibtex -pdf %f")
 
-                    fill-column 80
                     ispell-parser 'tex
 
                     ;;org-capture config
@@ -1088,7 +1087,8 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
               (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
 
               (setq ljos/org-mode-initialized t)))
-          (auto-fill-mode)
+
+          (auto-fill-mode +1)
           (add-hook 'org-mode-hook 'ljos/org-mode-hook)))
     #+end_src
 *** prog-mode
