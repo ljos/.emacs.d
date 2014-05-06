@@ -505,16 +505,20 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
     #+end_src
 
 *** ibuffer
+    =ibuffer-vc= helps with drawing ibuffer in a way that I like.
     #+begin_src emacs-lisp
       (use-package ibuffer-vc
         :ensure t
         :commands ibuffer-vc-set-filter-groups-by-vc-root)
     #+end_src
 
+    =ibuffer-ext= Makes it possible to sort the buffers by mode.
     #+begin_src emacs-lisp
       (use-package ibuf-ext
         :commands ibuffer-do-sort-by-major-mode)
     #+end_src
+
+    =ibuffer= is a mode that makes the buffer-list buffer look nicer.
 
     #+begin_src emacs-lisp
       (use-package ibuffer
