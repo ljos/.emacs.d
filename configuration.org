@@ -761,6 +761,9 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
     #+end_src
 
 *** Clojure
+    I am not sure what all this config does anymore. I should check it
+    next time I start editing clojure code.
+
     #+begin_src emacs-lisp
       (use-package ac-nrepl
         :ensure t
