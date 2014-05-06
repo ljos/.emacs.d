@@ -4,9 +4,6 @@
 [submodule "site-lisp/sparql-mode"]
 	path = site-lisp/sparql-mode
 	url = git@github.com:ljos/sparql-mode.git
-[submodule "site-lisp/midje-mode"]
-	path = site-lisp/midje-mode
-	url = git@github.com:dnaumov/midje-mode.git
 [submodule "site-lisp/ESS"]
 	path = site-lisp/ESS
 	url = git@github.com:emacs-ess/ESS.git

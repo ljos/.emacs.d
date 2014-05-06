@@ -706,7 +706,7 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
         :commands ac-nrepl-setup)
     #+end_src
 
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle no
       (use-package midje-mode
         :load-path "site-lisp/midje-mode"
         :commands midje-mode-maybe-enable
@@ -758,7 +758,7 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
               (put-clojure-indent 'fresh 'defun)
 
               (setq clojure-mode-initialized t))
-            (midje-mode-maybe-enable)
+            ;; (midje-mode-maybe-enable)
             (enable-paredit-mode))
 
           (add-hook 'clojure-mode-hook 'ljos/clojure-mode-hook)))
