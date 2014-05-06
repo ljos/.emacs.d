@@ -125,6 +125,14 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
         (menu-bar-mode nil))
     #+end_src
 
+    Use the coreutils =ls= program when using emacs on OS X so that we
+    get the correct flags for modes like =projectile=.
+
+    #+BEGIN_SRC emacs-lisp
+      (when (eq 'darwin system-type)
+        (setq insert-directory-program "gls"))
+    #+END_SRC
+
 *** Define keys
 
     #+begin_src emacs-lisp
