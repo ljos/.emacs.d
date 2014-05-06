@@ -1292,3 +1292,74 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
             (toggle-truncate-lines +1))
           (add-hook 'sparql-result-mode-hook 'ljos/sparql-result-mode-hook)))
     #+end_src
+** General functions
+*** Rmd -> Org
+    Functions to turn a .Rmd file to .org
+
+    #+BEGIN_SRC emacs-lisp
+      (defun ljos/header-t ()
+        (replace-regexp "\\(.*\\)\n=+" "* \\1"))
+    #+end_src
+
+    #+begin_src emacs-lisp
+      (defun ljos/sub-header-t ()
+        (replace-regexp "\\(.*\\)\n=+" "** \\1"))
+    #+end_src
+
+    #+begin_src emacs-lisp
+      (defun ljos/src-block-t ()
+        (while (search-forward-regexp
+                "```{r +\\([A-z0-9_]+\\)\\(?:, *\\(\\(?:\\w+=[^ ]+\\(?:, *\\|\\)\\)+\\)\\)? *}"
+                nil t)
+          (let ((m1 (match-string-no-properties 1))
+                (m2 (match-string-no-properties 2)))
+            (delete-region (match-beginning 0) (match-end 0))
+            (insert (format "#+NAME: %-3s\n" m1))
+            (insert "#+BEGIN_SRC R")
+            (when m2
+              (let ((conf (mapcar (lambda (str)
+                                    (let ((v (split-string str "=")))
+                                      (cons (car v) (cadr v))))
+                                  (split-string m2 ", *"))))
+                (when (equal "TRUE"
+                             (cdr (assoc "cache" conf)))
+                  (insert " :cache yes"))))
+            (search-forward "```")
+            (replace-match "#+END_SRC")
+            (search-backward "#+BEGIN_SRC")
+            (forward-line)
+            (move-beginning-of-line nil)
+            (set-mark-command nil)
+            (search-forward "#+END_SRC")
+            (forward-line -1)
+            (move-end-of-line nil)
+            (string-insert-rectangle (region-beginning) (region-end) "  ")
+            (deactivate-mark))))
+    #+end_src
+
+    #+begin_src emacs-lisp
+      (defun ljos/inline-src-t ()
+        (while (search-forward "`r \\(.+?\\)`" nil t)
+          (replace-match "src_R{\\1}")))
+    #+end_src
+
+    #+begin_src emacs-lisp
+      (defun ljos/monospace-t ()
+        (while (search-forward-regexp "`\\(.*?\\)`" nil t)
+          (replace-match "=\\1=")))
+    #+end_src
+
+    #+begin_src emacs-lisp
+      (defun ljos/Rmd->Org ()
+        (interactive)
+        (beginning-of-buffer)
+        (ljos/header-t)
+        (beginning-of-buffer)
+        (ljos/sub-header-t)
+        (beginning-of-buffer)
+        (ljos/src-block-t)
+        (beginning-of-buffer)
+        (ljos/inline-src-t)
+        (beginning-of-buffer)
+        (ljos/monospace-t))
+    #+END_SRC
