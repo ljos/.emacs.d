@@ -539,17 +539,23 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
           (add-hook 'ibuffer-hook 'ljos/ibuffer-hook)))
     #+end_src
 *** ido
+    Provide fuzzy matching for ido-mode.
+
     #+begin_src emacs-lisp
       (use-package flx-ido
         :ensure t
         :commands flx-ido-mode)
     #+end_src
 
+    Vertical represention in the minibuffer.
+
     #+begin_src emacs-lisp
       (use-package ido-vertical-mode
         :ensure t
         :commands ido-vertical-mode)
     #+end_src
+
+    ido makes it easier to find files and do other things.
 
     #+begin_src emacs-lisp
       (use-package ido
