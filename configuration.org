@@ -496,6 +496,9 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
                ("C--" . er/contract-region)))
     #+end_src
 *** Find file at point
+    I /usually/ like to "find file at point". Sometimes it is doesn't
+    do what I expect it to do.
+
     #+begin_src emacs-lisp
       (use-package ffap
         :init (ffap-bindings))
