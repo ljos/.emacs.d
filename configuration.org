@@ -872,25 +872,6 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
           (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)))
     #+end_src
 
-*** Julia
-    #+begin_src emacs-lisp
-      (use-package julia-mode
-        :load-path "site-lisp/julia-mode"
-        :mode "\\.jl$"
-        :config
-        (progn
-          (defvar ljos/julia-mode-initialized nil)
-
-          (defun ljos/julia-mode-hook ()
-            (unless ljos/julia-mode-initialized
-              (setq julia-inferior-program "/usr/local/bin/julia-basic")
-              (define-key julia-mode-map (kbd "C-c C-k") 'julia-inferior-reload-buffer)
-              (define-key julia-mode-map (kbd "C-c C-l") 'julia-inferior-send-line-or-region)
-              (define-key julia-mode-map (kbd "C-c M-j") 'julia-inferior-run)))
-
-          (add-hook 'julia-mode-hook 'ljos/julia-mode-hook)))
-    #+end_src
-
 *** Lisp
     #+begin_src emacs-lisp
       (use-package lisp-mode
