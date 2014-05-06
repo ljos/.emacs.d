@@ -1,1 +1,3 @@
-[[./configuration.org][Configuration]]
+- [[./configuration.org][configuration.org]]
+- [[./custom.el][custom.el]]
+- [[./init.el][init.el]]
