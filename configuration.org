@@ -443,6 +443,10 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
         :init (browse-kill-ring-default-keybindings))
     #+end_src
 *** Dired
+    I like to keep =dired= in the same buffer. If I keep opening more
+    buffers there will be so many buffers open after a small visit to
+    a directory.
+
     #+begin_src emacs-lisp
       (use-package dired-single
         :ensure t
@@ -450,6 +454,8 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
                    dired-single-buffer-mouse))
     #+end_src
 
+    =dired-x= helps with hiding some files that I don't always want to
+    show. In particular the ones starting with a =.=.
     #+begin_src emacs-lisp
       (use-package dired-x
         :commands dired-omit-mode
