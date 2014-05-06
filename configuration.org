@@ -1041,6 +1041,7 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
               (define-key org-mode-map (kbd "M-q") 'org-fill-paragraph)
               (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
               (define-key org-mode-map (kbd "C-c M-n") 'ljos/org-end-of-block)
+              (define-key org-mode-map (kbd "C-c d") 'org-babel-demarcate-block)
 
               (setq ljos/org-mode-initialized t))
 
