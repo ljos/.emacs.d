@@ -629,11 +629,11 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
     #+begin_src emacs-lisp
       (use-package projectile
         :ensure t
-        :init (projectile-global-mode)
-        :bind ("s-p" . projectile-switch-project)
+        :init (progn
+                (projectile-global-mode)
+                (define-key projectile-mode-map (kbd "s-p") 'projectile-switch-project))
         :config
-        (progn
-          (setq projectile-switch-project-action 'projectile-ztree-dir)))
+        (setq projectile-switch-project-action 'projectile-ztree-dir))
     #+end_src
 *** smex
     #+begin_src emacs-lisp
