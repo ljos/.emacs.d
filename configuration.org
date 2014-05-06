@@ -99,7 +99,9 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
                (add-to-list 'default-frame-alist
                             (cons 'height (/ (- (x-display-pixel-height) 50)
                                              (frame-char-height)))))))
+     #+end_src
 
+     #+begin_src emacs-lisp
        (defun ljos/x-maximize-frame ()
          "Sends a message to an X Server to maximize the frame."
          (interactive)
@@ -343,7 +345,9 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
       (use-package fuzzy
         :ensure t
         :commands fuzzy-all-completions)
+    #+end_src
 
+    #+begin_src emacs-lisp
       (use-package auto-complete-config
         :ensure auto-complete
         :init (ac-config-default)
@@ -381,7 +385,9 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
         :ensure t
         :commands (dired-single-buffer
                    dired-single-buffer-mouse))
+    #+end_src
 
+    #+begin_src emacs-lisp
       (use-package dired-x
         :commands dired-omit-mode
         :config
@@ -389,7 +395,9 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
           (setq-default dired-omit-files-p t)
           (setq dired-omit-files
                 (concat dired-omit-files "\\|^\\..+$"))))
+    #+end_src
 
+    #+begin_src emacs-lisp
       (use-package dired
         :commands dired-at-point
         :config
@@ -426,10 +434,14 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
       (use-package ibuffer-vc
         :ensure t
         :commands ibuffer-vc-set-filter-groups-by-vc-root)
+    #+end_src
 
+    #+begin_src emacs-lisp
       (use-package ibuf-ext
         :commands ibuffer-do-sort-by-major-mode)
+    #+end_src
 
+    #+begin_src emacs-lisp
       (use-package ibuffer
         :bind ("C-x C-b" . ibuffer)
         :config
@@ -462,11 +474,15 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
       (use-package flx-ido
         :ensure t
         :commands flx-ido-mode)
+    #+end_src
 
+    #+begin_src emacs-lisp
       (use-package ido-vertical-mode
         :ensure t
         :commands ido-vertical-mode)
+    #+end_src
 
+    #+begin_src emacs-lisp
       (use-package ido
         :init (ido-mode +1)
         :bind ("C-x C-f" . ido-find-file)
@@ -579,7 +595,7 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
                 pomodoro-break-cycle "休憩" ;; break in japanese
                 pomodoro-long-break-time 20
                 pomodoro-break-time 7)))
-#+end_src
+    #+end_src
 *** popwin
     I used to use popwin, but it doesn't work correctly with
     =magit-ediff=.
@@ -622,6 +638,7 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
     #+end_src
 
 *** undo-tree
+
     #+begin_src emacs-lisp
       (use-package undo-tree
         :ensure t
@@ -679,7 +696,9 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
       (use-package ac-nrepl
         :ensure t
         :commands ac-nrepl-setup)
+    #+end_src
 
+    #+begin_src emacs-lisp
       (use-package midje-mode
         :load-path "site-lisp/midje-mode"
         :commands midje-mode-maybe-enable
@@ -689,7 +708,9 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
           (add-hook 'midje-mode-hook
                     '(lambda ()
                        (yas-activate-extra-mode 'midje-mode)))))
+    #+end_src
 
+    #+begin_src emacs-lisp
       (use-package cider
         :ensure t
         :commands cider-jack-in
@@ -809,7 +830,9 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
       (use-package shm
         :ensure t
         :commands structured-haskell-mode)
+    #+end_src
 
+    #+begin_src emacs-lisp
       (use-package haskell-mode
         :ensure t
         :mode (("\\.hs$" . haskell-mode)
@@ -859,7 +882,9 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
       (use-package magit-annex
         :ensure t
         :defer t)
+    #+end_src
 
+    #+begin_src emacs-lisp
       (use-package magit
         :ensure t
         :bind ("C-x g" . magit-status)
