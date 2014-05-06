@@ -164,9 +164,6 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
 
       (global-set-key (kbd "M-p") 'scroll-down)
       (global-set-key (kbd "M-n") 'scroll-up)
-
-      (define-key read-expression-map (kbd "TAB") 'lisp-complete-symbol)
-      (define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
     #+end_src
 
 *** Path
@@ -905,7 +902,9 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
             (unless ljos/lisp-mode-initialized
               (setq inferior-lisp-program "sbcl")
               (load-file (expand-file-name "~/quicklisp/slime-helper.el"))
-              (add-hook 'slime-repl-mode-hook 'enable-paredit-mode)))
+              (add-hook 'slime-repl-mode-hook 'enable-paredit-mode)
+              (define-key read-expression-map (kbd "TAB") 'lisp-complete-symbol)
+              (define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)))
           (add-hook 'lisp-mode-hook 'ljos/lisp-mode-hook)))
     #+end_src
 
