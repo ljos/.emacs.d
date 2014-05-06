@@ -38,19 +38,16 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
     functions:
 
     #+begin_src emacs-lisp
-      (set-terminal-coding-system 'utf-8)
-      (prefer-coding-system 'utf-8)
+      (set-terminal-coding-system 'utf-8-unix)
+      (prefer-coding-system 'utf-8-unix)
+      (setenv "LC_ALL" "en_US.UTF-8")
+      (set-locale-environment "en_US.UTF-8")
     #+end_src
 
-    I do not know if I still need these, but they stay as it isn't a
-    problem that they're there.
-
-    Use the coreutils =ls= program when using emacs on OS X.
-
-    #+BEGIN_SRC emacs-lisp
-      (when (eq 'darwin system-type)
-        (setq insert-directory-program "gls"))
-    #+END_SRC
+    I do not know if I still need these, but they stay as it is not a
+    problem that they are there. The reason I set the environment to
+    =UTF-8= is that I had some problems with =R= not using =C= instead
+    and I use a lot of =UTF-8= text and other things in my work.
 
 *** Enable disables
     There are some of the disabled functions that I actually like to use.
