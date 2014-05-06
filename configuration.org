@@ -991,6 +991,13 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
 
                     org-use-speed-commands t)
 
+              (setq org-html-style "<style type=\"text/css\">
+                                        html {
+                                            max-width : 700px;
+                                            margin : 0 auto;
+                                        }
+                                    </style>")
+
               (org-babel-do-load-languages
                'org-babel-load-languages
                '((R . t)
