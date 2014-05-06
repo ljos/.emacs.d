@@ -4,12 +4,6 @@
 [submodule "site-lisp/sparql-mode"]
 	path = site-lisp/sparql-mode
 	url = git@github.com:ljos/sparql-mode.git
-[submodule "site-lisp/spotify-el"]
-	path = site-lisp/spotify-el
-	url = https://github.com/remvee/spotify-el.git
-[submodule "site-lisp/javert"]
-	path = site-lisp/javert
-	url = https://github.com/technomancy/javert.git
 [submodule "site-lisp/ebnf-mode"]
 	path = site-lisp/ebnf-mode
 	url = https://github.com/jeramey/ebnf-mode
