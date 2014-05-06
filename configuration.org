@@ -81,6 +81,10 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
      display. These are some helper functions that I found at at
      [[http://stackoverflow.com/a/94277][stackoverflow]].
 
+     The =ljos/set-frame-size-according-to-resolution= sets the the
+     size to 100 pixels wide if the screen is larger than 1280px and
+     to the height of the screen (- 50px).
+
      #+begin_src emacs-lisp
        (defun ljos/set-frame-size-according-to-resolution ()
          "Sets the size of the frame according to the screen size. If the
@@ -101,6 +105,8 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
                                              (frame-char-height)))))))
      #+end_src
 
+     This function maximizes the frame on X-systems.
+
      #+begin_src emacs-lisp
        (defun ljos/x-maximize-frame ()
          "Sends a message to an X Server to maximize the frame."
@@ -109,11 +115,20 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
                                 '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
          (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
                                 '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
+     #+end_src
 
+     On X systems I like to just set emacs to full screen. Otherwise I
+     set the screen to the 100*height size.
+
+     #+begin_src emacs-lisp
        (if (eq 'x window-system)
            (ljos/x-maximize-frame)
          (ljos/set-frame-size-according-to-resolution))
+     #+end_src
 
+     The frame is put at the top left corner.
+
+     #+begin_src emacs-lisp
        (set-frame-position (next-frame) 0 0)
      #+end_src
 
