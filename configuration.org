@@ -150,18 +150,47 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
 
 *** Define keys
 
+    I don't use these very often, and maybe I will remove them some
+    time. For now they are nice and I don't use the keys for anything
+    else.
     #+begin_src emacs-lisp
       (global-set-key (kbd "s--") 'text-scale-decrease)
       (global-set-key (kbd "s-=") 'text-scale-increase)
-      (global-set-key (kbd "C-s") 'isearch-forward-regexp)
-      (global-set-key (kbd "C-r") 'isearch-backward-regexp)
-      (define-key 'help-command "a" 'apropos)
+    #+end_src
 
+    I think it is nicer to have =isearch-forward-regexp= as the
+    command that is easy to get to. In most searches a regexp search
+    will do almost the same as a normal search.
+
+    #+begin_src emacs-lisp
+      (global-set-key (kbd "C-s") 'isearch-forward-regexp)
+      (global-set-key (kbd "C-M-s") 'isearch-forward)
+      (global-set-key (kbd "C-r") 'isearch-backward-regexp)
+      (global-set-key (kbd "C-M-r") 'isearch-backward)
+    #+end_src
+
+    =apropos= makes it possible to search for functionality that I
+    don't know the exact name of, but I do know what it does.
+
+    #+begin_src emacs-lisp
+      (define-key 'help-command "a" 'apropos)
+    #+end_src
+
+    It is nice to be able to move around a little easier. I don't
+    understand why I wasn't able to use =[= and =]= in the definition
+    of the =forward/backward-sexp= keybindings, but I solved it with
+    that number.
+
+    #+begin_src emacs-lisp
       (global-set-key (kbd "s-[") 'backward-paragraph)
       (global-set-key (kbd "s-]") 'forward-paragraph)
       (global-set-key  [C-s-268632091] 'backward-sexp)
       (global-set-key  [C-s-268632093] 'forward-sexp)
+    #+end_src
 
+    Since =M-n/p= isn't bound we can just as well use it for scrolling.
+
+    #+begin_src emacs-lisp
       (global-set-key (kbd "M-p") 'scroll-down)
       (global-set-key (kbd "M-n") 'scroll-up)
     #+end_src
