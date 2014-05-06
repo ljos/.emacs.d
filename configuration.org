@@ -856,11 +856,18 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
         :mode "\\.es$")
     #+end_src
 *** Emacs lisp
+    =elisp-slime-nav= makes it possible to navigate elisp code without
+    having the tags.
     #+begin_src emacs-lisp
       (use-package elisp-slime-nav
         :ensure t
         :commands elisp-slime-nav-mode)
+    #+end_src
 
+    I want the compiled emacs-lisp file to be removed when I save a
+    file that contains emacs-lisp.
+
+    #+begin_src emacs-lisp
       (add-hook 'emacs-lisp-mode-hook
                 (lambda ()
                   (make-local-variable 'after-save-hook)
@@ -868,11 +875,15 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
                             (lambda ()
                               (if (file-exists-p (concat buffer-file-name "c"))
                                   (delete-file (concat buffer-file-name "c")))))))
+    #+end_src
 
+    #+begin_src emacs-lisp
       (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
       (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
       (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
     #+end_src
+
+    Always paredit-mode.
 
     #+begin_src emacs-lisp
       (use-package ielm
