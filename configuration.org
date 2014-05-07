@@ -1006,11 +1006,6 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
           (defvar ljos/org-mode-initialized nil)
           (defun ljos/org-mode-hook ()
             (unless ljos/org-mode-initialized
-              (defun org-export-latex-no-toc (depth)
-                (when depth
-                  (format "%% Org-mode is exporting headings to %s levels.\n"
-                          depth)))
-
               (setq org-directory "~/Dropbox/org"
                     org-mobile-inbox-for-pull "~/Dropbox/org/inbox.org"
                     org-mobile-directory "~/Dropbox/org/mobile"
@@ -1065,7 +1060,7 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
                                              (file+headline org-default-notes-file "Tasks")
                                              "* TODO %?\n  %i\n"))
 
-                    org-export-latex-format-toc-function 'org-export-latex-no-toc
+                    org-export-latex-format-toc-function 'ljos/org-export-latex-no-toc
 
                     org-use-speed-commands t)
 
@@ -1236,6 +1231,15 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
             (message (format "%d words in %s." wc
                              (if mark-active "region" "buffer")))))
      #+end_src
+
+***** ljos/org-export-latex-no-toc
+
+      #+BEGIN_SRC emacs-lisp
+        (defun ljos/org-export-latex-no-toc (depth)
+                  (when depth
+                    (format "%% Org-mode is exporting headings to %s levels.\n"
+                            depth)))
+      #+END_SRC
 
 *** prog-mode
 
