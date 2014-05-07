@@ -56,6 +56,30 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
       (put 'narrow-to-region 'disabled nil)
     #+end_src
 
+*** OS X
+    The menu bar is annoying on systems other than OS X.
+
+    #+begin_src emacs-lisp -r
+      (unless (equal system-type 'darwin)
+        (menu-bar-mode nil))
+    #+end_src
+
+    Use the coreutils =ls= program when using emacs on OS X so that we
+    get the correct flags for modes like =projectile=.
+
+    #+BEGIN_SRC emacs-lisp
+      (when (eq 'darwin system-type)
+        (setq insert-directory-program "gls"))
+    #+END_SRC
+
+    I like the menlo font, so if I am running OS X we should try to
+    load that font.
+
+     #+begin_src emacs-lisp
+       (if (and (window-system)
+                (equal 'darwin system-type))
+           (set-face-attribute 'default nil :font "menlo-14"))
+     #+end_src
 *** Interface
 **** Color-theme
      I like the tomorrow-night color theme.
@@ -121,32 +145,6 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
      #+begin_src emacs-lisp
        (set-frame-position (next-frame) 0 0)
      #+end_src
-
-*** OS X
-    The menu bar is annoying on systems other than OS X.
-
-    #+begin_src emacs-lisp -r
-      (unless (equal system-type 'darwin)
-        (menu-bar-mode nil))
-    #+end_src
-
-    Use the coreutils =ls= program when using emacs on OS X so that we
-    get the correct flags for modes like =projectile=.
-
-    #+BEGIN_SRC emacs-lisp
-      (when (eq 'darwin system-type)
-        (setq insert-directory-program "gls"))
-    #+END_SRC
-
-    I like the menlo font, so if I am running OS X we should try to
-    load that font.
-
-     #+begin_src emacs-lisp
-       (if (and (window-system)
-                (equal 'darwin system-type))
-           (set-face-attribute 'default nil :font "menlo-14"))
-     #+end_src
-
 *** Define keys
 
     I don't use these very often, and maybe I will remove them some
