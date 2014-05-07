@@ -240,7 +240,7 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
      at [[http://www.emacswiki.org/emacs/SortWords][emacswiki]].
 
      #+begin_src emacs-lisp
-       (defun sort-symbols (reverse beg end)
+       (defun ljos/sort-symbols (reverse beg end)
          "Sort symbols in region alphabetically, in REVERSE if negative.
            See `sort-words'."
          (interactive "*P\nr")
