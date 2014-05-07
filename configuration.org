@@ -88,10 +88,10 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
              (progn
                (add-to-list 'default-frame-alist
                             (cons 'width
-                                  (if (> (x-display-pixel-width) 1280)
+                                  (if (> (display-pixel-width) 1280)
                                       100 80)))
                (add-to-list 'default-frame-alist
-                            (cons 'height (/ (- (x-display-pixel-height) 50)
+                            (cons 'height (/ (- (display-pixel-height) 50)
                                              (frame-char-height)))))))
      #+end_src
 
