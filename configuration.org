@@ -1071,6 +1071,7 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
               (org-babel-do-load-languages
                'org-babel-load-languages
                '((R . t)
+                 (dot . t)
                  (elasticsearch . t)
                  (emacs-lisp . t)
                  (gnuplot . t)))
