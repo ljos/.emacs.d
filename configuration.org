@@ -57,16 +57,6 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
     #+end_src
 
 *** Interface
-**** Font
-     I like the menlo font, so if I am running OS X we should try to load
-     that font.
-
-     #+begin_src emacs-lisp
-       (if (and (window-system)
-                (equal 'darwin system-type))
-           (set-face-attribute 'default nil :font "menlo-14"))
-     #+end_src
-
 **** Color-theme
      I like the tomorrow-night color theme.
 
@@ -147,6 +137,15 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
       (when (eq 'darwin system-type)
         (setq insert-directory-program "gls"))
     #+END_SRC
+
+    I like the menlo font, so if I am running OS X we should try to
+    load that font.
+
+     #+begin_src emacs-lisp
+       (if (and (window-system)
+                (equal 'darwin system-type))
+           (set-face-attribute 'default nil :font "menlo-14"))
+     #+end_src
 
 *** Define keys
 
