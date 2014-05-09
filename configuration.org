@@ -995,30 +995,85 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
     actually means. Maybe there also should be a split between the
     latex config and the rest.
 
+    #+BEGIN_SRC emacs-lisp
+      (use-package org-capture
+        :ensure org
+        :bind ("\C-cc" . org-capture)
+        :config
+        (setq org-capture-templates '(("j" "Journal" entry
+                                       (file+datetree (concat org-directory "/journal.org"))
+                                       "* %(format-time-string \"%H:%M\") %?"))))
+    #+END_SRC
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package ox-latex
+        :ensure org
+        :defer t
+        :config
+        (progn
+          (setq org-latex-pdf-process '("latexmk -bibtex -pdf %f"))
+
+          (unless (boundp 'org-latex-packages-alist)
+            (setq org-latex-packages-alist nil))
+
+          (add-to-list 'org-latex-packages-alist '("" "microtype"))
+          (add-to-list 'org-latex-packages-alist '("l2tabu, orthodox" "nag"))
+          (add-to-list 'org-latex-packages-alist '("round" "natbib"))
+          (add-to-list 'org-latex-packages-alist '("utf8" "inputenc"))
+
+          (unless (boundp 'org-latex-classes)
+            (setq org-latex-classes nil))
+
+          (add-to-list 'org-latex-classes
+                       '("article"
+                         "\\documentclass{article}
+                                   \\usepackage[round,authoryear,comma]{natbib}"
+                         ("\\section{%s}" . "\\section*{%s}")
+                         ("\\subsection{%s}" . "\\subsection*{%s}")
+                         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+
+          (add-to-list 'org-latex-classes
+                       '("thesis"
+                         "\\documentclass{report}"
+                         ("\\chapter{%s}" . "\\chapter*{%s}")
+                         ("\\section{%s}" . "\\section*{%s}")
+                         ("\\subsection{%s}" . "\\subsection*{%s}")
+                         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                         ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                         ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))))
+    #+END_SRC
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package ox-html
+        :ensure org
+        :defer t
+        :config
+        (setq org-html-style "<style type=\"text/css\">
+                                html {
+                                  max-width : 700px;
+                                  margin : 0 auto;
+                                }
+                              </style>"))
+    #+END_SRC
+
     #+begin_src emacs-lisp
       (use-package org
         :ensure t
         :mode ("\\.org$" . org-mode)
         :bind (("\C-cl"  . org-store-link)
                ("\C-ca"  . org-agenda)
-               ("\C-cb"  . org-iswitchb)
-               ("\C-cc"  . org-capture))
+               ("\C-cb"  . org-iswitchb))
+        :init  (setq org-directory "~/Dropbox/org")
         :config
         (progn
           (defvar ljos/org-mode-initialized nil)
           (defun ljos/org-mode-hook ()
             (unless ljos/org-mode-initialized
-              (setq org-directory "~/Dropbox/org"
-                    org-mobile-inbox-for-pull "~/Dropbox/org/inbox.org"
-                    org-mobile-directory "~/Dropbox/org/mobile"
-
-                    org-src-fontify-natively t
+              (setq org-src-fontify-natively t
                     org-src-window-setup 'current-window
 
                     org-agenda-include-all-todo t
                     org-agenda-files '("~/Dropbox/org/organizer.org")
-
-                    org-tag-persistent-alist '(("work" . ?w) ("private" . ?p))
 
                     org-todo-keywords '((sequence "TODO" "STARTED" "WAITING"
                                                   "|" "DONE" "CANCELLED" "ON-HOLD"
@@ -1035,41 +1090,11 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
 
                     org-refile-targets '(("organizer.org" :maxlevel . 9))
                     org-completion-use-ido t
-                    org-latex-pdf-process '("latexmk -bibtex -pdf %f")
 
                     ;;org-capture config
                     org-default-notes-file (concat org-directory "/organizer.org")
 
-                    org-capture-templates '(("a" "Appointments" entry
-                                             (file+headline org-default-notes-file "Appointments")
-                                             "* APPT %? %^{WITH}p %^{LOCATION}p\n%^T--%^T\n"
-                                             :prepend)
-                                            ("p" "Project" entry
-                                             (file+headline org-default-notes-file "Projects")
-                                             "* %?\n")
-                                            ("d" "Done" entry
-                                             (file+datetree (concat org-directory "/done.org"))
-                                             "* %?\nCLOCK: %^U--%U")
-                                            ("j" "Journal" entry
-                                             (file+datetree (concat org-directory "/journal.org"))
-                                             "* %?\nEntered on %U\n  %i\n  %a")
-                                            ("n" "Note" entry
-                                             (file+headline org-default-notes-file "Notes")
-                                             "* NOTE %?\n")
-                                            ("t" "Todo" entry
-                                             (file+headline org-default-notes-file "Tasks")
-                                             "* TODO %?\n  %i\n"))
-
-                    org-export-latex-format-toc-function 'ljos/org-export-latex-no-toc
-
                     org-use-speed-commands t)
-
-              (setq org-html-style "<style type=\"text/css\">
-                                        html {
-                                            max-width : 700px;
-                                            margin : 0 auto;
-                                        }
-                                    </style>")
 
               (org-babel-do-load-languages
                'org-babel-load-languages
@@ -1078,35 +1103,6 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
                  (elasticsearch . t)
                  (emacs-lisp . t)
                  (gnuplot . t)))
-
-              (unless (boundp 'org-latex-packages-alist)
-                (setq org-latex-packages-alist nil))
-
-              (add-to-list 'org-latex-packages-alist '("" "microtype"))
-              (add-to-list 'org-latex-packages-alist '("l2tabu, orthodox" "nag"))
-              (add-to-list 'org-latex-packages-alist '("round" "natbib"))
-              (add-to-list 'org-latex-packages-alist '("utf8" "inputenc"))
-
-              (unless (boundp 'org-export-latex-classes)
-                (setq org-export-latex-classes nil))
-
-              (add-to-list 'org-export-latex-classes
-                           '("article"
-                             "\\documentclass{article}
-                             \\usepackage[round,authoryear,comma]{natbib}"
-                             ("\\section{%s}" . "\\section*{%s}")
-                             ("\\subsection{%s}" . "\\subsection*{%s}")
-                             ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-
-              (add-to-list 'org-export-latex-classes
-                           '("thesis"
-                             "\\documentclass{report}"
-                             ("\\chapter{%s}" . "\\chapter*{%s}")
-                             ("\\section{%s}" . "\\section*{%s}")
-                             ("\\subsection{%s}" . "\\subsection*{%s}")
-                             ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                             ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                             ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
               (font-lock-remove-keywords
                nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)\\b"
@@ -1232,15 +1228,6 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
             (message (format "%d words in %s." wc
                              (if mark-active "region" "buffer")))))
      #+end_src
-
-***** ljos/org-export-latex-no-toc
-
-      #+BEGIN_SRC emacs-lisp
-        (defun ljos/org-export-latex-no-toc (depth)
-                  (when depth
-                    (format "%% Org-mode is exporting headings to %s levels.\n"
-                            depth)))
-      #+END_SRC
 
 *** prog-mode
 
