@@ -759,9 +759,21 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
         :config
         (progn
           (define-key ztree-mode-map (kbd "n") 'next-line)
-          (define-key ztree-mode-map (kbd "p") 'previous-line)))
+          (define-key ztree-mode-map (kbd "p") 'previous-line)
+          (define-key ztree-mode-map (kbd "s") 'ljos/ztree-isearch-forward)))
     #+END_SRC
 **** TODO dired functionality for ztree
+***** DONE ljos/ztree-isearch-forward
+      This function makes it so that after a search forward the file
+      under the selection is opened.
+
+      #+BEGIN_SRC emacs-lisp
+        (defun ljos/ztree-isearch-forward ()
+          (interactive)
+          (isearch-forward)
+          (ztree-perform-soft-action))
+      #+END_SRC
+
 ***** TODO rename file
 ***** TODO delete file
 ***** TODO move file
