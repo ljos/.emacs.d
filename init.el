@@ -5,6 +5,7 @@
 
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
 (package-initialize)
 
@@ -17,7 +18,7 @@
 (require 'use-package)
 
 (use-package org
-  :ensure t
+  :ensure org-plus-contrib
   :init
   (org-babel-load-file
    (expand-file-name "configuration.org" user-emacs-directory)))

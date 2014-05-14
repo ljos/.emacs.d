@@ -1008,7 +1008,7 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
 
     #+BEGIN_SRC emacs-lisp
       (use-package org-capture
-        :ensure org
+        :ensure org-plus-contrib
         :bind ("\C-cc" . org-capture)
         :config
         (setq org-capture-templates '(("j" "Journal" entry
@@ -1018,7 +1018,7 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
 
     #+BEGIN_SRC emacs-lisp
       (use-package ox-latex
-        :ensure org
+        :ensure org-plus-contrib
         :defer t
         :config
         (progn
@@ -1051,12 +1051,13 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
                          ("\\subsection{%s}" . "\\subsection*{%s}")
                          ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                          ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                         ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))))
+                         ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+          (require 'ox-bibtex)))
     #+END_SRC
 
     #+BEGIN_SRC emacs-lisp
       (use-package ox-html
-        :ensure org
+        :ensure org-plus-contrib
         :defer t
         :config
         (setq org-html-style "<style type=\"text/css\">
@@ -1069,7 +1070,7 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
 
     #+begin_src emacs-lisp
       (use-package org
-        :ensure t
+        :ensure org-plus-contrib
         :mode ("\\.org$" . org-mode)
         :bind (("\C-cl"  . org-store-link)
                ("\C-ca"  . org-agenda)
