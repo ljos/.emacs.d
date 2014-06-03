@@ -826,11 +826,11 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
         :commands cider-jack-in
         :config
         (progn
-          (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
-          (add-hook 'cider-mode-hook 'ac-nrepl-setup)
-          (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+          ;; (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
+          ;; (add-hook 'cider-mode-hook 'ac-nrepl-setup)
+          ;; (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
           (add-hook 'cider-repl-mode-hook 'enable-paredit-mode)
-          (add-hook 'cider-repl-mode-hook 'subword-mode)
+          ;; (add-hook 'cider-repl-mode-hook 'subword-mode)
           (setq cider-repl-history-file "~/.emacs.d/history/nrepl")))
     #+end_src
 
