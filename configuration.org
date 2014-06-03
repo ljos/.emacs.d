@@ -1108,6 +1108,10 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
                     org-refile-targets '(("organizer.org" :maxlevel . 9))
                     org-completion-use-ido t
 
+                    org-export-with-toc nil
+                    org-export-with-section-numbers nil
+                    org-startup-folded nil
+
                     ;;org-capture config
                     org-default-notes-file (concat org-directory "/organizer.org")
 
