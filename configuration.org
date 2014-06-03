@@ -1141,7 +1141,32 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
           (add-hook 'org-mode-hook 'ljos/org-mode-hook)))
     #+end_src
 
-**** ljos/org extra functions
+**** ljos/org extra functions and advice
+***** Advice: remove coderefs from src body
+
+      #+BEGIN_SRC emacs-lisp
+        (defadvice org-babel-execute-src-block (before
+                                                remove-coderefs-from-body
+                                                (&optional arg info params)
+                                                activate)
+          (let* ((information (org-babel-get-src-block-info))
+                 (switches (nth 3 information)))
+            (when  (and (stringp switches)
+                        (string-match "-r" switches))
+              (let ((cref-fmt (or (and (string-match "-l \"\\(.+\\)\"" switches)
+                                       (match-string 1 switches))
+                                  org-coderef-label-format)))
+                (setcar (cdr information)
+                        (with-temp-buffer
+                          (insert (nth 1 information))
+                          (goto-char (point-min))
+                          (while (re-search-forward
+                                  (replace-regexp-in-string "%s" ".+" cref-fmt) nil t)
+                            (replace-match ""))
+                          (buffer-string)))
+                (setf info information)))))
+      #+END_SRC
+
 ***** ljos/org-end-of-src-block
       Got tired of not being able to move to the end of a block.
 
