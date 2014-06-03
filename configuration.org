@@ -750,7 +750,10 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
       (use-package yasnippet
         :ensure t
         :commands (yas-global-mode yas-activate-extra-mode)
-        :init (yas-global-mode +1))
+        :init (yas-global-mode +1)
+        :config
+        (progn
+          (setq yas-prompt-functions '(yas-dropdown-prompt))))
     #+end_src
 
 *** ztree
