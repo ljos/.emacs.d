@@ -269,7 +269,7 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
     figured out on my own.
 
     #+begin_src emacs-lisp
-      (defun truncate-string-to-length (str end-column &optional start-column padding ellipsis)
+      (defun ljos/truncate-string-to-length (str end-column &optional start-column padding ellipsis)
         "The same as truncate-string-to-width,
       except it truncates from the start of the list"
         (concat
@@ -291,9 +291,13 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
 
     This is a helper function to center a string in a set width.
     #+begin_src emacs-lisp
-      (defun center-string-in-char (str len char)
-        (store-substring (make-string len char)
-                         (/ (- len (length str)) 2) str))
+      (defun ljos/center-string-with-length (str len)
+        (with-temp-buffer
+          (setq fill-column len)
+          (insert str)
+          (center-line)
+          (insert-char ?\s (- len (current-column)))
+          (buffer-string)))
     #+end_src
 
     This is the format for the buffer position numbers in the
@@ -329,12 +333,10 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
           "  "
           (:eval
            (propertize                        ; file/buffer name
-            (center-string-in-char
-             (truncate-string-to-length
-              (or buffer-file-truename
-                  (buffer-name))
-              25 nil nil  "..")
-             25 ?\s)
+            (ljos/center-string-with-length
+             (ljos/truncate-string-to-length
+              (or buffer-file-truename (buffer-name)) 25 nil nil  "..")
+             25)
             'help-echo (buffer-file-name)     ; echo full name
             'local-map
             (let ((map (make-sparse-keymap)))
