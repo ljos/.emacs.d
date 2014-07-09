@@ -1,1403 +1,405 @@
 #+STARTUP: content
 #+OPTIONS: toc:4 h:4
-* Configuration
+#+TITLE: Emacs configuration
+
 This document is the result of me wanting to test literate programming
 and thinking that my emacs configuration was the perfect candidate. It
 is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming-emacs-configuration-file/][a blog post]] by Sacha Chua and others.
 
-** General configuration
-*** Defaults
-    Set the file used for the auto-custom configuration to custom.el.
+* Defaults
+  I like to use use the =M-x customize= functionality in emacs to
+  configure at least the default configurations, but some things I
+  have to do programmatically.
 
-    #+begin_src emacs-lisp
-      (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-      (load custom-file)
-    #+end_src
+** Global keybindings
+   There are just two global keybindings that I set. That is not
+   specifically set when importing a new mode.
 
-    I am trying to do all the configurations that can with the
-    =customize= functionality of emacs.
+   #+BEGIN_SRC emacs-lisp
+     (bind-keys*
+      ("s-[" . backward-paragraph)
+      ("s-]" . forward-paragraph))
+   #+END_SRC
 
-    Set the default-directory so that when we are in buffers that do
-    not have a directory we use the home directory. Also set the
-    ring-bell-function to ignore so that the bell never rings.
+** Default directory
+   The default directory is usually set to =/=, but that is really
+   annoying when most of the files that I want to access are within
+   =~/=. To change that I change the default-directory value:
 
-    #+begin_src emacs-lisp
-      (setq default-directory     "~/"
-            ring-bell-function    #'ignore)
-    #+end_src
+   #+BEGIN_SRC emacs-lisp
+     (setq default-directory "~/")
+   #+END_SRC
 
-    This makes it so I can just press =y= or =n= instead of =yes= or
-    =no=.
+** Custom file
+   When using =M-x customize=, or the tool bar to configure emacs the
+   configuration is saved in [[file:init.el][init.el]]. I however feel that doing that
+   is quite messy. I therefore set and load a different file to do
+   that.
 
-    #+begin_src emacs-lisp
-      (fset 'yes-or-no-p 'y-or-n-p)
-    #+end_src
+   #+BEGIN_SRC emacs-lisp
+     (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+   #+END_SRC
 
-    I had some trouble with getting emacs to set the correct encoding
-    in OS X at one point. It seemed to go away if I called these
-    functions:
+   If I am starting from new and I for some reason don't have the
+   custom.el file I need to make sure that it exists by writing an
+   empty buffer to the custom-file.
 
-    #+begin_src emacs-lisp
-      (set-terminal-coding-system 'utf-8-unix)
-      (prefer-coding-system 'utf-8-unix)
-      (setenv "LC_ALL" "en_US.UTF-8")
-      (set-locale-environment "en_US.UTF-8")
-    #+end_src
+   #+BEGIN_SRC emacs-lisp
+     (unless (file-exists-p custom-file)
+       (with-temp-buffer
+         (write-file custom-file)))
+   #+END_SRC
 
-    I do not know if I still need these, but they stay as it is not a
-    problem that they are there. The reason I set the environment to
-    =UTF-8= is that I had some problems with =R= not using =C= instead
-    and I use a lot of =UTF-8= text and other things in my work.
+   When we are sure that the custom.el file exists, it can be loaded.
 
-*** Enable disables
-    There are some of the disabled functions that I actually like to use.
+   #+BEGIN_SRC emacs-lisp
+     (load custom-file)
+   #+END_SRC
 
-    #+begin_src emacs-lisp
-      (put 'narrow-to-region 'disabled nil)
-    #+end_src
+** menu bar
+   The menu bar is the usually at the top of the window, but in OS X
+   it is at the top of the screen. On all other systems it just uses
+   up space that can otherwise be used text.
 
-*** OS X
-    The menu bar is annoying on systems other than OS X.
+   #+BEGIN_SRC emacs-lisp
+     (unless (equal 'darwin system-type)
+       (menu-bar-mode -1))
+   #+END_SRC
+** font
+   I haven't decided what font to use on most systems, but on OS X I
+   really like one of the built in fonts called menlo. I also set the
+   font size a bit bigger at 14pt.
 
-    #+begin_src emacs-lisp -r
-      (unless (equal system-type 'darwin)
-        (menu-bar-mode nil))
-    #+end_src
+   We only need to set the font if we are running in a
+   window-system. If it is in a terminal it doesn't matter as we just
+   use the font in the terminal.
 
-    Use the coreutils =ls= program when using emacs on OS X so that we
-    get the correct flags for modes like =projectile=.
-
-    #+BEGIN_SRC emacs-lisp
-      (when (eq 'darwin system-type)
-        (setq insert-directory-program "gls"))
-    #+END_SRC
-
-    I like the menlo font, so if I am running OS X we should try to
-    load that font.
-
-     #+begin_src emacs-lisp
-       (if (and (window-system)
+   #+BEGIN_SRC emacs-lisp
+     (when (and window-system
                 (equal 'darwin system-type))
-           (set-face-attribute 'default nil :font "menlo-14"))
-     #+end_src
-*** Interface
-**** Color-theme
-     I like the tomorrow-night color theme.
+       (set-face-attribute 'default nil :font "menlo-14"))
+   #+END_SRC
 
-     #+begin_src emacs-lisp
-       (use-package color-theme-sanityinc-tomorrow
+** frame size
+   The default frame size is pretty small. It is better to calculate
+   the size based on the size of the screen. At least the height. I
+   used to set the width as well, but after getting only larger
+   screens that is not a problem anymore.
+
+   #+BEGIN_SRC emacs-lisp
+     (when window-system
+       (add-to-list 'default-frame-alist `(width . 100))
+       (add-to-list 'default-frame-alist `(height . ,(/ (- (display-pixel-height) 50)
+                                                        (frame-char-height)))))
+   #+END_SRC
+
+** yes-or-no-p
+   I find =yes-or-no-p= really annoying. It is much better to call
+   =y-or-n-p= instead. Then we can just press y or n instead of yes or
+   no.
+
+   #+BEGIN_SRC emacs-lisp
+     (defalias 'yes-or-no-p 'y-or-n-p)
+   #+END_SRC
+
+** color-theme
+   The color theme that I like is called tomorrow-theme. I think the
+   best package is the sanityinc one.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package color-theme-sanityinc-tomorrow
+       :ensure t
+       :commands color-theme-sanityinc-tomorrow-night
+       :init (color-theme-sanityinc-tomorrow-night))
+   #+END_SRC
+
+* Global minor modes
+** exec-path-from-shell
+   =exec-path-from-shell= is only needed when I am running OS X. Emacs
+   on OS X doesn't set the path properly. This package helps with that.
+
+   #+BEGIN_SRC emacs-lisp
+     (when (memq window-system '(mac ns))
+       (use-package exec-path-from-shell
          :ensure t
-         :commands sanityinc-tomorrow-night)
-     #+end_src
+         :init
+         (exec-path-from-shell-initialize)))
+   #+END_SRC
+** saveplace
+   =saveplace= records the place the cursor was in when we last
+   visited a file. It also remembers the place when we close Emacs.
 
-**** Frame size
-     I am setting the framesize according to the size of the
-     display. These are some helper functions that I found at at
-     [[http://stackoverflow.com/a/94277][stackoverflow]].
+   #+BEGIN_SRC emacs-lisp
+     (use-package saveplace)
+   #+END_SRC
 
-     The =ljos/set-frame-size-according-to-resolution= sets the the
-     size to 100 characters wide if the screen is larger than 1280px
-     and to the height of the screen (- 50px).
+** sequential-command
+   =sequential-command= makes it possible to have the same key mean
+   different things when pressed in sequence. F.ex. it is possible to
+   define =C-a= to be =back-to-indentation= when pressed the first
+   time, but =beginning-of-line= the next time.
 
-     #+begin_src emacs-lisp
-       (defun ljos/set-frame-size-according-to-resolution ()
-         "Sets the size of the frame according to the screen size. If the
-       width is less then 1280 we stick to 80 character width for the
-       frame. If it is larger we make frame 100 characters wide.
+   #+BEGIN_SRC emacs-lisp
+     (use-package sequential-command
+       :ensure t
+       :bind ("C-a" . ljos/beginning-of-line)
+       :config
+       (define-sequential-command ljos/beginning-of-line
+         back-to-indentation beginning-of-line))
+   #+END_SRC
 
-       The height of the frame is 50px less than the height of the
-       screen."
-         (interactive)
-         (if window-system
-             (progn
-               (add-to-list 'default-frame-alist
-                            (cons 'width
-                                  (if (> (display-pixel-width) 1280)
-                                      100 80)))
-               (add-to-list 'default-frame-alist
-                            (cons 'height (/ (- (display-pixel-height) 50)
-                                             (frame-char-height)))))))
-     #+end_src
+** uniquify
+   Creates unique buffer names. Makes it easier to navigate =C-x b=.
 
-     This function maximizes the frame on X-systems.
+   #+BEGIN_SRC emacs-lisp
+     (use-package uniquify)
+   #+END_SRC
 
-     #+begin_src emacs-lisp
-       (defun ljos/x-maximize-frame ()
-         "Sends a message to an X Server to maximize the frame."
-         (interactive)
-         (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-                                '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
-         (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-                                '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
-     #+end_src
+** ispell
+   Ispell provides spelling for a large amount of languages and is
+   nice when I write text and need to check a word or two.
 
-     On X systems I like to just set emacs to full screen. Otherwise I
-     set the screen to the 100*height size.
+   #+BEGIN_SRC emacs-lisp
+     (use-package ispell)
+   #+END_SRC
 
-     #+begin_src emacs-lisp
-       (if (eq 'x window-system)
-           (ljos/x-maximize-frame)
-         (ljos/set-frame-size-according-to-resolution))
-     #+end_src
+** smart-mode-line
+   I used to have a lot of configurations for the mode-line, but I
+   have decided that it is just better to use =smart-mode-line=
+   instead.
 
-     The frame is put at the top left corner.
+   #+BEGIN_SRC emacs-lisp
+     (use-package smart-mode-line
+       :ensure t
+       :init (sml/setup)
+       :config
+       (progn
+         (setq sml/cv-mode-show-backend t)
+         (sml/apply-theme 'respectful nil 't)))
+   #+END_SRC
+** ido-mode
+   =ido-mode= is built into emacs, but there are some configurations
+   that I like. First, there is the =flx-ido= mode. It provides better
+   fuzzy matching. Fuzzy matching is nice because it helps when I make
+   spelling errors or don't want to write the whole file name.
 
-     #+begin_src emacs-lisp
-       (set-frame-position (next-frame) 0 0)
-     #+end_src
-*** Define keys
+   #+BEGIN_SRC emacs-lisp
+     (use-package flx-ido
+       :ensure t
+       :commands flx-ido-mode)
+   #+END_SRC
 
-    I don't use these very often, and maybe I will remove them some
-    time. For now they are nice and I don't use the keys for anything
-    else.
+   ido usually displays the matches it finds horizontally, but it is
+   much nicer to have it vertically.
 
-    #+begin_src emacs-lisp
-      (global-set-key (kbd "s--") 'text-scale-decrease)
-      (global-set-key (kbd "s-=") 'text-scale-increase)
-    #+end_src
+   #+BEGIN_SRC emacs-lisp
+     (use-package ido-vertical-mode
+       :ensure t
+       :commands ido-vertical-mode)
+   #+END_SRC
 
-    I think it is nicer to have =isearch-forward-regexp= as the
-    command that is easy to get to. In most searches a regexp search
-    will do almost the same as a normal search.
+   Ido needs some configurations to work the way I want, but with that
+   set up it is really nice to have.
 
-    #+begin_src emacs-lisp
-      (global-set-key (kbd "C-s") 'isearch-forward-regexp)
-      (global-set-key (kbd "C-M-s") 'isearch-forward)
-      (global-set-key (kbd "C-r") 'isearch-backward-regexp)
-      (global-set-key (kbd "C-M-r") 'isearch-backward)
-    #+end_src
+   #+BEGIN_SRC emacs-lisp
+     (use-package ido
+       :init (ido-mode +1)
+       :bind ("C-x C-f" . ido-find-file)
+       :config
+       (progn
+         (flx-ido-mode +1)
+         (ido-vertical-mode +1)
+         (setq ido-auto-merge-work-directories-length nil
+               ido-create-new-buffer 'always
+               ido-enable-flex-matching t
+               ido-enable-dot-prefix t
+               ido-handle-dubplicate-virtual-buffers 2
+               ido-max-prospects 10
+               ido-everywhere t
+               ido-use-filename-at-point 'guess
+               ido-use-virtual-buffers t)
+         (use-package ido-ubiquitous
+           :ensure t)
+         (add-to-list 'ido-ignore-buffers ".*-autoloads.el")))
+   #+END_SRC
 
-    =apropos= makes it possible to search for functionality that I
-    don't know the exact name of, but I do know what it does.
+** smex
+   =smex= makes it so that I can use ido-mode for =M-x= as well.
 
-    #+begin_src emacs-lisp
-      (define-key 'help-command "a" 'apropos)
-    #+end_src
+   #+BEGIN_SRC emacs-lisp
+     (use-package smex
+       :ensure t
+       :bind (("M-x" . smex)
+              ("M-X" . smex-major-mode-commands)))
+   #+END_SRC
 
-    It is nice to be able to move around a little easier. I don't
-    understand why I wasn't able to use =[= and =]= in the definition
-    of the =forward/backward-sexp= keybindings, but I solved it with
-    that number.
+** company
+   =company= provides auto-complete. I used to use the package that is
+   called auto-complete. But I decided that =company= is easier to use
+   and add new stuff to.
 
-    #+begin_src emacs-lisp
-      (global-set-key (kbd "s-[") 'backward-paragraph)
-      (global-set-key (kbd "s-]") 'forward-paragraph)
-      (global-set-key  [C-s-268632091] 'backward-sexp)
-      (global-set-key  [C-s-268632093] 'forward-sexp)
-    #+end_src
+   #+BEGIN_SRC emacs-lisp
+     (use-package company
+       :ensure t
+       :init (global-company-mode)
+       :config
+       (progn
+         (setq company-idle-delay 0.15)
+         (setq company-minimum-prefix-length 2)))
+   #+END_SRC
 
-    Since =M-n/p= isn't bound we can just as well use it for scrolling.
+** highlight-symbol
+   highlight-symbol makes it easier to discover the uses of symbols in
+   source code.
 
-    #+begin_src emacs-lisp
-      (global-set-key (kbd "M-p") 'scroll-down)
-      (global-set-key (kbd "M-n") 'scroll-up)
-    #+end_src
+   #+BEGIN_SRC emacs-lisp
+     (use-package highlight-symbol
+       :ensure t
+       :commands highlight-symbol-mode
+       :config
+       (progn
+         (setq highlight-symbol-idle-delay 0.2)
+         (add-hook 'highlight-symbol-mode-hook
+                   (function
+                    (lambda () (highlight-symbol-nav-mode +1))))))
+   #+END_SRC
 
-*** Path
-    Sometimes emacs is not so good at finding the correct paths to
-    everything.
+   =highlight-symbol-nav-mode= makes it easier to navigate between the
+   symbols.
 
-    #+begin_src emacs-lisp
-      (defcustom exec-paths
-        '("~/.lein/bin"
-          "~/.cabal/bin"
-          "~/.local/bin"
-          "/usr/local/bin"
-          "/usr/texbin")
-        "Directories to be added to exec-path"
-        :type 'string)
-    #+end_src
+** visual-regexp
+   =visual-regexp= visualizes the regexp-replace. It makes it much
+   easier to see what is being matched and what is not and how it is
+   transformed.
 
-    Function to add a directory to the PATH variable.
+   #+BEGIN_SRC emacs-lisp
+     (use-package visual-regexp
+       :ensure t
+       :bind (("C-c q" . vr/query-replace)
+              ("C-c r" . vr/replace)))
+   #+END_SRC
 
-    #+begin_src emacs-lisp
-      (defun ljos/add-to-path (dir)
-        "Adds a dir to PATH if dir exists."
-        (when (file-exists-p dir)
-          (progn (add-to-list 'exec-path dir)
-                 (setenv "PATH" (concat dir ":" (getenv "PATH"))))))
-    #+end_src
+* Major modes
+  I use emacs for programming in many languages.
 
-    Function to add all paths to the PATH.
+** clojure
+   =clojure= is a lisp dialect, but it needs many of its own
+   configurations.
 
-    #+begin_src emacs-lisp
-      (defun ljos/initialize-exec-path ()
-        (interactive)
-        (dolist (dir exec-paths)
-          (ljos/add-to-path dir)))
-    #+end_src
+   =cider= is a mode to talk to a clojure repl. It handles
+   communications and debugging/tracing etc. stuff.
 
-    Add all paths to the path.
+   #+BEGIN_SRC emacs-lisp
+     (use-package cider
+       :ensure t
+       :commands (cider-jack-in cider)
+       :config
+       (progn
+         (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+         (add-hook 'cider-repl-mode-hook 'enable-paredit-mode)
+         (setq nrepl-hide-special-buffers t
+               cider-stacktrace-fill-column t
+               cider-repl-print-length 100)))
+   #+END_SRC
 
-    #+begin_src emacs-lisp
-      (ljos/initialize-exec-path)
-    #+end_src
+   =clojure-mode= is the mode that lets us program in clojure.
 
-*** Defuns
-**** Sort symbols
-     Sort-lines and the other sorts are quite nice, but it is even
-     nicer if I am able to also sort symbols that are in a list. Found
-     at [[http://www.emacswiki.org/emacs/SortWords][emacswiki]].
+   #+BEGIN_SRC emacs-lisp
+     (use-package clojure-mode
+       :ensure t
+       :mode (("\\.clj[sx]?$" . clojure-mode)
+              ("\\.edn$" . clojure-mode))
+       :config
+       (progn
+         (add-hook 'clojure-mode-hook 'subword-mode)
+         (add-hook 'clojure-mode-hook 'enable-paredit-mode)))
+   #+END_SRC
 
-     #+begin_src emacs-lisp
-       (defun ljos/sort-symbols (reverse beg end)
-         "Sort symbols in region alphabetically, in REVERSE if negative.
-           See `sort-words'."
-         (interactive "*P\nr")
-         (sort-regexp-fields reverse "\\(\\sw\\|\\s_\\)+" "\\&" beg end))
-     #+end_src
+** lisp
+   =lisp-mode= is the basis for programming in lisp for several lisp
+   dialects.
 
-*** Mode line
-    At some point I didn't like the standard mode line and started to
-    experiment with how I wanted it to look. Because of too much time
-    and not enough knowledge about alternatives, this monster came to
-    be.
+   I only use paredit with the lisps. It becomes to much of a hassle
+   to try and make it work with other modes that are not so
+   parenthesis heavy.
 
-    I feel it gets very distracting when the mode line changes
-    depending on which window is selected. I don't really need the
-    visual conformation that I have changed window. The cursor does
-    that for me.
+   #+BEGIN_SRC emacs-lisp
+     (use-package paredit
+       :ensure t
+       :commands (enable-paredit-mode
+                  paredit-mode
+                  ljos/conditionally-enable-paredit-mode)
+       :config
+       (defun ljos/conditionally-enable-paredit-mode ()
+         "Enable paredit-mode during eval-expression"
+         (when (eq this-command 'eval-expression)
+           (paredit-mode +1))))
+   #+END_SRC
 
-    #+begin_src emacs-lisp
-      (setq mode-line-in-non-selected-windows nil)
-    #+end_src
+   =lisp-mode= contains =emacs-lisp-mode= so we need to load that to
+   use emacs-lisp-mode. This is also where we can set the
+   minibuffer-setup-hook so that we get paredit in the minibuffer when
+   we are evaluating expressions.
 
-    I needed a function that truncated from the start of the list
-    instead of at the end. This function takes a string, reverses it,
-    does the normal truncate and reverses it again. There is probably
-    a better way of doing this, but this was the quick and dirty one I
-    figured out on my own.
+   #+BEGIN_SRC emacs-lisp
+     (use-package lisp-mode
+       :bind (([C-s-268632091] . backward-sexp)
+              ([C-s-268632093] . forward-sexp))
+       :config (progn
+                 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+                 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+                 (add-hook 'minibuffer-setup-hook 'ljos/conditionally-enable-paredit-mode)))
+   #+END_SRC
 
-    #+begin_src emacs-lisp
-      (defun ljos/truncate-string-to-length (str end-column &optional start-column padding ellipsis)
-        "The same as truncate-string-to-width,
-      except it truncates from the start of the list"
-        (concat
-         (reverse
-          (append (truncate-string-to-width
-                   (concat (reverse (append (format  str) nil)))
-                   end-column start-column padding ellipsis)
-                  nil))))
-    #+end_src
+** lua-mode
+   =lua-mode= lets me read lua-files. I don't really program in lua,
+   but I sometimes come over files that I need to read.
 
-    I like to have a box around the mode-line to visually seperate it
-    from the rest of the frame.
+   #+BEGIN_SRC emacs-lisp
+     (use-package lua-mode
+       :ensure t
+       :mode ("\\.lua$" . lua-mode))
+   #+END_SRC
+** magit
+   magit mode makes it so much easier to administer git repositories
+   from emacs. As I have also just briefly started to use git-annex I
+   am also using magit-annex.n
 
-    #+begin_src emacs-lisp
-      (set-face-attribute 'mode-line nil
-        :box '(:line-width 1
-               :color "gray25"))
-    #+end_src
+   #+BEGIN_SRC emacs-lisp
+     (use-package magit
+       :ensure t
+       :bind ("c-x g" . magit-status)
+       :config
+       (use-package magit-annex
+         :ensure t))
+   #+END_SRC
+** simple
+   =simple= is the package that contains =prog-mode=. Most programming
+   modes inherit from this mode. We can take advantage of that and add
+   some minor modes to all programming modes.
 
-    This is a helper function to center a string in a set width.
-    #+begin_src emacs-lisp
-      (defun ljos/center-string-with-length (str len)
-        (with-temp-buffer
-          (setq fill-column len)
-          (insert str)
-          (center-line)
-          (insert-char ?\s (- len (current-column)))
-          (buffer-string)))
-    #+end_src
+   #+BEGIN_SRC emacs-lisp
+     (use-package simple
+       :config
+       (progn
+         (add-hook 'prog-mode-hook
+                   (function
+                    (lambda () (highlight-symbol-mode +1))))))
+   #+END_SRC
 
-    This is the format for the buffer position numbers in the
-    mode-line.
+** org-mode
+   I used to have a very big org-mode configuration, but I decided to
+   start over and see what I really use.
 
-    #+begin_src emacs-lisp
-      (setq-default mode-line-position '(" %03l:%2c"))
-    #+end_src
-
-    If I want to use the pomodoro-mode-line string in the mode-line I
-    need to give it a default of "" as otherwise we will get errors in
-    the message log.
-
-    #+begin_src emacs-lisp
-      (setq-default pomodoro-mode-line-string "")
-    #+end_src
-
-    Here we are setting the mode line format. It has a lot of
-    configurations. I should get around to commenting it at some
-    point.
-
-    #+begin_src emacs-lisp
-      (setq-default mode-line-format
-        '("%e "
-          (:eval (if buffer-file-name "%* " "無常"))        ; file status
-          (:eval
-           (propertize
-            (if (buffer-narrowed-p)
-                " 狭"
-              "")))
-
-          mode-line-position
-          "  "
-          (:eval
-           (propertize                        ; file/buffer name
-            (ljos/center-string-with-length
-             (ljos/truncate-string-to-length
-              (or buffer-file-truename (buffer-name)) 25 nil nil  "..")
-             25)
-            'help-echo (buffer-file-name)     ; echo full name
-            'local-map
-            (let ((map (make-sparse-keymap)))
-              (define-key map [mode-line mouse-3]
-                'mode-line-next-buffer)
-              (define-key map [mode-line mouse-1]
-                'mode-line-previous-buffer)
-              map)))
-
-          "  "
-
-          (:eval
-           (propertize mode-name
-                       'help-echo (format-mode-line minor-mode-alist)))
-          " "
-          vc-mode
-          "  "
-
-          pomodoro-mode-line-string
-
-          (:eval
-           (concat
-            (propertize " " 'display
-                       `((space :align-to
-                                 (- right ,(if (string= "" pomodoro-mode-line-string) 20 8)))))
-            (propertize (if (string= "" pomodoro-mode-line-string)
-                            (format-time-string " %a %b %d, %H:%M")
-                          (format-time-string " %H:%M"))                 ; time
-                        'help-echo
-                        (format-time-string "%A, %B %d, %Y, %H:%M"))))))
-    #+end_src
-*** Minibuffer
-    A small configuration of the minibuffer to conditionally enable
-    paredit mode for when I am evaluation an expression rather then
-    calling an interactive command.
-
-    #+begin_src emacs-lisp
-      (defun conditionally-enable-paredit-mode ()
-        "enable paredit-mode during eval-expression"
-        (if (eq this-command 'eval-expression)
-            (paredit-mode 1)))
-    #+end_src
-
-    Add the new function to the =minibuffer-setup-hook=.
-
-    #+begin_src emacs-lisp
-      (add-hook 'minibuffer-setup-hook 'conditionally-enable-paredit-mode)
-    #+end_src
-
-** Minor modes
-*** Ace jump
-    =Ace jump mode= allows me to add activate it and press a
-    character. All the instances of that character is highlighted in
-    the buffer and I can jump to it.
-
-    #+begin_src emacs-lisp
-      (use-package ace-jump-mode
-        :ensure t
-        :bind ("C-x SPC" . ace-jump-mode))
-    #+end_src
-
-*** Auto complete
-    Auto completion is nice, but we need it to not be so slow. It is
-    also nice to have yasnippet completions available as well.
-
-    The fuzzy packages makes it so that we get fuzzy completion on the
-    auto-complete in case we misspell something. I am not sure it
-    always works as well.
-
-    #+begin_src emacs-lisp
-      (use-package fuzzy
-        :ensure t
-        :commands fuzzy-all-completions)
-    #+end_src
-
-    It is so long since I sat this up that I don't remember what
-    everything does and why I have the configuration there. I should
-    look into making this more clear.
-
-    #+begin_src emacs-lisp
-      (use-package auto-complete-config
-        :ensure auto-complete
-        :init (ac-config-default)
-        :config
+   #+BEGIN_SRC emacs-lisp
+     (use-package org
+       :ensure org-plus-contrib
+       :mode ("\\.org$" . org-mode)
+       :config
         (progn
-          (setq ac-auto-show-menu 0.3)
-          (setq ac-use-menu-map t)
-          (setq ac-fuzzy-enable t)
-          (ac-config-default)
-          (setq ac-sources
-                (cons ac-source-yasnippet
-                      ac-sources))
-          (define-key ac-complete-mode-map "\r" 'ac-expand)
-          (define-key ac-complete-mode-map [return] 'ac-expand)
-          (define-key ac-complete-mode-map "\t" 'ac-complete)
-          (define-key ac-complete-mode-map [tab] 'ac-complete)
-          (global-auto-complete-mode)))
-#+end_src
-
-*** Browse kill ring
-    #+begin_src emacs-lisp
-      (use-package browse-kill-ring
-        :ensure t
-        :init (browse-kill-ring-default-keybindings))
-    #+end_src
-*** Dired
-    I like to keep =dired= in the same buffer. If I keep opening more
-    buffers there will be so many buffers open after a small visit to
-    a directory.
-
-    #+begin_src emacs-lisp
-      (use-package dired-single
-        :ensure t
-        :commands (dired-single-buffer
-                   dired-single-buffer-mouse))
-    #+end_src
-
-    =dired-x= helps with hiding some files that I don't always want to
-    show. In particular the ones starting with a =.=.
-    #+begin_src emacs-lisp
-      (use-package dired-x
-        :commands dired-omit-mode
-        :config
-        (progn
-          (setq-default dired-omit-files-p t)
-          (setq dired-omit-files "^\\.?#\\|^\\.$\\|^\\.[^.]+$")))
-    #+end_src
-
-    #+begin_src emacs-lisp
-      (use-package dired
-        :commands dired-at-point
-        :config
-        (progn
-          (defvar ljos/dired-mode-initialized nil)
-          (defun ljos/dired-mode-hook ()
-            (dired-omit-mode t)
-            (unless ljos/dired-mode-initialized
-              (define-key dired-mode-map "h" 'dired-omit-mode)
-              (define-key dired-mode-map [return] 'dired-single-buffer)
-              (define-key dired-mode-map [mouse-1] 'dired-single-buffer-mouse)
-              (define-key dired-mode-map "^" (function
-                                              (lambda ()
-                                                (interactive)
-                                                (dired-single-buffer ".."))))
-              (setq ljos/dired-mode-initialized)))
-          (add-hook 'dired-mode-hook 'ljos/dired-mode-hook)))
-    #+end_src
-*** Expand-region
-    I should learn to use this. I might need some better keybindings
-    to do that.
-
-    #+begin_src emacs-lisp
-      (use-package expand-region
-        :ensure t
-        :bind (("C-=" . er/expand-region)
-               ("C--" . er/contract-region)))
-    #+end_src
-*** Find file at point
-    I /usually/ like to "find file at point". Sometimes it is doesn't
-    do what I expect it to do.
-
-    #+begin_src emacs-lisp
-      (use-package ffap
-        :init (ffap-bindings))
-    #+end_src
-
-*** ibuffer
-    =ibuffer-vc= helps with drawing ibuffer in a way that I like.
-    #+begin_src emacs-lisp
-      (use-package ibuffer-vc
-        :ensure t
-        :commands ibuffer-vc-set-filter-groups-by-vc-root)
-    #+end_src
-
-    =ibuffer-ext= Makes it possible to sort the buffers by mode.
-    #+begin_src emacs-lisp
-      (use-package ibuf-ext
-        :commands ibuffer-do-sort-by-major-mode)
-    #+end_src
-
-    =ibuffer= is a mode that makes the buffer-list buffer look nicer.
-
-    #+begin_src emacs-lisp
-      (use-package ibuffer
-        :bind ("C-x C-b" . ibuffer)
-        :config
-        (progn
-          (defvar ibuffer-initialized nil)
-          (defun ljos/ibuffer-hook ()
-            (unless ibuffer-initialized
-              (ibuffer-vc-set-filter-groups-by-vc-root)
-
-              (unless (eq ibuffer-sorting-mode 'major-mode)
-                (ibuffer-do-sort-by-major-mode))
-
-              (setq ibuffer-formats
-                    '((mark modified read-only vc-status-mini " "
-                            (name 25 25 :left :elide)
-                            " "
-                            (size 9 -1 :right)
-                            " "
-                            (mode 16 16 :left :elide)
-                            " "
-                            (vc-status 16 16 :left)
-                            " "
-                            filename-and-process)))
-              (setq ibuffer-expert t)
-              (setq ibuffer-initialized t)))
-          (add-hook 'ibuffer-hook 'ljos/ibuffer-hook)))
-    #+end_src
-*** ido
-    Provide fuzzy matching for ido-mode.
-
-    #+begin_src emacs-lisp
-      (use-package flx-ido
-        :ensure t
-        :commands flx-ido-mode)
-    #+end_src
-
-    Vertical represention in the minibuffer.
-
-    #+begin_src emacs-lisp
-      (use-package ido-vertical-mode
-        :ensure t
-        :commands ido-vertical-mode)
-    #+end_src
-
-    ido makes it easier to find files and do other things.
-
-    #+begin_src emacs-lisp
-      (use-package ido
-        :init (ido-mode +1)
-        :bind ("C-x C-f" . ido-find-file)
-        :config
-        (progn
-          (flx-ido-mode +1)
-          (ido-vertical-mode +1)
-          (setq ido-auto-merge-work-directories-length nil
-                ido-create-new-buffer 'always
-                ido-enable-flex-matching t
-                ido-enable-dot-prefix t
-                ido-handle-duplicate-virtual-buffers 2
-                ido-max-prospects 10
-                ido-use-filename-at-point 'guess
-                ido-use-virtual-buffers t)
-          (add-to-list 'ido-ignore-buffers ".*-autoloads.el")))
-    #+end_src
-*** ispell
-    ispell is nice, but we need to provide it with the path to the
-    program as it is installed using homebrew. I am using aspell as it
-    has better support for my language. This can become a problem on
-    if I want ispell to work on systems other than OS X as I don't
-    provide an alternative path there.
-
-    #+begin_src emacs-lisp
-      (use-package ispell
-        :config
-        (setq-default ispell-program-name "/usr/local/bin/aspell"
-                      ispell-parser 'tex))
-    #+end_src
-
-*** linum
-    I used to use =global-linum-mode= but I was made aware that linum
-    is a major resource hog and that it why some large buffers where
-    acting really slow. I still keep this configuration because when I
-    do use linum I don't like that the margin changes size when
-    scrolling.
-
-    #+begin_src emacs-lisp :tangle no
-      (use-package linum
-        :commands linum-mode
-        :init (global-linum-mode)
-        :config
-        (progn
-          (defvar ljos/linum-format-string "%4d")
-
-          (defun ljos/linum-get-format-string ()
-            (let* ((width (length (number-to-string
-                                   (count-lines (point-min) (point-max)))))
-                   (format (concat "%" (number-to-string width) "d ")))
-              (setq ljos/linum-format-string format)))
-
-          (add-hook 'linum-before-numbering-hook 'ljos/linum-get-format-string)
-
-          (defun ljos/linum-format (line-number)
-            (propertize (format ljos/linum-format-string line-number) 'face 'linum))
-
-          (setq linum-format 'ljos/linum-format)))
-    #+end_src
-
-*** Multiple cursors
-    I never really use this. It might be because the keybindings. It
-    looks really cool and I want to be able to use it, but for now it
-    just stays here forgotten.
-
-    #+begin_src emacs-lisp
-      (use-package multiple-cursors
-        :commands (mc/mark-next-like-this
-                   mc/mark-previous-like-this)
-        :ensure t
-        :init
-        (progn
-          (global-set-key [C-s-268632078] 'mc/mark-next-like-this)
-          (global-set-key [C-s-268632080] 'mc/mark-previous-like-this)))
-    #+end_src
-*** Paredit
-    The =paredit-delete-indentation= function is just small function
-    that reindents the next sexpr if I want to join the current line
-    with the previous.
-
-    #+begin_src emacs-lisp
-      (use-package paredit
-        :ensure t
-        :commands (enable-paredit-mode paredit-mode)
-        :config
-        (progn
-          (defun ljos/paredit-delete-indentation ()
-            (interactive)
-            (delete-indentation)
-            (prog-indent-sexp))
-
-          (define-key paredit-mode-map (kbd "M-(") 'paredit-wrap-round)
-          (define-key paredit-mode-map (kbd "M-)") 'paredit-close-round-and-newline)
-          (define-key paredit-mode-map (kbd "M-[") 'paredit-wrap-square)
-          (define-key paredit-mode-map (kbd "M-{") 'paredit-wrap-curly)
-          (define-key paredit-mode-map (kbd "M-}") 'paredit-close-curly-and-newline)
-          (define-key paredit-mode-map (kbd "M-j") 'ljos/paredit-delete-indentation)))
-    #+end_src
-
-*** pomodoro
-    pomodoro is a small mode that makes it easier to follow the
-    pomodoro productivity technique. It makes it possible to start and
-    stop a timer that will play a sound when I need to stop or
-    continue working.
-
-    #+begin_src emacs-lisp
-      (use-package pomodoro
-        :ensure t
-        :commands pomodoro-start
-        :bind (("C-x p s" . pomodoro-start)
-               ("C-x p x" . pomodoro-stop))
-        :config
-        (progn
-          (setq pomodoro-break-start-sound "~/Music/smw_pause.wav"
-                pomodoro-work-start-sound "~/Music/smw_pause.wav"
-                pomodoro-work-start-message "Back to work!"
-                pomodoro-work-cycle "行う" ;; work in japanese
-                pomodoro-break-cycle "休憩" ;; break in japanese
-                pomodoro-long-break-time 20
-                pomodoro-break-time 7)))
-    #+end_src
-*** popwin
-    I used to use popwin, but it doesn't work correctly with
-    =magit-ediff=.
-
-    #+begin_src emacs-lisp :tangle no
-      (require 'popwin)
-      (popwin-mode +1)
-    #+end_src
-
-*** projectile
-    I am trying to use projectile for moving around in different
-    projects.
-
-    =ztree-dir= gives a nice tree-view of the directory in the
-    project.
-    #+begin_src emacs-lisp
-      (defun projectile-ztree-dir ()
-        "Open `ztree-dir' at the root of the project."
-        (interactive)
-        (ztree-dir (projectile-project-root)))
-    #+end_src
-
-    #+begin_src emacs-lisp
-      (use-package projectile
-        :ensure t
-        :init (progn
-                (projectile-global-mode)
-                (define-key projectile-mode-map (kbd "s-p") 'projectile-switch-project))
-        :config
-        (setq projectile-switch-project-action 'projectile-ztree-dir))
-    #+end_src
-*** smex
-    #+begin_src emacs-lisp
-      (use-package smex
-        :ensure t
-        :init (smex-initialize)
-        :bind ("M-x" . smex)
-        :config
-        (setq smex-save-file (concat user-emacs-directory ".smex-items")))
-    #+end_src
-
-*** undo-tree
-
-    #+begin_src emacs-lisp
-      (use-package undo-tree
-        :ensure t
-        :init (global-undo-tree-mode))
-    #+end_src
-
-*** visual-regexp
-    #+begin_src emacs-lisp
-      (use-package visual-regexp
-        :ensure t
-        :commands (vr/replace vr/query-replace)
-        :bind (("C-c r" . vr/replace)
-               ("C-c q" . vr/query-replace)))
-    #+end_src
-*** Yasnippet
-    #+begin_src emacs-lisp
-      (use-package yasnippet
-        :ensure t
-        :commands (yas-global-mode yas-activate-extra-mode)
-        :init (yas-global-mode +1)
-        :config
-        (progn
-          (setq yas-prompt-functions '(yas-dropdown-prompt))))
-    #+end_src
-
-*** ztree
-    #+BEGIN_SRC emacs-lisp
-      (use-package ztree-dir
-        :ensure ztree
-        :commands ztree-dir
-        :config
-        (progn
-          (define-key ztree-mode-map (kbd "n") 'next-line)
-          (define-key ztree-mode-map (kbd "p") 'previous-line)
-          (define-key ztree-mode-map (kbd "s") 'ljos/ztree-isearch-forward)))
-    #+END_SRC
-**** TODO dired functionality for ztree
-***** DONE ljos/ztree-isearch-forward
-      This function makes it so that after a search forward the file
-      under the selection is opened.
-
-      #+BEGIN_SRC emacs-lisp
-        (defun ljos/ztree-isearch-forward ()
-          (interactive)
-          (isearch-forward)
-          (ztree-perform-soft-action))
-      #+END_SRC
-
-***** TODO rename file
-***** TODO delete file
-***** TODO move file
-** Major modes
-*** Arduino
-    #+begin_src emacs-lisp
-      (use-package arduino-mode
-        :ensure t
-        :mode "\\.ino$"
-        :config
-        (progn
-          (defvar ljos/arduino-mode-initialized nil)
-          (defun ljos/arduino-mode-hook ()
-            (unless ljos/arduino-mode-activated
-              (idle-highlight-mode t))
-            (setq ljos/arduino-mode-initialized t))
-          (add-hook 'arduino-mode-hook 'ljos/arduino-mode-hook)))
-    #+end_src
-
-*** Clojure
-    I am not sure what all this config does anymore. I should check it
-    next time I start editing clojure code.
-
-    #+begin_src emacs-lisp
-      (use-package ac-nrepl
-        :ensure t
-        :commands ac-nrepl-setup)
-    #+end_src
-
-    #+begin_src emacs-lisp :tangle no
-      (use-package midje-mode
-        :load-path "site-lisp/midje-mode"
-        :commands midje-mode-maybe-enable
-        :init (setq midje-keymap-prefix (kbd "C-c m"))
-        :config
-        (progn
-          (add-hook 'midje-mode-hook
-                    '(lambda ()
-                       (yas-activate-extra-mode 'midje-mode)))))
-    #+end_src
-
-    #+begin_src emacs-lisp
-      (use-package cider
-        :ensure t
-        :commands cider-jack-in
-        :config
-        (progn
-          ;; (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
-          ;; (add-hook 'cider-mode-hook 'ac-nrepl-setup)
-          ;; (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
-          (add-hook 'cider-repl-mode-hook 'enable-paredit-mode)
-          ;; (add-hook 'cider-repl-mode-hook 'subword-mode)
-          (setq cider-repl-history-file "~/.emacs.d/history/nrepl")))
-    #+end_src
-
-    #+begin_src emacs-lisp
-      (use-package clojure-mode
-        :ensure t
-        :mode (("\\.cljx?$" . clojure-mode)
-               ("\\.dtm$" . clojure-mode)
-               ("\\.edn$" . clojure-mode))
-        :interpreter (("jark" . clojure-mode)
-                      ("cake" . clojure-mode))
-        :config
-        (progn
-
-          (defvar clojure-mode-initialized nil)
-
-          (defun ljos/clojure-mode-hook ()
-            (unless clojure-mode-initialized
-              (define-key clojure-mode-map  (kbd "C-x p") 'ljos/clojure-jump-to-project-file)
-
-              (put-clojure-indent 'update-in 'defun)
-              (put-clojure-indent 'get-in 'defun)
-              (put-clojure-indent 'assoc-in 'defun)
-              (put-clojure-indent 'assoc! 'defun)
-              (put-clojure-indent 'swap! 'defun)
-              (put-clojure-indent 'run* 'defun)
-              (put-clojure-indent 'fresh 'defun)
-
-              (setq clojure-mode-initialized t))
-            ;; (midje-mode-maybe-enable)
-            (enable-paredit-mode))
-
-          (add-hook 'clojure-mode-hook 'ljos/clojure-mode-hook)))
-    #+end_src
-
-**** Clojurescript
-    I like to have a clojurescript-mode to make configurations to when
-    I do clojurescript and not just use the clojure-mode.
-
-    #+begin_src emacs-lisp
-      (define-derived-mode clojurescript-mode clojure-mode "ClojureScript"
-        "Major mode for ClojureScript")
-
-      (use-package clojurescript-mode
-        :mode "\\.cljs$")
-    #+end_src
-**** Extra functions
-     Sometime I need to visit the project file when I program
-     clojure. I therefore would like to jump directly to that file
-     instead of doing =open-file= and move to the directory.
-
-     #+begin_src emacs-lisp
-      (defun ljos/clojure-jump-to-project-file ()
-            (interactive)
-            (let ((dir (file-name-as-directory
-                        (locate-dominating-file buffer-file-name "src/"))))
-              (find-file (concat dir "project.clj"))))
-    #+end_src
-
-*** Elasticsearch
-    #+begin_src emacs-lisp
-      (use-package es-mode
-        :load-path "site-lisp/es-mode"
-        :mode "\\.es$")
-    #+end_src
-*** Emacs lisp
-    =elisp-slime-nav= makes it possible to navigate elisp code without
-    having the tags.
-    #+begin_src emacs-lisp
-      (use-package elisp-slime-nav
-        :ensure t
-        :commands elisp-slime-nav-mode)
-    #+end_src
-
-    I want the compiled emacs-lisp file to be removed when I save a
-    file that contains emacs-lisp.
-
-    #+begin_src emacs-lisp
-      (add-hook 'emacs-lisp-mode-hook
-                (lambda ()
-                  (make-local-variable 'after-save-hook)
-                  (add-hook 'after-save-hook
-                            (lambda ()
-                              (if (file-exists-p (concat buffer-file-name "c"))
-                                  (delete-file (concat buffer-file-name "c")))))))
-    #+end_src
-
-    #+begin_src emacs-lisp
-      (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-      (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
-      (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-    #+end_src
-
-    Always paredit-mode.
-
-    #+begin_src emacs-lisp
-      (use-package ielm
-        :config
-        (add-hook 'ielm-mode-hook 'enable-paredit-mode))
-    #+end_src
-
-*** eshell
-    #+begin_src emacs-lisp
-      (use-package eshell
-        :bind ("C-c s" . eshell))
-    #+end_src
-*** ESS
-    #+BEGIN_SRC emacs-lisp
-      (use-package ess-site
-        :load-path "site-lisp/ESS/lisp")
-    #+END_SRC
-*** Gnuplot
-    #+BEGIN_SRC emacs-lisp
-      (use-package gnuplot
-        :ensure t
-        :commands gnuplot-mode
-        :mode ("\\.gp$" . gnuplot-mode))
-    #+END_SRC
-*** Go
-    #+begin_src emacs-lisp
-      (use-package go-mode
-        :ensure t
-        :mode "\\.go$")
-    #+end_src
-*** Haskell
-    #+begin_src emacs-lisp
-      (use-package shm
-        :ensure t
-        :commands structured-haskell-mode)
-    #+end_src
-
-    #+begin_src emacs-lisp
-      (use-package haskell-mode
-        :ensure t
-        :mode (("\\.hs$" . haskell-mode)
-               ("\\.lhs$" . literate-haskell-mode))
-        :config
-        (progn
-          (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-          (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)))
-    #+end_src
-
-*** Lisp
-    #+begin_src emacs-lisp
-      (use-package lisp-mode
-        :mode "\\.li?sp$"
-        :config
-        (progn
-          (defvar ljos/lisp-mode-initialized nil)
-          (defun ljos/lisp-mode-hook ()
-            (unless ljos/lisp-mode-initialized
-              (setq inferior-lisp-program "sbcl")
-              (load-file (expand-file-name "~/quicklisp/slime-helper.el"))
-              (add-hook 'slime-repl-mode-hook 'enable-paredit-mode)
-              (define-key read-expression-map (kbd "TAB") 'lisp-complete-symbol)
-              (define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)))
-          (add-hook 'lisp-mode-hook 'ljos/lisp-mode-hook)))
-    #+end_src
-
-*** Magit
-    #+begin_src emacs-lisp
-      (use-package magit-annex
-        :ensure t
-        :defer t)
-    #+end_src
-
-    #+begin_src emacs-lisp
-      (use-package magit
-        :ensure t
-        :bind ("C-x g" . magit-status)
-        :config
-        (require 'magit-annex))
-    #+end_src
-*** Org
-    The very hairy Org config. Should look into how I can simplify
-    this or at least split it up so I can document it
-    better. Sometimes it is nice to know what setting a variable
-    actually means. Maybe there also should be a split between the
-    latex config and the rest.
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package org-capture
-        :ensure org-plus-contrib
-        :bind ("\C-cc" . org-capture)
-        :config
-        (setq org-capture-templates '(("j" "Journal" entry
-                                       (file+datetree (concat org-directory "/journal.org"))
-                                       "* %(format-time-string \"%H:%M\") %?"))))
-    #+END_SRC
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package ox-latex
-        :ensure org-plus-contrib
-        :defer t
-        :config
-        (progn
-          (setq org-latex-pdf-process '("latexmk -bibtex -pdf %f"))
-
-          (unless (boundp 'org-latex-packages-alist)
-            (setq org-latex-packages-alist nil))
-
-          (add-to-list 'org-latex-packages-alist '("" "microtype"))
-          (add-to-list 'org-latex-packages-alist '("l2tabu, orthodox" "nag"))
-          (add-to-list 'org-latex-packages-alist '("round" "natbib"))
-          (add-to-list 'org-latex-packages-alist '("utf8" "inputenc"))
-
-          (unless (boundp 'org-latex-classes)
-            (setq org-latex-classes nil))
-
-          (add-to-list 'org-latex-classes
-                       '("article"
-                         "\\documentclass{article}
-                                   \\usepackage[round,authoryear,comma]{natbib}"
-                         ("\\section{%s}" . "\\section*{%s}")
-                         ("\\subsection{%s}" . "\\subsection*{%s}")
-                         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-
-          (add-to-list 'org-latex-classes
-                       '("thesis"
-                         "\\documentclass{report}"
-                         ("\\chapter{%s}" . "\\chapter*{%s}")
-                         ("\\section{%s}" . "\\section*{%s}")
-                         ("\\subsection{%s}" . "\\subsection*{%s}")
-                         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                         ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                         ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-          (require 'ox-bibtex)))
-    #+END_SRC
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package ox-html
-        :ensure org-plus-contrib
-        :defer t
-        :config
-        (setq org-html-style "<style type=\"text/css\">
-                                html {
-                                  max-width : 700px;
-                                  margin : 0 auto;
-                                }
-                              </style>"))
-    #+END_SRC
-
-    #+begin_src emacs-lisp
-      (use-package org
-        :ensure org-plus-contrib
-        :mode ("\\.org$" . org-mode)
-        :bind (("\C-cl"  . org-store-link)
-               ("\C-ca"  . org-agenda)
-               ("\C-cb"  . org-iswitchb))
-        :init  (setq org-directory "~/Dropbox/org")
-        :config
-        (progn
-          (defvar ljos/org-mode-initialized nil)
-          (defun ljos/org-mode-hook ()
-            (unless ljos/org-mode-initialized
-              (setq org-src-fontify-natively t
-                    org-src-window-setup 'current-window
-
-                    org-agenda-include-all-todo t
-                    org-agenda-files '("~/Dropbox/org/organizer.org")
-
-                    org-todo-keywords '((sequence "TODO" "STARTED" "WAITING"
-                                                  "|" "DONE" "CANCELLED" "ON-HOLD"
-                                                      "DEFERRED" "DELEGATED")
-                                        (sequence "APPT" "|" "FINISHED"
-                                                             "CANCELLED" "MISSED")
-                                        (sequence "BUG" "|" "FIXED")
-                                        (sequence "NOTE"))
-
-                    org-todo-keyword-faces '(("STARTED" . "yellow")
-                                             ("ON-HOLD" . "orange")
-                                             ("CANCELLED" . "dim gray")
-                                             ("NOTE" . "aqua"))
-
-                    org-refile-targets '(("organizer.org" :maxlevel . 9))
-                    org-completion-use-ido t
-
-                    org-export-with-toc nil
-                    org-export-with-section-numbers nil
-                    org-startup-folded nil
-
-                    ;;org-capture config
-                    org-default-notes-file (concat org-directory "/organizer.org")
-
-                    org-use-speed-commands t)
-
-              (org-babel-do-load-languages
-               'org-babel-load-languages
-               '((R . t)
-                 (dot . t)
-                 (elasticsearch . t)
-                 (emacs-lisp . t)
-                 (gnuplot . t)))
-
-              (font-lock-remove-keywords
-               nil '(("\\<\\(FIX\\(ME\\)?\\|TODO\\|HACK\\|REFACTOR\\|NOCOMMIT\\)\\b"
-                      1 font-lock-warning-face t)))
-
-              (define-key org-mode-map (kbd "M-q") 'org-fill-paragraph)
-              (define-key org-mode-map (kbd "C-c [") 'org-reftex-citation)
-              (define-key org-mode-map (kbd "C-c M-n") 'ljos/org-end-of-block)
-              (define-key org-mode-map (kbd "C-c d") 'org-babel-demarcate-block)
-
-              (setq ljos/org-mode-initialized t))
-
-          (auto-fill-mode +1))
-
-          (add-hook 'org-mode-hook 'ljos/org-mode-hook)))
-    #+end_src
-
-**** ljos/org extra functions and advice
-***** Advice: remove coderefs from src body
-
-      #+BEGIN_SRC emacs-lisp
-        (defadvice org-babel-execute-src-block (before
-                                                remove-coderefs-from-body
-                                                (&optional arg info params)
-                                                activate)
-          (let* ((information (org-babel-get-src-block-info))
-                 (switches (nth 3 information)))
-            (when  (and (stringp switches)
-                        (string-match "-r" switches))
-              (let ((cref-fmt (or (and (string-match "-l \"\\(.+\\)\"" switches)
-                                       (match-string 1 switches))
-                                  org-coderef-label-format)))
-                (setcar (cdr information)
-                        (with-temp-buffer
-                          (insert (nth 1 information))
-                          (goto-char (point-min))
-                          (while (re-search-forward
-                                  (replace-regexp-in-string "%s" ".+" cref-fmt) nil t)
-                            (replace-match ""))
-                          (buffer-string)))
-                (setf info information)))))
-      #+END_SRC
-
-***** ljos/org-end-of-src-block
-      Got tired of not being able to move to the end of a block.
-
-      #+BEGIN_SRC emacs-lisp
-        (defun ljos/org-end-of-block ()
-          (interactive)
-          (let ((case-fold-search t)
-                (lim-up (save-excursion (outline-previous-heading)))
-                (lim-down (save-excursion (outline-next-heading))))
-            (when (and (org-between-regexps-p (concat "^[ \t]*#\\+begin_\\w+")
-                                              (concat "^[ \t]*#\\+end_\\w+")
-                                              lim-up
-                                              lim-down)
-                       (search-forward-regexp "#\\+end_\\w+"))
-              (end-of-line))))
-      #+END_SRC
-***** ljos/org-word-count
-      Found this at [[http://orgmode.org/worg/org-hacks.html#sec-1-3-7][Count words in an Org buffer]].
-
-      #+begin_src emacs-lisp
-        (defun ljos/org-word-count (beg end
-                                        &optional count-latex-macro-args?
-                                        count-footnotes?)
-          "Report the number of words in the Org mode buffer or selected region.
-        Ignores:
-        - comments
-        - tables
-        - source code blocks (#+BEGIN_SRC ... #+END_SRC, and inline blocks)
-        - hyperlinks (but does count words in hyperlink descriptions)
-        - tags, priorities, and TODO keywords in headers
-        - sections tagged as 'not for export'.
-
-        The text of footnote definitions is ignored, unless the optional argument
-        COUNT-FOOTNOTES? is non-nil.
-
-        If the optional argument COUNT-LATEX-MACRO-ARGS? is non-nil, the word count
-        includes LaTeX macro arguments (the material between {curly braces}).
-        Otherwise, and by default, every LaTeX macro counts as 1 word regardless
-        of its arguments."
-          (interactive "r")
-          (unless mark-active
-            (setf beg (point-min)
-                  end (point-max)))
-          (let ((wc 0)
-                (latex-macro-regexp "\\\\[A-Za-z]+\\(\\[[^]]*\\]\\|\\){\\([^}]*\\)}"))
-            (save-excursion
-              (goto-char beg)
-              (while (< (point) end)
-                (cond
-                 ;; Ignore comments.
-                 ((or (org-in-commented-line) (org-at-table-p))
-                  nil)
-                 ;; Ignore hyperlinks. But if link has a description, count
-                 ;; the words within the description.
-                 ((looking-at org-bracket-link-analytic-regexp)
-                  (when (match-string-no-properties 5)
-                    (let ((desc (match-string-no-properties 5)))
-                      (save-match-data
-                        (incf wc (length (remove "" (org-split-string
-                                                     desc "\\W")))))))
-                  (goto-char (match-end 0)))
-                 ((looking-at org-any-link-re)
-                  (goto-char (match-end 0)))
-                 ;; Ignore source code blocks.
-                 ((org-in-block-p '("SRC"))
-                  nil)
-                 ;; Ignore inline source blocks, counting them as 1 word.
-                 ((save-excursion
-                    (backward-char)
-                    (looking-at org-babel-inline-src-block-regexp))
-                  (goto-char (match-end 0))
-                  (setf wc (+ 2 wc)))
-                 ;; Count latex macros as 1 word, ignoring their arguments.
-                 ((save-excursion
-                    (backward-char)
-                    (looking-at latex-macro-regexp))
-                  (goto-char (if count-latex-macro-args?
-                                 (match-beginning 2)
-                               (match-end 0)))
-                  (setf wc (+ 2 wc)))
-                 ;; Ignore footnotes.
-                 ((and (not count-footnotes?)
-                       (or (org-footnote-at-definition-p)
-                           (org-footnote-at-reference-p)))
-                  nil)
-                 (t
-                  (let ((contexts (org-context)))
-                    (cond
-                     ;; Ignore tags and TODO keywords, etc.
-                     ((or (assoc :todo-keyword contexts)
-                          (assoc :priority contexts)
-                          (assoc :keyword contexts)
-                          (assoc :checkbox contexts))
-                      nil)
-                     ;; Ignore sections marked with tags that are
-                     ;; excluded from export.
-                     ((assoc :tags contexts)
-                      (if (intersection (org-get-tags-at) org-export-exclude-tags
-                                        :test 'equal)
-                          (org-forward-same-level 1)
-                        nil))
-                     (t
-                      (incf wc))))))
-                (re-search-forward "\\w+\\W*")))
-            (message (format "%d words in %s." wc
-                             (if mark-active "region" "buffer")))))
-     #+end_src
-
-*** prog-mode
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package idle-highlight-mode
-        :ensure t
-        :commands idle-highlight-mode)
-    #+END_SRC
-
-    #+begin_src emacs-lisp
-      (use-package simple
-        :commands prog-mode
-        :config
-        (add-hook 'prog-mode-hook (lambda () (idle-highlight-mode +1))))
-    #+end_src
-*** Prolog
-    #+begin_src emacs-lisp
-      (use-package prolog
-        :ensure t
-        :commands (run-prolog prolog-mode mercury-mode)
-        :mode (("\\.pl$" . prolog-mode)
-               ("\\.m$" . mercury-mode)
-               ("\\.plt$" . prolog-mode))
-        :config
-        (setq prolog-system 'swi))
-    #+end_src
-*** Python
-    When I start using python again I need to revisit this
-    configuration.
-
-    #+begin_src emacs-lisp :tangle no
-      (use-package python-mode
-        :ensure t
-        :commands python-mode
-        :mode ("\\.py$" . python-mode)
-        :config
-        (progn
-          (use-package python-pep8
-            :ensure t)
-          (use-package python-pylint
-            :ensure t)))
-    #+end_src
-
-*** SPARQL
-    #+begin_src emacs-lisp
-      (use-package sparql-mode
-        :load-path "site-lisp/sparql-mode"
-        :mode "\\.sparql$"
-        :config
-        (progn
-          (add-to-list 'ac-dictionary-files "~/.emacs.d/site-lisp/sparql-mode/sparql-mode")
-          (setq sparql-default-base-url "http://live.dbpedia.org/sparql")
-          (defun ljos/sparql-result-mode-hook ()
-            (toggle-truncate-lines +1))
-          (add-hook 'sparql-result-mode-hook 'ljos/sparql-result-mode-hook)))
-    #+end_src
-** General functions
-*** Rmd -> Org
-    Functions to turn a .Rmd file to .org
-
-    #+BEGIN_SRC emacs-lisp
-      (defun ljos/header-t ()
-        (replace-regexp "\\(.*\\)\n=+" "* \\1"))
-    #+end_src
-
-    #+begin_src emacs-lisp
-      (defun ljos/sub-header-t ()
-        (replace-regexp "\\(.*\\)\n=+" "** \\1"))
-    #+end_src
-
-    #+begin_src emacs-lisp
-      (defun ljos/src-block-t ()
-        (while (search-forward-regexp
-                "```{r +\\([A-z0-9_]+\\)\\(?:, *\\(\\(?:\\w+=[^ ]+\\(?:, *\\|\\)\\)+\\)\\)? *}"
-                nil t)
-          (let ((m1 (match-string-no-properties 1))
-                (m2 (match-string-no-properties 2)))
-            (delete-region (match-beginning 0) (match-end 0))
-            (insert (format "#+NAME: %-3s\n" m1))
-            (insert "#+BEGIN_SRC R")
-            (when m2
-              (let ((conf (mapcar (lambda (str)
-                                    (let ((v (split-string str "=")))
-                                      (cons (car v) (cadr v))))
-                                  (split-string m2 ", *"))))
-                (when (equal "TRUE"
-                             (cdr (assoc "cache" conf)))
-                  (insert " :cache yes"))))
-            (search-forward "```")
-            (replace-match "#+END_SRC")
-            (search-backward "#+BEGIN_SRC")
-            (forward-line)
-            (move-beginning-of-line nil)
-            (set-mark-command nil)
-            (search-forward "#+END_SRC")
-            (forward-line -1)
-            (move-end-of-line nil)
-            (string-insert-rectangle (region-beginning) (region-end) "  ")
-            (deactivate-mark))))
-    #+end_src
-
-    #+begin_src emacs-lisp
-      (defun ljos/inline-src-t ()
-        (while (search-forward "`r \\(.+?\\)`" nil t)
-          (replace-match "src_R{\\1}")))
-    #+end_src
-
-    #+begin_src emacs-lisp
-      (defun ljos/monospace-t ()
-        (while (search-forward-regexp "`\\(.*?\\)`" nil t)
-          (replace-match "=\\1=")))
-    #+end_src
-
-    #+begin_src emacs-lisp
-      (defun ljos/Rmd->Org ()
-        (interactive)
-        (beginning-of-buffer)
-        (ljos/header-t)
-        (beginning-of-buffer)
-        (ljos/sub-header-t)
-        (beginning-of-buffer)
-        (ljos/src-block-t)
-        (beginning-of-buffer)
-        (ljos/inline-src-t)
-        (beginning-of-buffer)
-        (ljos/monospace-t))
-    #+END_SRC
+          (setq org-src-fontify-natively t
+                org-completion-use-ido t
+                org-use-speed-commands t)
+          (add-hook org-mode-hook (function
+                                   (lambda () (auto-fill-mode +1))))))
+   #+END_SRC
