@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: ns
-# --
-(ns `(clojure-expected-ns)`
-  (:require [midje.sweet :refer [fact facts truthy falsey]]
-            [`(replace-regexp-in-string "\.t-" "." (clojure-expected-ns))` :refer :all]))
-
-$0

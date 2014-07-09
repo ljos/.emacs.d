@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: #+BEGIN
-# --
-#+BEGIN_${1:BLOCK} $2
-$0
-#+END_$1
