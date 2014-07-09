@@ -77,7 +77,7 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
    #+BEGIN_SRC emacs-lisp
      (when (and window-system
                 (equal 'darwin system-type))
-       (set-face-attribute 'default nil :font "menlo-14"))
+       (set-face-attribute 'default nil :font "fira-mono-14"))
    #+END_SRC
 
 ** frame size
