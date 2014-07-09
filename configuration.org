@@ -66,18 +66,13 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
        (menu-bar-mode -1))
    #+END_SRC
 ** font
-   I haven't decided what font to use on most systems, but on OS X I
-   really like one of the built in fonts called menlo. I also set the
-   font size a bit bigger at 14pt.
-
    We only need to set the font if we are running in a
    window-system. If it is in a terminal it doesn't matter as we just
    use the font in the terminal.
 
    #+BEGIN_SRC emacs-lisp
-     (when (and window-system
-                (equal 'darwin system-type))
-       (set-face-attribute 'default nil :font "menlo-14"))
+     (when (window-system)
+       (set-face-attribute 'default nil :font "fira-mono-14"))
    #+END_SRC
 
 ** frame size
