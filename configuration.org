@@ -109,6 +109,21 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
    #+END_SRC
 
 * Global minor modes
+** company
+   =company= provides auto-complete. I used to use the package that is
+   called auto-complete. But I decided that =company= is easier to use
+   and add new stuff to.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package company
+       :ensure t
+       :init (global-company-mode)
+       :config
+       (progn
+         (setq company-idle-delay 0.15)
+         (setq company-minimum-prefix-length 2)))
+   #+END_SRC
+
 ** exec-path-from-shell
    =exec-path-from-shell= is only needed when I am running OS X. Emacs
    on OS X doesn't set the path properly. This package helps with that.
@@ -120,58 +135,25 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
          :init
          (exec-path-from-shell-initialize)))
    #+END_SRC
-** saveplace
-   =saveplace= records the place the cursor was in when we last
-   visited a file. It also remembers the place when we close Emacs.
+** highlight-symbol
+   highlight-symbol makes it easier to discover the uses of symbols in
+   source code.
 
    #+BEGIN_SRC emacs-lisp
-     (use-package saveplace)
-   #+END_SRC
-
-** sequential-command
-   =sequential-command= makes it possible to have the same key mean
-   different things when pressed in sequence. F.ex. it is possible to
-   define =C-a= to be =back-to-indentation= when pressed the first
-   time, but =beginning-of-line= the next time.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package sequential-command
+     (use-package highlight-symbol
        :ensure t
-       :bind ("C-a" . ljos/beginning-of-line)
-       :config
-       (define-sequential-command ljos/beginning-of-line
-         back-to-indentation beginning-of-line))
-   #+END_SRC
-
-** uniquify
-   Creates unique buffer names. Makes it easier to navigate =C-x b=.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package uniquify)
-   #+END_SRC
-
-** ispell
-   Ispell provides spelling for a large amount of languages and is
-   nice when I write text and need to check a word or two.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package ispell)
-   #+END_SRC
-
-** smart-mode-line
-   I used to have a lot of configurations for the mode-line, but I
-   have decided that it is just better to use =smart-mode-line=
-   instead.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package smart-mode-line
-       :ensure t
-       :init (sml/setup)
+       :commands highlight-symbol-mode
        :config
        (progn
-         (setq sml/cv-mode-show-backend t)
-         (sml/apply-theme 'respectful nil 't)))
+         (setq highlight-symbol-idle-delay 0.2)
+         (add-hook 'highlight-symbol-mode-hook
+                   (function
+                    (lambda () (highlight-symbol-nav-mode +1))))))
    #+END_SRC
+
+   =highlight-symbol-nav-mode= makes it easier to navigate between the
+   symbols.
+
 ** ido-mode
    =ido-mode= is built into emacs, but there are some configurations
    that I like. First, there is the =flx-ido= mode. It provides better
@@ -218,6 +200,51 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
          (add-to-list 'ido-ignore-buffers ".*-autoloads.el")))
    #+END_SRC
 
+** ispell
+   Ispell provides spelling for a large amount of languages and is
+   nice when I write text and need to check a word or two.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ispell)
+   #+END_SRC
+
+** saveplace
+   =saveplace= records the place the cursor was in when we last
+   visited a file. It also remembers the place when we close Emacs.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package saveplace)
+   #+END_SRC
+
+** sequential-command
+   =sequential-command= makes it possible to have the same key mean
+   different things when pressed in sequence. F.ex. it is possible to
+   define =C-a= to be =back-to-indentation= when pressed the first
+   time, but =beginning-of-line= the next time.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package sequential-command
+       :ensure t
+       :bind ("C-a" . ljos/beginning-of-line)
+       :config
+       (define-sequential-command ljos/beginning-of-line
+         back-to-indentation beginning-of-line))
+   #+END_SRC
+
+** smart-mode-line
+   I used to have a lot of configurations for the mode-line, but I
+   have decided that it is just better to use =smart-mode-line=
+   instead.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package smart-mode-line
+       :ensure t
+       :init (sml/setup)
+       :config
+       (progn
+         (setq sml/cv-mode-show-backend t)
+         (sml/apply-theme 'respectful nil 't)))
+   #+END_SRC
 ** smex
    =smex= makes it so that I can use ido-mode for =M-x= as well.
 
@@ -228,39 +255,12 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
               ("M-X" . smex-major-mode-commands)))
    #+END_SRC
 
-** company
-   =company= provides auto-complete. I used to use the package that is
-   called auto-complete. But I decided that =company= is easier to use
-   and add new stuff to.
+** uniquify
+   Creates unique buffer names. Makes it easier to navigate =C-x b=.
 
    #+BEGIN_SRC emacs-lisp
-     (use-package company
-       :ensure t
-       :init (global-company-mode)
-       :config
-       (progn
-         (setq company-idle-delay 0.15)
-         (setq company-minimum-prefix-length 2)))
+     (use-package uniquify)
    #+END_SRC
-
-** highlight-symbol
-   highlight-symbol makes it easier to discover the uses of symbols in
-   source code.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package highlight-symbol
-       :ensure t
-       :commands highlight-symbol-mode
-       :config
-       (progn
-         (setq highlight-symbol-idle-delay 0.2)
-         (add-hook 'highlight-symbol-mode-hook
-                   (function
-                    (lambda () (highlight-symbol-nav-mode +1))))))
-   #+END_SRC
-
-   =highlight-symbol-nav-mode= makes it easier to navigate between the
-   symbols.
 
 ** visual-regexp
    =visual-regexp= visualizes the regexp-replace. It makes it much
@@ -274,6 +274,16 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
               ("C-c r" . vr/replace)))
    #+END_SRC
 
+** yasnippet
+   yasnippet provides snippets for emacs. It makes it easy to add
+   small custom auto-completed pieces of text.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package yasnippet
+       :ensure t
+
+       :commands (yasnippet-mode  yas-expand-snippet))
+   #+END_SRC
 * Major modes
   I use emacs for programming in many languages.
 
