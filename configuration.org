@@ -89,6 +89,15 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
       ("s-[" . backward-paragraph)
       ("s-]" . forward-paragraph))
    #+END_SRC
+
+** locale
+   We need to set the locale properly even though exec-path-from-shell
+   should take care of some of that for us.
+
+   #+BEGIN_SRC emacs-lisp
+     (set-locale-environment "utf-8")
+     (setenv "LANG" "en_US.UTF-8")
+   #+END_SRC
 ** menu bar
    The menu bar is the usually at the top of the window, but in OS X
    it is at the top of the screen. On all other systems it just uses
@@ -368,6 +377,13 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
        :config
        (use-package magit-annex
          :ensure t))
+** ess-mode
+   "emacs speaks statistics" is a very big mode, but it contains the R
+   mode that I use.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ess
+       :ensure t)
    #+END_SRC
 ** simple
    =simple= is the package that contains =prog-mode=. Most programming
