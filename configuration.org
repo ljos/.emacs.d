@@ -11,23 +11,15 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
   configure at least the default configurations, but some things I
   have to do programmatically.
 
-** Global keybindings
-   There are just two global keybindings that I set. That is not
-   specifically set when importing a new mode.
+** color-theme
+   The color theme that I like is called tomorrow-theme. I think the
+   best package is the sanityinc one.
 
    #+BEGIN_SRC emacs-lisp
-     (bind-keys*
-      ("s-[" . backward-paragraph)
-      ("s-]" . forward-paragraph))
-   #+END_SRC
-
-** Default directory
-   The default directory is usually set to =/=, but that is really
-   annoying when most of the files that I want to access are within
-   =~/=. To change that I change the default-directory value:
-
-   #+BEGIN_SRC emacs-lisp
-     (setq default-directory "~/")
+     (use-package color-theme-sanityinc-tomorrow
+       :ensure t
+       :commands color-theme-sanityinc-tomorrow-night
+       :init (color-theme-sanityinc-tomorrow-night))
    #+END_SRC
 
 ** Custom file
@@ -56,15 +48,15 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
      (load custom-file)
    #+END_SRC
 
-** menu bar
-   The menu bar is the usually at the top of the window, but in OS X
-   it is at the top of the screen. On all other systems it just uses
-   up space that can otherwise be used text.
+** Default directory
+   The default directory is usually set to =/=, but that is really
+   annoying when most of the files that I want to access are within
+   =~/=. To change that I change the default-directory value:
 
    #+BEGIN_SRC emacs-lisp
-     (unless (equal 'darwin system-type)
-       (menu-bar-mode -1))
+     (setq default-directory "~/")
    #+END_SRC
+
 ** font
    We only need to set the font if we are running in a
    window-system. If it is in a terminal it doesn't matter as we just
@@ -88,6 +80,24 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
                                                         (frame-char-height)))))
    #+END_SRC
 
+** Global keybindings
+   There are just two global keybindings that I set. That is not
+   specifically set when importing a new mode.
+
+   #+BEGIN_SRC emacs-lisp
+     (bind-keys*
+      ("s-[" . backward-paragraph)
+      ("s-]" . forward-paragraph))
+   #+END_SRC
+** menu bar
+   The menu bar is the usually at the top of the window, but in OS X
+   it is at the top of the screen. On all other systems it just uses
+   up space that can otherwise be used text.
+
+   #+BEGIN_SRC emacs-lisp
+     (unless (equal 'darwin system-type)
+       (menu-bar-mode -1))
+   #+END_SRC
 ** yes-or-no-p
    I find =yes-or-no-p= really annoying. It is much better to call
    =y-or-n-p= instead. Then we can just press y or n instead of yes or
@@ -95,17 +105,6 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
 
    #+BEGIN_SRC emacs-lisp
      (defalias 'yes-or-no-p 'y-or-n-p)
-   #+END_SRC
-
-** color-theme
-   The color theme that I like is called tomorrow-theme. I think the
-   best package is the sanityinc one.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package color-theme-sanityinc-tomorrow
-       :ensure t
-       :commands color-theme-sanityinc-tomorrow-night
-       :init (color-theme-sanityinc-tomorrow-night))
    #+END_SRC
 
 * Global minor modes
