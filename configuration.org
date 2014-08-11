@@ -377,6 +377,45 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
        :config
        (use-package magit-annex
          :ensure t))
+** org-mode
+   I used to have a very big org-mode configuration, but I decided to
+   start over and see what I really use.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package org
+       :ensure org-plus-contrib
+       :mode ("\\.org$" . org-mode)
+       :config
+        (progn
+          (setq org-completion-use-ido t
+                org-export-with-section-numbers nil
+                org-export-with-toc nil
+                org-src-fontify-natively t
+                org-use-speed-commands t)
+          (add-hook 'org-mode-hook (function
+                                    (lambda () (auto-fill-mode +1))))))
+   #+END_SRC
+*** ox-latex
+    ox-latex is part of org mode and provides export to latex from
+    org-mode.
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package ox-latex
+        :ensure org-plus-contrib
+        :defer t
+        :config
+        (progn
+          (setq org-latex-pdf-process '("latexmk -bibtex -pdf %f"))
+
+          (unless (boundp 'org-latex-packages-alist)
+            (setq org-latex-packages-alist nil))
+
+          (add-to-list 'org-latex-packages-alist '("" "microtype"))
+          (add-to-list 'org-latex-packages-alist '("l2tabu" "nag"))
+          (add-to-list 'org-latex-packages-alist '("round" "natbib"))
+          (add-to-list 'org-latex-packages-alist '("" "lmodern") 't)))
+    #+END_SRC
+
 ** ess-mode
    "emacs speaks statistics" is a very big mode, but it contains the R
    mode that I use.
@@ -399,19 +438,7 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
                     (lambda () (highlight-symbol-mode +1))))))
    #+END_SRC
 
-** org-mode
-   I used to have a very big org-mode configuration, but I decided to
-   start over and see what I really use.
 
    #+BEGIN_SRC emacs-lisp
-     (use-package org
-       :ensure org-plus-contrib
-       :mode ("\\.org$" . org-mode)
        :config
-        (progn
-          (setq org-src-fontify-natively t
-                org-completion-use-ido t
-                org-use-speed-commands t)
-          (add-hook 'org-mode-hook (function
-                                    (lambda () (auto-fill-mode +1))))))
    #+END_SRC
