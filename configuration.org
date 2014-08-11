@@ -163,6 +163,16 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
    =highlight-symbol-nav-mode= makes it easier to navigate between the
    symbols.
 
+** hungry-delete-mode
+   =hungry-delete-mode= is a "free feature". It deletes all
+   concecutive white space in the direction of deletion.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package hungry-delete
+       :ensure t
+       :init (global-hungry-delete-mode))
+   #+END_SRC
+
 ** ido-mode
    =ido-mode= is built into emacs, but there are some configurations
    that I like. First, there is the =flx-ido= mode. It provides better
