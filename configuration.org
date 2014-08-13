@@ -18,8 +18,7 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
    #+BEGIN_SRC emacs-lisp
      (use-package color-theme-sanityinc-tomorrow
        :ensure t
-       :commands color-theme-sanityinc-tomorrow-night
-       :init (color-theme-sanityinc-tomorrow-night))
+       :commands color-theme-sanityinc-tomorrow-night)
    #+END_SRC
 
 ** Custom file
