@@ -397,27 +397,8 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
        :config
        (progn
          (use-package magit-annex
-           :ensure t)
-
-        (use-package magit-gh-pulls
-          :ensure t
-          :commands (turn-on-magit-gh-pulls
-                     magit-gh-pulls-mode))
-
-        (define-key magit-mode-map "#gg"                                  (ref:gh)
-          (defun ljos/load-gh-pulls-mode ()
-            "Start `magit-gh-pulls-mode' only after a manual
-            request."
-            (interactive)
-            (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls)
-            (magit-gh-pulls-mode +1)
-            (magit-gh-pulls-reload)))))
+           :ensure t)))
    #+END_SRC
-
-   I also am trying to use [[(gh)][magit-gh-pulls-mode]]. It provides a way to
-   merge github pull requests in magit. I found this configuration at
-   [[http://endlessparentheses.com/merging-github-pull-requests-from-emacs.html][endlessparentheses.com]] and did some small configurations.
-
 
 ** org-mode
    I used to have a very big org-mode configuration, but I decided to
