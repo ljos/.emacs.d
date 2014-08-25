@@ -6,6 +6,7 @@
  '(backup-directory-alist (quote (("." . "~/.emacs.d/backups"))))
  '(before-save-hook (quote (delete-trailing-whitespace)))
  '(blink-cursor-mode nil)
+ '(column-number-mode t)
  '(custom-enabled-themes (quote (sanityinc-tomorrow-night)))
  '(custom-safe-themes (quote ("3a727bdc09a7a141e58925258b6e873c65ccf393b2240c51553098ca93957723" "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" default)))
  '(indent-tabs-mode nil)
