@@ -14,7 +14,7 @@
  '(inhibit-startup-screen t)
  '(ispell-dictionary "english")
  '(ispell-highlight-face (quote flyspell-incorrect))
- '(ispell-program-name " /usr/local/bin/aspell")
+ '(ispell-program-name "/usr/local/bin/aspell")
  '(message-log-max 1000)
  '(ns-pop-up-frames nil)
  '(recentf-mode t)
