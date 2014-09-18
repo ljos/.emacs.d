@@ -441,6 +441,14 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
           (add-to-list 'org-latex-packages-alist '("" "lmodern") 't)))
     #+END_SRC
 
+** prolog-mode
+   Prolog is fun.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package prolog
+       :ensure t
+       :mode ("\\.pl" . prolog-mode))
+   #+END_SRC
 ** ess-mode
    "emacs speaks statistics" is a very big mode, but it contains the R
    mode that I use.
