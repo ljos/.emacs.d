@@ -449,9 +449,13 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
      (use-package ess
        :ensure t
        :init
-       (org-babel-do-load-languages
-        'org-babel-load-languages
-        '((R . t))))
+       (progn
+         (use-package ess-site
+           :commands R
+           :mode ("\\.R$" . R-mode))
+        (org-babel-do-load-languages
+         'org-babel-load-languages
+         '((R . t)))))
    #+END_SRC
 ** simple
    =simple= is the package that contains =prog-mode=. Most programming
