@@ -4,3 +4,6 @@
 [submodule "site-lisp/sparql-mode"]
 	path = site-lisp/sparql-mode
 	url = git@github.com:ljos/sparql-mode.git
+[submodule "site-lisp/org-magit"]
+	path = site-lisp/org-magit
+	url = git@github.com:magit/org-magit.git

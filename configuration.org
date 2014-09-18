@@ -411,15 +411,22 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
        :ensure org-plus-contrib
        :mode ("\\.org$" . org-mode)
        :config
-        (progn
-          (setq org-completion-use-ido t
-                org-export-with-section-numbers nil
-                org-export-with-toc nil
-                org-src-fontify-natively t
-                org-use-speed-commands t)
-          (add-hook 'org-mode-hook (function
-                                    (lambda () (auto-fill-mode +1))))))
+       (progn
+         (use-package org-magit
+           :load-path "site-lisp/org-magit")
+         (org-babel-do-load-languages
+          'org-babel-load-languages
+          '((sh . t)))
+         (setq org-completion-use-ido t
+               org-export-with-section-numbers nil
+               org-src-window-setup 'current-window
+               org-export-with-toc nil
+               org-src-fontify-natively t
+               org-use-speed-commands t)
+         (add-hook 'org-mode-hook (function
+                                   (lambda () (auto-fill-mode +1))))))
    #+END_SRC
+
 *** ox-latex
     ox-latex is part of org mode and provides export to latex from
     org-mode.
