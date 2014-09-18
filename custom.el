@@ -19,6 +19,15 @@
  '(ns-pop-up-frames nil)
  '(recentf-mode t)
  '(recentf-save-file "~/.emacs.d/.recentf")
+ '(safe-local-variable-values
+   (quote
+    ((org-confirm-babel-evaluate)
+     (ess-ask-for-ess-directory)
+     (eval setq ess-directory
+           (projectile-project-root))
+     (eval setq ljos/project-root
+           (projectile-project-root))
+     (ljos/project-directory eval projectile-project-root))))
  '(save-place t nil (saveplace))
  '(save-place-file "~/.emacs.d/.places")
  '(savehist-additional-variables (quote (quote (search-ring regexp-search-ring global-mark-ring mark-ring))))
