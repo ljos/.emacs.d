@@ -17,6 +17,7 @@
  '(ispell-program-name "/usr/local/bin/aspell")
  '(message-log-max 1000)
  '(ns-pop-up-frames nil)
+ '(ns-use-srgb-colorspace t)
  '(recentf-mode t)
  '(recentf-save-file "~/.emacs.d/.recentf")
  '(safe-local-variable-values
