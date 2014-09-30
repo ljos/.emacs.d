@@ -350,6 +350,25 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
          (add-hook 'clojure-mode-hook 'enable-paredit-mode)))
    #+END_SRC
 
+** ess-mode
+   "emacs speaks statistics" is a very big mode, but it contains the R
+   mode that I use.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ess
+       :ensure t
+       :init
+       (progn
+         (use-package ess-site
+           :commands R
+           :mode ("\\.R$" . R-mode)
+           :config
+           (progn
+             (add-hook 'R-mode-hook 'subword-mode)))
+        (org-babel-do-load-languages
+         'org-babel-load-languages
+         '((R . t)))))
+   #+END_SRC
 ** lisp
    =lisp-mode= is the basis for programming in lisp for several lisp
    dialects.
@@ -466,22 +485,6 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
      (use-package prolog
        :ensure t
        :mode ("\\.pl" . prolog-mode))
-   #+END_SRC
-** ess-mode
-   "emacs speaks statistics" is a very big mode, but it contains the R
-   mode that I use.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package ess
-       :ensure t
-       :init
-       (progn
-         (use-package ess-site
-           :commands R
-           :mode ("\\.R$" . R-mode))
-        (org-babel-do-load-languages
-         'org-babel-load-languages
-         '((R . t)))))
    #+END_SRC
 ** simple
    =simple= is the package that contains =prog-mode=. Most programming
