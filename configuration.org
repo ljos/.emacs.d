@@ -143,21 +143,15 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
 
 * Global minor modes
 ** company
-   =company= provides auto-complete. I used to use the package that is
-   called auto-complete. But I decided that =company= is easier to use
-   and add new stuff to.
+   auto-completion for emacs
 
    #+BEGIN_SRC emacs-lisp
      (use-package company
        :ensure t
-       :init (global-company-mode)
-       :config
-       (progn
-         (setq company-idle-delay 0.15)
-         (setq company-minimum-prefix-length 2)
-         (add-to-list 'company-backends 'company-dabbrev)))
-   #+END_SRC
+       :init (global-company-mode))
 
+
+   #+END_SRC
 ** exec-path-from-shell
    =exec-path-from-shell= is only needed when I am running OS X. Emacs
    on OS X doesn't set the path properly. This package helps with that.
