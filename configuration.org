@@ -161,7 +161,9 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
        (use-package exec-path-from-shell
          :ensure t
          :init
-         (exec-path-from-shell-initialize)))
+         (progn
+           (add-to-list 'exec-path-from-shell-variables "DOKTORGRAD")
+           (exec-path-from-shell-initialize))))
    #+END_SRC
 ** highlight-symbol
    highlight-symbol makes it easier to discover the uses of symbols in
