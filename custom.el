@@ -27,7 +27,11 @@
  '(recentf-save-file "~/.emacs.d/.recentf")
  '(safe-local-variable-values
    (quote
-    ((org-confirm-babel-evaluate)
+    ((eval setq ess-directory
+           (projectile-project-root)
+           default-directory
+           (projectile-project-root))
+     (org-confirm-babel-evaluate)
      (ess-ask-for-ess-directory)
      (eval setq ess-directory
            (projectile-project-root))
@@ -36,7 +40,10 @@
      (ljos/project-directory eval projectile-project-root))))
  '(save-place t nil (saveplace))
  '(save-place-file "~/.emacs.d/.places")
- '(savehist-additional-variables (quote (quote (search-ring regexp-search-ring global-mark-ring mark-ring))))
+ '(savehist-additional-variables
+   (quote
+    (quote
+     (search-ring regexp-search-ring global-mark-ring mark-ring))))
  '(scroll-bar-mode nil)
  '(show-paren-mode t)
  '(show-paren-style (quote parenthesis))
@@ -49,4 +56,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(persp-selected-face ((t (:foreground "#81a2be")))))
