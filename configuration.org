@@ -117,6 +117,24 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
      (defalias 'yes-or-no-p 'y-or-n-p)
    #+END_SRC
 
+* Functions
+  In where I define my own functions and functionality.
+
+  #+BEGIN_SRC emacs-lisp
+    (defun ljos/back-to-indentation|beginning-of-line ()
+      "Moves the cursor back to indentation or to the beginning of
+    the line if it is already at the indentation. If it is at the
+    beginning of the line it stays there."
+      (interactive)
+      (when (not (bolp))
+        (let ((p (point)))
+          (back-to-indentation)
+          (when (= p (point))
+            (beginning-of-line 1)))))
+
+    (bind-key (kbd "C-a") 'ljos/back-to-indentation|beginning-of-line)
+  #+END_SRC
+
 * Global minor modes
 ** company
    =company= provides auto-complete. I used to use the package that is
@@ -246,22 +264,6 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
    #+BEGIN_SRC emacs-lisp
      (use-package saveplace)
    #+END_SRC
-
-** sequential-command
-   =sequential-command= makes it possible to have the same key mean
-   different things when pressed in sequence. F.ex. it is possible to
-   define =C-a= to be =back-to-indentation= when pressed the first
-   time, but =beginning-of-line= the next time.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package sequential-command
-       :ensure t
-       :bind ("C-a" . ljos/beginning-of-line)
-       :config
-       (define-sequential-command ljos/beginning-of-line
-         back-to-indentation beginning-of-line))
-   #+END_SRC
-
 ** smart-mode-line
    I used to have a lot of configurations for the mode-line, but I
    have decided that it is just better to use =smart-mode-line=
