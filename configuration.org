@@ -149,8 +149,6 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
      (use-package company
        :ensure t
        :init (global-company-mode))
-
-
    #+END_SRC
 ** exec-path-from-shell
    =exec-path-from-shell= is only needed when I am running OS X. Emacs
@@ -443,11 +441,7 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
    #+BEGIN_SRC emacs-lisp
      (use-package magit
        :ensure t
-       :bind ("C-x g" . magit-status)
-       :config
-       (progn
-         (use-package magit-annex
-           :ensure t)))
+       :bind ("C-x g" . magit-status))
    #+END_SRC
 
 ** org-mode
