@@ -518,6 +518,12 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
        :ensure t
        :mode ("\\.pl" . prolog-mode))
    #+END_SRC
+** python
+   #+BEGIN_SRC emacs-lisp
+     (use-package elpy
+       :ensure t
+       :init (elpy-enable))
+   #+END_SRC
 ** simple
    =simple= is the package that contains =prog-mode=. Most programming
    modes inherit from this mode. We can take advantage of that and add
