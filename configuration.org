@@ -122,7 +122,14 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
    #+BEGIN_SRC emacs-lisp
      (defalias 'yes-or-no-p 'y-or-n-p)
    #+END_SRC
+** ring-bell-function
+   I don't like the bell. I don't understand what it is supposed to be
+   telling me that I don't figure out by looking at the screen. To
+   turn it completely off I set the =ring-bell-function= to =ignore=.
 
+   #+BEGIN_SRC emacs-lisp
+     (setq ring-bell-function 'ignore)
+   #+END_SRC
 * Functions
   In where I define my own functions and functionality.
 
