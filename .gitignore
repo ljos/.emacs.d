@@ -37,3 +37,5 @@ projectile.cache
 /TAGS
 /.places
 /.recentf
+/ido.last
+/smex-items
