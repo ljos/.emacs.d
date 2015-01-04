@@ -7,11 +7,14 @@
  '(auth-sources
    (quote
     ("~/.authinfo" "~/.authinfo.gpg" "~/.netrc" macos-keychain-internet)))
+ '(auto-save-interval 200)
  '(backup-directory-alist (quote (("." . "~/.emacs.d/backups"))))
  '(before-save-hook (quote (delete-trailing-whitespace)))
  '(blink-cursor-mode nil)
  '(column-number-mode t)
  '(custom-enabled-themes (quote (sanityinc-tomorrow-night)))
+ '(delete-by-moving-to-trash t)
+ '(delete-old-versions t)
  '(elpy-modules
    (quote
     (elpy-module-company elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-yasnippet elpy-module-sane-defaults)))
@@ -21,6 +24,7 @@
  '(ispell-dictionary "english")
  '(ispell-highlight-face (quote flyspell-incorrect))
  '(ispell-program-name "/usr/local/bin/aspell")
+ '(kept-new-versions 6)
  '(load-prefer-newer t)
  '(message-log-max 1000)
  '(ns-pop-up-frames nil)
@@ -127,7 +131,8 @@
  '(tool-bar-mode nil)
  '(tramp-default-method "ssh")
  '(uniquify-buffer-name-style (quote forward) nil (uniquify))
- '(uniquify-min-dir-content 2))
+ '(uniquify-min-dir-content 2)
+ '(version-control t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
