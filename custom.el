@@ -84,39 +84,12 @@
  '(require-final-newline t)
  '(safe-local-variable-values
    (quote
-    ((eval load-file
+    ((org-confirm-babel-evaluate)
+     (ess-ask-for-ess-directory)
+     (eval load-file
            (concat
             (projectile-project-root)
-            ".custom.el"))
-     (eval load-file ".custom.el")
-     (eval progn
-           (setq ess-directory
-                 (projectile-project-root)
-                 default-directory
-                 (projectile-project-root))
-           (advice-add
-            (quote org-babel-tangle)
-            :around
-            (function
-             (lambda
-               (f &rest args)
-               (let
-                   ((default-directory
-                      (concat
-                       (projectile-project-root)
-                       (file-name-as-directory "src"))))
-                 (apply f args))))))
-     (eval setq ess-directory
-           (projectile-project-root)
-           default-directory
-           (projectile-project-root))
-     (org-confirm-babel-evaluate)
-     (ess-ask-for-ess-directory)
-     (eval setq ess-directory
-           (projectile-project-root))
-     (eval setq ljos/project-root
-           (projectile-project-root))
-     (ljos/project-directory eval projectile-project-root))))
+            ".custom.el")))))
  '(save-interprogram-paste-before-kill t)
  '(save-place t nil (saveplace))
  '(save-place-file "~/.emacs.d/.places")
