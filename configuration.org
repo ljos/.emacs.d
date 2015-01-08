@@ -516,6 +516,19 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
           (add-to-list 'org-latex-packages-alist '("round" "natbib"))
           (add-to-list 'org-latex-packages-alist '("" "lmodern") 't)))
     #+END_SRC
+** org-babel
+   I use org-babel a lot in my research, but I like to use bash, and
+   not just plain sh.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ob-sh
+       :defer t
+       :init
+       (progn
+         (setq org-babel-sh-command "bash")
+         (add-to-list 'org-babel-default-header-args:sh
+                      "#!/usr/bin/env bash")))
+   #+END_SRC
 
 ** prolog
    Prolog is fun.
