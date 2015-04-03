@@ -130,6 +130,15 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
    #+BEGIN_SRC emacs-lisp
      (setq ring-bell-function 'ignore)
    #+END_SRC
+** insert-directory-program
+   On mac I have to install the coreutils and though I add gnu ls on
+   the path, it seems it doesn't work correctly in emacs.
+
+   #+BEGIN_SRC emacs-lisp
+     (when (and (memq window-system '(mac ns))
+                (file-exists-p "/usr/local/bin/gls"))
+       (setq insert-directory-program "/usr/local/bin/gls"))
+   #+END_SRC
 * Functions
   In where I define my own functions and functionality.
 

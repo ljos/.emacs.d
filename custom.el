@@ -13,6 +13,7 @@
  '(blink-cursor-mode nil)
  '(column-number-mode t)
  '(custom-enabled-themes (quote (sanityinc-tomorrow-night)))
+   (quote
  '(delete-by-moving-to-trash t)
  '(delete-old-versions t)
  '(elpy-modules
@@ -84,7 +85,7 @@
  '(require-final-newline t)
  '(safe-local-variable-values
    (quote
-    ((org-confirm-babel-evaluate)
+    ((org-latex-table-caption-above)
      (ess-ask-for-ess-directory)
      (eval load-file
            (concat
