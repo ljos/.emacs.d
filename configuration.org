@@ -345,13 +345,13 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
 
    #+BEGIN_SRC emacs-lisp
      (use-package window-number
+       :commands window-number-mode
        :load-path "site-lisp/"
        :init (window-number-mode))
    #+END_SRC
 
 * Major modes
   I use emacs for programming in many languages.
-
 ** clojure
    =clojure= is a lisp dialect, but it needs many of its own
    configurations.
