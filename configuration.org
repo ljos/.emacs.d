@@ -188,11 +188,10 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
        :ensure t
        :commands highlight-symbol-mode
        :config
-       (progn
-         (setq highlight-symbol-idle-delay 0.2)
-         (add-hook 'highlight-symbol-mode-hook
-                   (function
-                    (lambda () (highlight-symbol-nav-mode +1))))))
+       (setq highlight-symbol-idle-delay 0.2)
+       (add-hook 'highlight-symbol-mode-hook
+                 (function
+                  (lambda () (highlight-symbol-nav-mode +1)))))
    #+END_SRC
 
    =highlight-symbol-nav-mode= makes it easier to navigate between the
@@ -237,21 +236,20 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
        :init (ido-mode +1)
        :bind ("C-x C-f" . ido-find-file)
        :config
-       (progn
-         (flx-ido-mode +1)
-         (ido-vertical-mode +1)
-         (setq ido-auto-merge-work-directories-length nil
-               ido-create-new-buffer 'always
-               ido-enable-flex-matching t
-               ido-enable-dot-prefix t
-               ido-handle-dubplicate-virtual-buffers 2
-               ido-max-prospects 10
-               ido-everywhere t
-               ido-use-filename-at-point 'guess
-               ido-use-virtual-buffers t)
-         (use-package ido-ubiquitous
-           :ensure t)
-         (add-to-list 'ido-ignore-buffers ".*-autoloads.el")))
+       (flx-ido-mode +1)
+       (ido-vertical-mode +1)
+       (setq ido-auto-merge-work-directories-length nil
+             ido-create-new-buffer 'always
+             ido-enable-flex-matching t
+             ido-enable-dot-prefix t
+             ido-handle-dubplicate-virtual-buffers 2
+             ido-max-prospects 10
+             ido-everywhere t
+             ido-use-filename-at-point 'guess
+             ido-use-virtual-buffers t)
+       (use-package ido-ubiquitous
+         :ensure t)
+       (add-to-list 'ido-ignore-buffers ".*-autoloads.el"))
    #+END_SRC
 
 ** ispell
@@ -284,10 +282,10 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
        :ensure t
        :init (projectile-global-mode)
        :bind ("s-p" . projectile-command-map)
-       :config (progn
-                 (setq projectile-switch-project-action 'projectile-dired)
-                 (persp-mode)
-                 (require 'persp-projectile)))
+       :config
+       (setq projectile-switch-project-action 'projectile-dired)
+       (persp-mode)
+       (require 'persp-projectile))
    #+END_SRC
 
 ** saveplace
@@ -307,9 +305,8 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
        :ensure t
        :init (sml/setup)
        :config
-       (progn
-         (setq sml/cv-mode-show-backend t)
-         (sml/apply-theme 'respectful nil 't)))
+       (setq sml/cv-mode-show-backend t)
+       (sml/apply-theme 'respectful nil 't))
    #+END_SRC
 ** smex
    =smex= makes it so that I can use ido-mode for =M-x= as well.
@@ -364,12 +361,11 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
        :ensure t
        :commands (cider-jack-in cider)
        :config
-       (progn
-         (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
-         (add-hook 'cider-repl-mode-hook 'enable-paredit-mode)
-         (setq nrepl-hide-special-buffers t
-               cider-stacktrace-fill-column t
-               cider-repl-print-length 100)))
+       (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+       (add-hook 'cider-repl-mode-hook 'enable-paredit-mode)
+       (setq nrepl-hide-special-buffers t
+             cider-stacktrace-fill-column t
+             cider-repl-print-length 100))
    #+END_SRC
 
    =clojure-mode= is the mode that lets us program in clojure.
@@ -380,9 +376,8 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
        :mode (("\\.clj[sx]?$" . clojure-mode)
               ("\\.edn$" . clojure-mode))
        :config
-       (progn
-         (add-hook 'clojure-mode-hook 'subword-mode)
-         (add-hook 'clojure-mode-hook 'enable-paredit-mode)))
+       (add-hook 'clojure-mode-hook 'subword-mode)
+       (add-hook 'clojure-mode-hook 'enable-paredit-mode))
    #+END_SRC
 
 ** ess-mode
@@ -393,16 +388,14 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
      (use-package ess
        :ensure t
        :init
-       (progn
-         (use-package ess-site
-           :commands R
-           :mode ("\\.R$" . R-mode)
-           :config
-           (progn
-             (add-hook 'R-mode-hook 'subword-mode)))
-        (org-babel-do-load-languages
-         'org-babel-load-languages
-         '((R . t)))))
+       (use-package ess-site
+         :commands R
+         :mode ("\\.R$" . R-mode)
+         :config
+         (add-hook 'R-mode-hook 'subword-mode))
+       (org-babel-do-load-languages
+        'org-babel-load-languages
+        '((R . t))))
    #+END_SRC
 ** lisp
    =lisp-mode= is the basis for programming in lisp for several lisp
@@ -429,9 +422,8 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
      (use-package slime
        :commands slime
        :config
-       (progn
-         (setq inferior-lisp-program "sbcl"
-               slime-contribs '(slime-fancy))))
+       (setq inferior-lisp-program "sbcl"
+             slime-contribs '(slime-fancy)))
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
@@ -449,14 +441,14 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
      (use-package lisp-mode
        :bind (([C-s-268632091] . backward-sexp)
               ([C-s-268632093] . forward-sexp))
-       :config (progn
-                 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-                 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-                 (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
-                 (add-hook 'ielm-mode-hook 'elisp-slime-nav-mode)
-                 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
-                 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-                 (add-hook 'minibuffer-setup-hook 'ljos/conditionally-enable-paredit-mode)))
+       :config
+       (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+       (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+       (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
+       (add-hook 'ielm-mode-hook 'elisp-slime-nav-mode)
+       (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
+       (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+       (add-hook 'minibuffer-setup-hook 'ljos/conditionally-enable-paredit-mode))
    #+END_SRC
 
 ** lua-mode
@@ -484,25 +476,24 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
    start over and see what I really use.
 
    #+BEGIN_SRC emacs-lisp
-         (use-package org
-           :ensure org-plus-contrib
-           :mode ("\\.org$" . org-mode)
-           :config
-           (progn
-             (org-babel-do-load-languages
-              'org-babel-load-languages
-              '((sh . t)
-                (awk . t)))
-             (local-set-key (kbd "C-c a") 'org-archive-to-archive-sibling)
-             (setq org-completion-use-ido t
-                   org-export-with-section-numbers nil
-                   org-export-with-toc nil
-                   org-src-fontify-natively t
-                   org-src-window-setup 'current-window
-                   org-startup-folded 'showall
-                   org-use-speed-commands t)
-             (add-hook 'org-mode-hook (function
-                                       (lambda () (auto-fill-mode +1))))))
+     (use-package org
+       :ensure org-plus-contrib
+       :mode ("\\.org$" . org-mode)
+       :config
+       (org-babel-do-load-languages
+        'org-babel-load-languages
+        '((sh . t)
+          (awk . t)))
+       (local-set-key (kbd "C-c a") 'org-archive-to-archive-sibling)
+       (setq org-completion-use-ido t
+             org-export-with-section-numbers nil
+             org-export-with-toc nil
+             org-src-fontify-natively t
+             org-src-window-setup 'current-window
+             org-startup-folded 'showall
+             org-use-speed-commands t)
+       (add-hook 'org-mode-hook (function
+                                 (lambda () (auto-fill-mode +1)))))
    #+END_SRC
 
 *** ox-latex
@@ -514,15 +505,14 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
         :ensure org-plus-contrib
         :defer t
         :config
-        (progn
-          (setq org-latex-pdf-process '("latexmk -gg -pdf -bibtex %f"))
+        (setq org-latex-pdf-process '("latexmk -gg -pdf -bibtex %f"))
 
-          (unless (boundp 'org-latex-packages-alist)
-            (setq org-latex-packages-alist nil))
+        (unless (boundp 'org-latex-packages-alist)
+          (setq org-latex-packages-alist nil))
 
-          (add-to-list 'org-latex-packages-alist '("" "microtype"))
-          (add-to-list 'org-latex-packages-alist '("l2tabu" "nag"))
-          (add-to-list 'org-latex-packages-alist '("" "lmodern") 't)))
+        (add-to-list 'org-latex-packages-alist '("" "microtype"))
+        (add-to-list 'org-latex-packages-alist '("l2tabu" "nag"))
+        (add-to-list 'org-latex-packages-alist '("" "lmodern") 't))
     #+END_SRC
 *** org-babel
    I use org-babel a lot in my research, but I like to use bash, and
@@ -532,10 +522,9 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
      (use-package ob-sh
        :defer t
        :init
-       (progn
-         (setq org-babel-sh-command "bash")
-         (add-to-list 'org-babel-default-header-args:sh
-                      '(:shebang . "#!/usr/bin/env bash"))))
+       (setq org-babel-sh-command "bash")
+       (add-to-list 'org-babel-default-header-args:sh
+                    '(:shebang . "#!/usr/bin/env bash")))
    #+END_SRC
 
 ** prolog
@@ -560,10 +549,9 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
    #+BEGIN_SRC emacs-lisp
      (use-package simple
        :config
-       (progn
-         (add-hook 'prog-mode-hook
-                   (function
-                    (lambda () (highlight-symbol-mode +1))))))
+       (add-hook 'prog-mode-hook
+                 (function
+                  (lambda () (highlight-symbol-mode +1)))))
    #+END_SRC
 
 ** sparql-mode
@@ -575,6 +563,5 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
        :load-path "site-lisp/sparql-mode"
        :mode "\\.sparql$"
        :config
-       (progn
-         (setq sparql-default-base-url "http://live.dbpedia.org/sparql")))
+       (setq sparql-default-base-url "http://live.dbpedia.org/sparql"))
    #+END_SRC

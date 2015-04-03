@@ -13,12 +13,16 @@
  '(blink-cursor-mode nil)
  '(column-number-mode t)
  '(custom-enabled-themes (quote (sanityinc-tomorrow-night)))
+ '(custom-safe-themes
    (quote
+    ("c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "c5a044ba03d43a725bd79700087dea813abcb6beb6be08c7eb3303ed90782482" "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" default)))
  '(delete-by-moving-to-trash t)
  '(delete-old-versions t)
+ '(dired-listing-switches "-alh")
  '(elpy-modules
    (quote
     (elpy-module-company elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-yasnippet elpy-module-sane-defaults)))
+ '(elpy-rpc-python-command "python3.4")
  '(indent-tabs-mode nil)
  '(inhibit-startup-echo-area-message "bjarte")
  '(inhibit-startup-screen t)
@@ -80,12 +84,14 @@
      ("A" "#+ASCII: " "")
      ("i" "#+INDEX: ?" "#+INDEX: ?")
      ("I" "#+INCLUDE: %file ?" "<include file=%file markup=\"?\">"))))
+ '(paradox-github-token t)
  '(recentf-mode t)
  '(recentf-save-file "~/.emacs.d/.recentf")
  '(require-final-newline t)
  '(safe-local-variable-values
    (quote
     ((org-latex-table-caption-above)
+     (org-confirm-babel-evaluate)
      (ess-ask-for-ess-directory)
      (eval load-file
            (concat
