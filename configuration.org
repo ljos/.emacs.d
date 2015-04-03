@@ -164,6 +164,17 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
   #+END_SRC
 
 * Global minor modes
+** discover
+   Context menus for emacs
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package discover
+       :ensure t
+       :init
+       (global-discover-mode +1))
+
+   #+END_SRC
+
 ** company
    auto-completion for emacs
 
