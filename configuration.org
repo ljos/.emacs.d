@@ -11,6 +11,11 @@ is directly inspired by [[http://sachachua.com/blog/2012/06/literate-programming
   configure at least the default configurations, but some things I
   have to do programmatically.
 
+** use-package
+   #+BEGIN_SRC emacs-lisp
+     (eval-when-compile
+       (require 'use-package))
+   #+END_SRC
 ** color-theme
    The color theme that I like is called tomorrow-theme. I think the
    best package is the sanityinc one.
