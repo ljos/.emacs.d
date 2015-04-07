@@ -3,119 +3,13 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(apropos-do-all t)
- '(auth-sources
-   (quote
-    ("~/.authinfo" "~/.authinfo.gpg" "~/.netrc" macos-keychain-internet)))
- '(auto-save-interval 200)
- '(backup-directory-alist (quote (("." . "~/.emacs.d/backups"))))
- '(before-save-hook (quote (delete-trailing-whitespace)))
- '(blink-cursor-mode nil)
- '(column-number-mode t)
  '(custom-enabled-themes (quote (sanityinc-tomorrow-night)))
  '(custom-safe-themes
    (quote
-    ("c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "c5a044ba03d43a725bd79700087dea813abcb6beb6be08c7eb3303ed90782482" "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" default)))
- '(delete-by-moving-to-trash t)
- '(delete-old-versions t)
- '(dired-listing-switches "-alh")
- '(elpy-modules
-   (quote
-    (elpy-module-company elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-yasnippet elpy-module-sane-defaults)))
- '(elpy-rpc-python-command "python3.4")
- '(indent-tabs-mode nil)
- '(inhibit-startup-echo-area-message "bjarte")
- '(inhibit-startup-screen t)
- '(ispell-dictionary "english")
- '(ispell-highlight-face (quote flyspell-incorrect))
- '(ispell-program-name "/usr/local/bin/aspell")
- '(kept-new-versions 6)
- '(load-prefer-newer t)
- '(message-log-max 1000)
- '(ns-pop-up-frames nil)
- '(ns-use-srgb-colorspace t)
- '(org-structure-template-alist
-   (quote
-    (("s" "#+BEGIN_SRC ?
-
-#+END_SRC" "<src lang=\"?\">
-
-</src>")
-     ("e" "#+BEGIN_EXAMPLE
-?
-#+END_EXAMPLE" "<example>
-?
-</example>")
-     ("q" "#+BEGIN_QUOTE
-?
-#+END_QUOTE" "<quote>
-?
-</quote>")
-     ("v" "#+BEGIN_VERSE
-?
-#+END_VERSE" "<verse>
-?
-</verse>")
-     ("V" "#+BEGIN_VERBATIM
-?
-#+END_VERBATIM" "<verbatim>
-?
-</verbatim>")
-     ("c" "#+BEGIN_CENTER
-?
-#+END_CENTER" "<center>
-?
-</center>")
-     ("l" "#+BEGIN_LaTeX
-?
-#+END_LaTeX" "<literal style=\"latex\">
-?
-</literal>")
-     ("L" "#+LaTeX: " "<literal style=\"latex\">?</literal>")
-     ("h" "#+BEGIN_HTML
-?
-#+END_HTML" "<literal style=\"html\">
-?
-</literal>")
-     ("H" "#+HTML: " "<literal style=\"html\">?</literal>")
-     ("a" "#+BEGIN_ABSTRACT
-?
-#+END_ABSTRACT" "")
-     ("A" "#+ASCII: " "")
-     ("i" "#+INDEX: ?" "#+INDEX: ?")
-     ("I" "#+INCLUDE: %file ?" "<include file=%file markup=\"?\">"))))
- '(paradox-github-token t)
- '(recentf-mode t)
- '(recentf-save-file "~/.emacs.d/.recentf")
- '(require-final-newline t)
- '(safe-local-variable-values
-   (quote
-    ((org-latex-table-caption-above)
-     (org-confirm-babel-evaluate)
-     (ess-ask-for-ess-directory)
-     (eval load-file
-           (concat
-            (projectile-project-root)
-            ".custom.el")))))
- '(save-interprogram-paste-before-kill t)
- '(save-place t nil (saveplace))
- '(save-place-file "~/.emacs.d/.places")
- '(savehist-additional-variables
-   (quote
-    (quote
-     (search-ring regexp-search-ring global-mark-ring mark-ring))))
- '(scroll-bar-mode nil)
- '(show-paren-mode t)
- '(show-paren-style (quote parenthesis))
- '(tab-width 4)
- '(tool-bar-mode nil)
- '(tramp-default-method "ssh")
- '(uniquify-buffer-name-style (quote forward) nil (uniquify))
- '(uniquify-min-dir-content 2)
- '(version-control t))
+    ("c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(persp-selected-face ((t (:foreground "#81a2be")))))
+ )
