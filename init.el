@@ -259,10 +259,6 @@ beginning of the line it stays there."
   (add-hook 'eval-expression-minibuffer-setup-hook
             'enable-paredit-mode))
 
-(use-package lua-mode
-  :ensure t
-  :mode ("\\.lua$" . lua-mode))
-
 (use-package magit
   :ensure t
   :bind ("C-x g" . magit-status))
@@ -318,6 +314,7 @@ beginning of the line it stays there."
 (use-package sparql-mode
   :load-path "site-lisp/sparql-mode"
   :mode "\\.sparql$"
+  :defines sparql-default-base-url
   :config
   (setq sparql-default-base-url "http://live.dbpedia.org/sparql"))
 
