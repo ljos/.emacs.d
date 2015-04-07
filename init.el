@@ -33,7 +33,10 @@
 
 (use-package color-theme-sanityinc-tomorrow
   :ensure t
-  :commands color-theme-sanityinc-tomorrow-night)
+  :commands color-theme-sanityinc-tomorrow-night
+  :init
+  (unless (member 'sanityinc-tomorrow-night custom-enabled-themes)
+    (color-theme-sanityinc-tomorrow-night)))
 
 (require 'bind-key)
 (bind-keys*
