@@ -13,7 +13,6 @@
   (package-refresh-contents))
 
 (when (not (package-installed-p 'use-package))
-  (defvar use-package-verbose t)
   (package-install 'use-package))
 
 (eval-when-compile
