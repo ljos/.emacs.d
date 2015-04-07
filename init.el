@@ -224,23 +224,6 @@ beginning of the line it stays there."
   :load-path "site-lisp/"
   :init (window-number-mode))
 
-(use-package cider
-  :ensure t
-  :commands (cider-jack-in cider)
-  :config
-  (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
-  (add-hook 'cider-repl-mode-hook 'enable-paredit-mode)
-  (setq nrepl-hide-special-buffers t
-        cider-stacktrace-fill-column t
-        cider-repl-print-length 100))
-
-(use-package clojure-mode
-  :ensure t
-  :mode (("\\.clj[sx]?$" . clojure-mode)
-         ("\\.edn$" . clojure-mode))
-  :config
-  (add-hook 'clojure-mode-hook 'subword-mode)
-  (add-hook 'clojure-mode-hook 'enable-paredit-mode))
 
 (use-package ess
   :ensure t
@@ -259,12 +242,6 @@ beginning of the line it stays there."
   :commands (enable-paredit-mode
              paredit-mode
              ljos/conditionally-enable-paredit-mode))
-
-(use-package slime
-  :commands slime
-  :config
-  (setq inferior-lisp-program "sbcl"
-        slime-contribs '(slime-fancy)))
 
 (use-package elisp-slime-nav
   :ensure t
