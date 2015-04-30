@@ -175,12 +175,10 @@ beginning of the line it stays there."
         ispell-program-name "/usr/local/bin/aspell"))
 
 (use-package perspective
-  :ensure t
-  :commands persp-mode)
-
-(use-package persp-projectile
-  :ensure t
-  :commands persp-projectile)
+    :ensure t
+    :commands persp-mode
+    :config
+    (set-face-attribute 'persp-selected-face nil :foreground "#81a2be"))
 
 (use-package projectile
   :ensure t
@@ -189,6 +187,14 @@ beginning of the line it stays there."
   :config
   (setq projectile-switch-project-action 'projectile-dired)
   (persp-mode)
+  (use-package persp-projectile
+    :ensure t
+    :commands persp-projectile
+    :config
+    (add-hook 'persp-activated-hook
+	      #'(lambda ()
+		  (persp-add-buffer
+		   (get-buffer-create "*Messages*")))))
   (require 'persp-projectile))
 
 (use-package saveplace
@@ -238,18 +244,15 @@ beginning of the line it stays there."
 
 (use-package paredit
   :ensure t
-  :commands (enable-paredit-mode
-             paredit-mode
-             ljos/conditionally-enable-paredit-mode))
-
-(use-package elisp-slime-nav
-  :ensure t
-  :commands elisp-slime-nav-mode)
+  :commands (enable-paredit-mode paredit-mode))
 
 (use-package lisp-mode
   :bind (([C-s-268632091] . backward-sexp)
          ([C-s-268632093] . forward-sexp))
   :config
+  (use-package elisp-slime-nav
+    :ensure t
+    :commands elisp-slime-nav-mode)
   (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
   (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
   (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
@@ -261,7 +264,9 @@ beginning of the line it stays there."
 
 (use-package magit
   :ensure t
-  :bind ("C-x g" . magit-status))
+  :bind ("C-x g" . magit-status)
+  :init
+  (setq magit-last-seen-setup-instructions "1.4.0"))
 
 (use-package org
   :ensure org-plus-contrib
@@ -271,7 +276,7 @@ beginning of the line it stays there."
    'org-babel-load-languages
    '((sh . t)
      (awk . t)))
-  (local-set-key (kbd "C-c a") 'org-archive-to-archive-sibling)
+  (bind-key (kbd "C-c a") 'org-archive-to-archive-sibling org-mode-map)
   (setq org-completion-use-ido t
         org-export-with-section-numbers nil
         org-export-with-toc nil
@@ -280,27 +285,27 @@ beginning of the line it stays there."
         org-startup-folded 'showall
         org-use-speed-commands t)
   (add-hook 'org-mode-hook (function
-                            (lambda () (auto-fill-mode +1)))))
+                            (lambda () (auto-fill-mode +1))))
+  (use-package ob-sh
+    :defer t
+    :init
+    (setq org-babel-sh-command "bash")
+    (add-to-list 'org-babel-default-header-args:sh
+		 '(:shebang . "#!/usr/bin/env bash")))
 
-(use-package ox-latex
-  :ensure org-plus-contrib
-  :defer t
-  :config
-  (setq org-latex-pdf-process '("latexmk -gg -pdf -bibtex %f"))
+  (use-package ox-latex
+    :ensure org-plus-contrib
+    :defer t
+    :config
+    (setq org-latex-pdf-process '("latexmk -gg -pdf -bibtex %f"))
 
-  (unless (boundp 'org-latex-packages-alist)
-    (setq org-latex-packages-alist nil))
+    (unless (boundp 'org-latex-packages-alist)
+      (setq org-latex-packages-alist nil))
 
-  (add-to-list 'org-latex-packages-alist '("" "microtype"))
-  (add-to-list 'org-latex-packages-alist '("l2tabu" "nag"))
-  (add-to-list 'org-latex-packages-alist '("" "lmodern") 't))
+    (add-to-list 'org-latex-packages-alist '("" "microtype"))
+    (add-to-list 'org-latex-packages-alist '("l2tabu" "nag"))
+    (add-to-list 'org-latex-packages-alist '("" "lmodern") 't)))
 
-(use-package ob-sh
-  :defer t
-  :init
-  (setq org-babel-sh-command "bash")
-  (add-to-list 'org-babel-default-header-args:sh
-               '(:shebang . "#!/usr/bin/env bash")))
 
 (use-package prolog
   :ensure t
