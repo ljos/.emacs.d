@@ -284,8 +284,7 @@ beginning of the line it stays there."
         org-src-window-setup 'current-window
         org-startup-folded 'showall
         org-use-speed-commands t)
-  (add-hook 'org-mode-hook (function
-                            (lambda () (auto-fill-mode +1))))
+  (add-hook 'org-mode-hook #'(lambda () (auto-fill-mode +1)))
   (use-package ob-sh
     :defer t
     :init
