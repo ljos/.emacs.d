@@ -311,6 +311,21 @@ beginning of the line it stays there."
   :ensure t
   :mode ("\\.pl" . prolog-mode))
 
+(use-package python
+  :ensure t
+  :mode ("\\.py" . python-mode)
+  :config
+  (use-package elpy
+    :ensure t
+    :commands elpy-enable
+    :config
+    (setq elpy-rpc-python-command "python3"
+	  elpy-modules (dolist (elem '(elpy-module-highlight-indentation
+				       elpy-module-yasnippet))
+			 (remove elem elpy-modules)))
+    (elpy-use-ipython))
+  (elpy-enable))
+
 (use-package simple
   :config
   (add-hook 'prog-mode-hook
