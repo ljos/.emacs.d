@@ -287,15 +287,12 @@ beginning of the line it stays there."
         org-use-speed-commands t)
   (add-hook 'org-mode-hook #'(lambda () (auto-fill-mode +1)))
   (use-package ob-sh
-    :defer t
     :init
     (setq org-babel-sh-command "bash")
     (add-to-list 'org-babel-default-header-args:sh
 		 '(:shebang . "#!/usr/bin/env bash")))
 
   (use-package ox-latex
-    :ensure org-plus-contrib
-    :defer t
     :config
     (setq org-latex-pdf-process '("latexmk -gg -pdf -bibtex %f"))
 
