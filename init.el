@@ -122,8 +122,9 @@ beginning of the line it stays there."
 
 (use-package exec-path-from-shell
   :if (eq 'darwin system-type)
+  :defer 1
   :ensure t
-  :init
+  :config
   (exec-path-from-shell-initialize)
   (exec-path-from-shell-copy-env "DOKTORGRAD"))
 
