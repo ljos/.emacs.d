@@ -230,18 +230,12 @@ beginning of the line it stays there."
   :load-path "site-lisp/"
   :init (window-number-mode))
 
-
-(use-package ess
-  :ensure t
-  :init
-  (use-package ess-site
-    :commands R
-    :mode ("\\.R$" . R-mode)
-    :config
-    (add-hook 'R-mode-hook 'subword-mode))
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((R . t))))
+(use-package ess-site
+  :ensure ess
+  :mode ("\\.R\\'" . R-mode)
+  :commands R
+  :config
+  (add-hook 'R-mode-hook 'subword-mode))
 
 (use-package paredit
   :ensure t
@@ -271,12 +265,14 @@ beginning of the line it stays there."
 
 (use-package org
   :ensure org-plus-contrib
-  :mode ("\\.org$" . org-mode)
+  :mode ("\\.org'" . org-mode)
   :config
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '((sh . t)
-     (awk . t)))
+   '((R . t)
+     (awk . t)
+     (sed . t)
+     (sh . t)))
   (bind-key (kbd "C-c a") 'org-archive-to-archive-sibling org-mode-map)
   (setq org-completion-use-ido t
         org-export-with-section-numbers nil
@@ -290,7 +286,9 @@ beginning of the line it stays there."
     :init
     (setq org-babel-sh-command "bash")
     (add-to-list 'org-babel-default-header-args:sh
-		 '(:shebang . "#!/usr/bin/env bash")))
+		 '(:shebang . "#!/usr/bin/env bash"))
+    (add-to-list 'org-babel-default-header-args:sh
+		 '(:prologue . ". /Users/bjarte/.bashrc")))
 
   (use-package ox-latex
     :config
@@ -322,6 +320,10 @@ beginning of the line it stays there."
 			 (remove elem elpy-modules)))
     (elpy-use-ipython))
   (elpy-enable))
+
+(use-package sed-mode
+  :load-path "site-lisp/sed-mode"
+  :mode "\\.sed\\'")
 
 (use-package simple
   :config
