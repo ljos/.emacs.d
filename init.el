@@ -1,11 +1,10 @@
-;;; init.el -- Initializes emacs by loading the org babel files
+;;; init.el -- Initializes emacs
 (require 'package)
 (when (< emacs-major-version 24)
   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
 
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
 (package-initialize)
 
@@ -14,6 +13,8 @@
 
 (when (not (package-installed-p 'use-package))
   (package-install 'use-package))
+
+;; (setq use-package-verbose t)
 
 (eval-when-compile
   (require 'use-package))
@@ -37,17 +38,32 @@
   (unless (member 'sanityinc-tomorrow-night custom-enabled-themes)
     (color-theme-sanityinc-tomorrow-night)))
 
+(defun ljos/back-to-indentation|beginning-of-line ()
+  "Moves the cursor back to indentation or to the beginning of
+the line if it is already at the indentation.  If it is at the
+beginning of the line it stays there."
+  (interactive)
+  (when (not (bolp))
+    (let ((p (point)))
+      (back-to-indentation)
+      (when (= p (point))
+        (beginning-of-line 1)))))
+
+
 (require 'bind-key)
 (bind-keys*
  ("s-[" . backward-paragraph)
  ("s-]" . forward-paragraph)
  ("C-s" . isearch-forward-regexp)
- ("C-r" . isearch-backward-regexp))
+ ("C-r" . isearch-backward-regexp)
+ ("C-a" . ljos/back-to-indentation|beginning-of-line))
 
 (set-locale-environment "utf-8")
 (setenv "LANG" "en_US.UTF-8")
 
-(setq auto-save-interval 200
+(setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+      auto-save-interval 200
+      backup-by-copying t
       backup-directory-alist '(("." . "~/.emacs.d/backups"))
       default-directory "~/"
       delete-by-moving-to-trash t
@@ -83,18 +99,6 @@
            (file-exists-p "/usr/local/bin/gls"))
   (setq insert-directory-program "/usr/local/bin/gls"))
 
-(defun ljos/back-to-indentation|beginning-of-line ()
-  "Moves the cursor back to indentation or to the beginning of
-the line if it is already at the indentation. If it is at the
-beginning of the line it stays there."
-  (interactive)
-  (when (not (bolp))
-    (let ((p (point)))
-      (back-to-indentation)
-      (when (= p (point))
-        (beginning-of-line 1)))))
-
-(bind-key (kbd "C-a") 'ljos/back-to-indentation|beginning-of-line)
 
 (use-package apropos
   :defer t
@@ -106,19 +110,15 @@ beginning of the line it stays there."
   :config
   (add-to-list 'auth-sources 'macos-keychain-internet))
 
-(use-package tramp
-  :defer t
-  :config
-  (setq tramp-default-method "ssh"))
+(use-package company
+  :ensure t
+  :init (global-company-mode))
 
 (use-package dired
   :defer t
   :config
   (setq dired-listing-switches "-alh"))
 
-(use-package company
-  :ensure t
-  :init (global-company-mode))
 
 (use-package exec-path-from-shell
   :if (eq 'darwin system-type)
@@ -127,6 +127,17 @@ beginning of the line it stays there."
   :config
   (exec-path-from-shell-initialize)
   (exec-path-from-shell-copy-env "DOKTORGRAD"))
+
+(use-package helm
+  :ensure t
+  :defer 0.1
+  :bind (("M-x" . helm-M-x)
+	 ("C-x C-f" . helm-find-files))
+  :config
+  (use-package helm-projectile
+    :ensure t)
+  (helm-mode +1)
+  (helm-projectile-on))
 
 (use-package highlight-symbol
   :ensure t
@@ -137,37 +148,6 @@ beginning of the line it stays there."
             (function
              (lambda () (highlight-symbol-nav-mode +1)))))
 
-(use-package hungry-delete
-  :ensure t
-  :init (global-hungry-delete-mode +1))
-
-(use-package flx-ido
-  :ensure t
-  :commands flx-ido-mode)
-
-(use-package ido-vertical-mode
-  :ensure t
-  :commands ido-vertical-mode)
-
-(use-package ido
-  :init (ido-mode +1)
-  :bind ("C-x C-f" . ido-find-file)
-  :config
-  (flx-ido-mode +1)
-  (ido-vertical-mode +1)
-  (setq ido-auto-merge-work-directories-length nil
-        ido-create-new-buffer 'always
-        ido-enable-flex-matching t
-        ido-enable-dot-prefix t
-        ido-handle-dubplicate-virtual-buffers 2
-        ido-max-prospects 10
-        ido-everywhere t
-        ido-use-filename-at-point 'guess
-        ido-use-virtual-buffers t)
-  (use-package ido-ubiquitous
-    :ensure t)
-  (add-to-list 'ido-ignore-buffers ".*-autoloads.el"))
-
 (use-package ispell
   :defer t
   :config
@@ -175,18 +155,21 @@ beginning of the line it stays there."
         ispell-highlight-face 'flyspell-incorrect
         ispell-program-name "/usr/local/bin/aspell"))
 
+(use-package noflet
+  :ensure t
+  :commands noflet)
+
 (use-package perspective
-    :ensure t
-    :commands persp-mode
-    :config
-    (set-face-attribute 'persp-selected-face nil :foreground "#81a2be"))
+  :ensure t
+  :commands persp-mode
+  :config
+  (set-face-attribute 'persp-selected-face nil :foreground "#81a2be"))
 
 (use-package projectile
   :ensure t
   :init (projectile-global-mode)
   :bind ("s-p" . projectile-command-map)
   :config
-  (setq projectile-switch-project-action 'projectile-dired)
   (persp-mode)
   (use-package persp-projectile
     :ensure t
@@ -203,6 +186,22 @@ beginning of the line it stays there."
   :config
   (setq save-place-file "~/.emacs.d/.places"))
 
+(use-package smartparens
+  :ensure t
+  :init
+  :commands (smartparens-mode
+	     smartparens-strict-mode)
+  :config
+  (require 'smartparens-config)
+
+  (defun ljos/sp-wrap-with-parens ())
+  (bind-keys
+   :map smartparens-strict-mode-map
+   ("C-}" . sp-forward-slurp-sexp)
+   ("M-s" . sp-backward-unwrap-sexp)
+   ("C-c [" . sp-select-next-thing)
+   ("C-c ]" . sp-select-next-thing-exchange)))
+
 (use-package smart-mode-line
   :ensure t
   :init
@@ -210,10 +209,10 @@ beginning of the line it stays there."
 		sml/theme 'respectful)
   (sml/setup))
 
-(use-package smex
-  :ensure t
-  :bind (("M-x" . smex)
-         ("M-X" . smex-major-mode-commands)))
+(use-package tramp
+  :defer t
+  :config
+  (setq tramp-default-method "ssh"))
 
 (use-package uniquify
   :init
@@ -230,16 +229,30 @@ beginning of the line it stays there."
   :load-path "site-lisp/"
   :init (window-number-mode))
 
+(use-package clojure-mode
+  :ensure t
+  :init
+  (use-package cider
+    :ensure t
+    :commands cider-minor-mode
+    :init
+    (add-hook 'cider-mode-hook #'eldoc-mode)
+    (add-hook 'cider-mode-hook #'smartparens-strict-mode))
+  (add-hook 'clojure-mode-hook #'cider-minor-mode)
+  (add-hook 'clojure-mode-hook #'smartparens-strict-mode))
+
 (use-package ess-site
   :ensure ess
   :mode ("\\.R\\'" . R-mode)
   :commands R
   :config
-  (add-hook 'R-mode-hook 'subword-mode))
+  (add-hook 'R-mode-hook #'subword-mode)
+  (add-hook 'R-mode-hook #'smartparens-strict-mode))
 
-(use-package paredit
+(use-package go-mode
   :ensure t
-  :commands (enable-paredit-mode paredit-mode))
+  :mode ("\\.go\\'" . go-mode))
+
 
 (use-package lisp-mode
   :bind (([C-s-268632091] . backward-sexp)
@@ -248,23 +261,41 @@ beginning of the line it stays there."
   (use-package elisp-slime-nav
     :ensure t
     :commands elisp-slime-nav-mode)
-  (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-  (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-  (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
-  (add-hook 'ielm-mode-hook 'elisp-slime-nav-mode)
-  (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
-  (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+  (use-package macrostep
+    :ensure t
+    :bind ("C-c e" . macrostep-expand))
+
+  (use-package slime
+    :ensure t
+    :commands (slime slime-lisp-mode-hook)
+    :config
+    (add-to-list 'slime-contribs 'slime-fancy)
+    (slime-setup)
+    (add-hook 'slime-repl-mode-hook #'smartparens-strict-mode))
+
+  (add-hook 'emacs-lisp-mode-hook #'smartparens-strict-mode)
+  (add-hook 'emacs-lisp-mode-hook #'turn-on-eldoc-mode)
+  (add-hook 'emacs-lisp-mode-hook #'elisp-slime-nav-mode)
+  (add-hook 'ielm-mode-hook #'elisp-slime-nav-mode)
+  (add-hook 'ielm-mode-hook #'turn-on-eldoc-mode)
+  (add-hook 'lisp-interaction-mode-hook #'turn-on-eldoc-mode)
   (add-hook 'eval-expression-minibuffer-setup-hook
-            'enable-paredit-mode))
+            #'smartparens-strict-mode)
+
+  (add-hook 'lisp-mode-hook #'smartparens-strict-mode)
+  (add-hook 'lisp-mode-hook #'slime-lisp-mode-hook)
+
+  (setq inferior-lisp-program "sbcl"))
 
 (use-package magit
   :ensure t
   :bind ("C-x g" . magit-status)
   :init
-  (setq magit-last-seen-setup-instructions "1.4.0"))
+  (setq magit-last-seen-setup-instructions "1.4.0")
+  (setq magit-push-always-verify nil))
 
 (use-package org
-  :ensure org-plus-contrib
+  :load-path "site-lisp/org-mode/lisp"
   :mode ("\\.org'" . org-mode)
   :config
   (org-babel-do-load-languages
@@ -274,21 +305,18 @@ beginning of the line it stays there."
      (sed . t)
      (sh . t)))
   (bind-key (kbd "C-c a") 'org-archive-to-archive-sibling org-mode-map)
-  (setq org-completion-use-ido t
-        org-export-with-section-numbers nil
+  (setq org-export-with-section-numbers nil
         org-export-with-toc nil
         org-src-fontify-natively t
         org-src-window-setup 'current-window
         org-startup-folded 'showall
         org-use-speed-commands t)
   (add-hook 'org-mode-hook #'(lambda () (auto-fill-mode +1)))
-  (use-package ob-sh
-    :init
-    (setq org-babel-sh-command "bash")
+  (use-package ob-shell
+    :commands org-babel-execute:bash
+    :config
     (add-to-list 'org-babel-default-header-args:sh
-		 '(:shebang . "#!/usr/bin/env bash"))
-    (add-to-list 'org-babel-default-header-args:sh
-		 '(:prologue . ". /Users/bjarte/.bashrc")))
+		 ,(:prologue . `(concat ". " (expand-file-name "~/.bashrc")))))
 
   (use-package ox-latex
     :config
@@ -339,3 +367,6 @@ beginning of the line it stays there."
 
 
 ;;; init.el ends here
+(put 'narrow-to-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
