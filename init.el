@@ -280,7 +280,9 @@ beginning of the line it stays there."
   (add-hook 'ielm-mode-hook #'turn-on-eldoc-mode)
   (add-hook 'lisp-interaction-mode-hook #'turn-on-eldoc-mode)
   (add-hook 'eval-expression-minibuffer-setup-hook
-            #'smartparens-strict-mode)
+            #'(lambda ()
+		(sp-local-pair 'minibuffer-mode "'" nil :actions nil)
+		(smartparens-strict-mode +1)))
 
   (add-hook 'lisp-mode-hook #'smartparens-strict-mode)
   (add-hook 'lisp-mode-hook #'slime-lisp-mode-hook)
