@@ -7,3 +7,6 @@
 [submodule "site-lisp/sed-mode"]
 	path = site-lisp/sed-mode
 	url = git@github.com:ljos/sed-mode.git
+[submodule "site-lisp/org-mode"]
+	path = site-lisp/org-mode
+	url = git://orgmode.org/org-mode.git

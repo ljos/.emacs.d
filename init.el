@@ -1,23 +1,41 @@
 ;;; init.el -- Initializes emacs
-(require 'package)
-(when (< emacs-major-version 24)
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-
-(package-initialize)
-
-(when (not package-archive-contents)
-  (package-refresh-contents))
-
-(when (not (package-installed-p 'use-package))
-  (package-install 'use-package))
-
-;; (setq use-package-verbose t)
-
 (eval-when-compile
+  (require 'package)
+
+  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+
+  (package-initialize)
+
+  (when (not package-archive-contents)
+    (package-refresh-contents))
+
+  (when (not (package-installed-p 'use-package))
+    (package-install 'use-package))
+
   (require 'use-package))
+
+(setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+      auto-save-interval 200
+      backup-by-copying t
+      backup-directory-alist '(("." . "~/.emacs.d/backups"))
+      default-directory "~/"
+      delete-by-moving-to-trash t
+      delete-old-versions t
+      gc-cons-threshold 100000000
+      indent-tabs-mode nil
+      inhibit-startup-screen t
+      kept-new-versions 6
+      load-prefer-newer t
+      mac-command-modifier 'super
+      mac-option-modifier 'meta
+      message-log-max 1000
+      require-final-newline t
+      ring-bell-function 'ignore
+      save-interprogram-paste-before-kill t
+      show-paren-style 'parenthesis
+      tab-width 4
+      version-control t)
 
 (setq custom-file "~/.emacs.d/custom.el")
 (unless (file-exists-p custom-file)
@@ -26,7 +44,8 @@
 (load custom-file)
 
 (when window-system
-  (set-face-attribute 'default nil :font "fira-mono-14")
+  (when (equal system-type 'darwin)
+    (set-face-attribute 'default nil :font "menlo-14"))
   (add-to-list 'default-frame-alist `(width . 100))
   (add-to-list 'default-frame-alist `(height . ,(/ (- (display-pixel-height) 50)
                                                    (frame-char-height)))))
@@ -49,38 +68,10 @@ beginning of the line it stays there."
       (when (= p (point))
         (beginning-of-line 1)))))
 
-
-(require 'bind-key)
-(bind-keys*
- ("s-[" . backward-paragraph)
- ("s-]" . forward-paragraph)
- ("C-s" . isearch-forward-regexp)
- ("C-r" . isearch-backward-regexp)
- ("C-a" . ljos/back-to-indentation|beginning-of-line))
+(global-set-key (kbd "C-a") #'ljos/back-to-indentation|beginning-of-line)
 
 (set-locale-environment "utf-8")
 (setenv "LANG" "en_US.UTF-8")
-
-(setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
-      auto-save-interval 200
-      backup-by-copying t
-      backup-directory-alist '(("." . "~/.emacs.d/backups"))
-      default-directory "~/"
-      delete-by-moving-to-trash t
-      delete-old-versions t
-      indent-tabs-mode nil
-      inhibit-startup-screen t
-      kept-new-versions 6
-      load-prefer-newer t
-      message-log-max 1000
-      ns-pop-up-frames nil
-      ns-use-srgb-colorspace t
-      require-final-newline t
-      ring-bell-function 'ignore
-      save-interprogram-paste-before-kill t
-      show-paren-style 'parenthesis
-      tab-width 4
-      version-control t)
 
 (unless (eq 'darwin system-type)
   (menu-bar-mode -1))
@@ -99,6 +90,7 @@ beginning of the line it stays there."
            (file-exists-p "/usr/local/bin/gls"))
   (setq insert-directory-program "/usr/local/bin/gls"))
 
+(require 'bind-key)
 
 (use-package apropos
   :defer t
@@ -117,16 +109,18 @@ beginning of the line it stays there."
 (use-package dired
   :defer t
   :config
-  (setq dired-listing-switches "-alh"))
-
+  (setq dired-listing-switches "-alh")
+  (use-package dired+
+    :ensure t
+    :demand))
 
 (use-package exec-path-from-shell
   :if (eq 'darwin system-type)
   :defer 1
   :ensure t
   :config
-  (exec-path-from-shell-initialize)
-  (exec-path-from-shell-copy-env "DOKTORGRAD"))
+  (setq exec-path-from-shell-check-startup-files nil)
+  (exec-path-from-shell-initialize))
 
 (use-package helm
   :ensure t
@@ -148,6 +142,10 @@ beginning of the line it stays there."
             (function
              (lambda () (highlight-symbol-nav-mode +1)))))
 
+(use-package isearch
+  :bind (("C-s" . isearch-forward-regexp)
+	 ("C-r" . isearch-backward-regexp)))
+
 (use-package ispell
   :defer t
   :config
@@ -155,9 +153,9 @@ beginning of the line it stays there."
         ispell-highlight-face 'flyspell-incorrect
         ispell-program-name "/usr/local/bin/aspell"))
 
-(use-package noflet
-  :ensure t
-  :commands noflet)
+(use-package paragraphs
+  :bind (("s-[" . backward-paragraph)
+	 ("s-]" . forward-paragraph)))
 
 (use-package perspective
   :ensure t
@@ -179,7 +177,16 @@ beginning of the line it stays there."
 	      #'(lambda ()
 		  (persp-add-buffer
 		   (get-buffer-create "*Messages*")))))
-  (require 'persp-projectile))
+  (require 'persp-projectile)
+  (setq projectile-switch-project-action 'projectile-dired)
+  (setq projectile-mode-line
+	'(:eval (if (file-remote-p default-directory)
+		    " Prj[*remote*]"
+		  (format " Prj[%s]" (projectile-project-name))))))
+
+(use-package restclient
+  :ensure t
+  :commands restclient-mode)
 
 (use-package saveplace
   :preface (setq-default save-place t)
@@ -188,19 +195,15 @@ beginning of the line it stays there."
 
 (use-package smartparens
   :ensure t
-  :init
   :commands (smartparens-mode
 	     smartparens-strict-mode)
+  :bind (:map smartparens-strict-mode-map
+	      ("C-}" . sp-forward-slurp-sexp)
+	      ("M-s" . sp-backward-unwrap-sexp)
+	      ("C-c [" . sp-select-next-thing)
+	      ("C-c ]" . sp-select-next-thing-exchange))
   :config
-  (require 'smartparens-config)
-
-  (defun ljos/sp-wrap-with-parens ())
-  (bind-keys
-   :map smartparens-strict-mode-map
-   ("C-}" . sp-forward-slurp-sexp)
-   ("M-s" . sp-backward-unwrap-sexp)
-   ("C-c [" . sp-select-next-thing)
-   ("C-c ]" . sp-select-next-thing-exchange)))
+  (require 'smartparens-config))
 
 (use-package smart-mode-line
   :ensure t
@@ -212,7 +215,9 @@ beginning of the line it stays there."
 (use-package tramp
   :defer t
   :config
-  (setq tramp-default-method "ssh"))
+  (setq tramp-default-method "ssh"
+	tramp-auto-save-directory
+	(expand-file-name "~/.emacs.d/auto-save-list")))
 
 (use-package uniquify
   :init
@@ -249,14 +254,7 @@ beginning of the line it stays there."
   (add-hook 'R-mode-hook #'subword-mode)
   (add-hook 'R-mode-hook #'smartparens-strict-mode))
 
-(use-package go-mode
-  :ensure t
-  :mode ("\\.go\\'" . go-mode))
-
-
 (use-package lisp-mode
-  :bind (([C-s-268632091] . backward-sexp)
-         ([C-s-268632093] . forward-sexp))
   :config
   (use-package elisp-slime-nav
     :ensure t
@@ -270,6 +268,7 @@ beginning of the line it stays there."
     :commands (slime slime-lisp-mode-hook)
     :config
     (add-to-list 'slime-contribs 'slime-fancy)
+
     (slime-setup)
     (add-hook 'slime-repl-mode-hook #'smartparens-strict-mode))
 
@@ -279,15 +278,11 @@ beginning of the line it stays there."
   (add-hook 'ielm-mode-hook #'elisp-slime-nav-mode)
   (add-hook 'ielm-mode-hook #'turn-on-eldoc-mode)
   (add-hook 'lisp-interaction-mode-hook #'turn-on-eldoc-mode)
-  (add-hook 'eval-expression-minibuffer-setup-hook
-            #'(lambda ()
-		(sp-local-pair 'minibuffer-mode "'" nil :actions nil)
-		(smartparens-strict-mode +1)))
 
   (add-hook 'lisp-mode-hook #'smartparens-strict-mode)
   (add-hook 'lisp-mode-hook #'slime-lisp-mode-hook)
 
-  (setq inferior-lisp-program "sbcl"))
+  (setq inferior-lisp-program "sbcl --dynamic-space-size 1024"))
 
 (use-package magit
   :ensure t
@@ -299,38 +294,49 @@ beginning of the line it stays there."
 (use-package org
   :load-path "site-lisp/org-mode/lisp"
   :mode ("\\.org'" . org-mode)
+  :bind (("C-c l" . org-store-link)
+
+	 :map org-mode-map
+	 ("C-c a" . org-archive-to-archive-sibling))
+  :init (setq org-babel-safe-header-args nil)
   :config
   (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((R . t)
-     (awk . t)
-     (sed . t)
-     (sh . t)))
-  (bind-key (kbd "C-c a") 'org-archive-to-archive-sibling org-mode-map)
-  (setq org-export-with-section-numbers nil
+     'org-babel-load-languages
+     '((R . t)
+       (awk . t)
+       (sed . t)
+       (sh . t)
+       (sqlite . t)
+       (python . t)))
+  (add-to-list 'load-path "site-lisp/org-mode/contrib/lisp")
+
+  (setq org-babel-python-command "python3"
+	org-babel-sqlite3-command "/usr/local/opt/sqlite/bin/sqlite3"
+	org-export-with-section-numbers nil
         org-export-with-toc nil
         org-src-fontify-natively t
         org-src-window-setup 'current-window
         org-startup-folded 'showall
         org-use-speed-commands t)
+
   (add-hook 'org-mode-hook #'(lambda () (auto-fill-mode +1)))
   (use-package ob-shell
     :commands org-babel-execute:bash
     :config
     (add-to-list 'org-babel-default-header-args:sh
-		 ,(:prologue . `(concat ". " (expand-file-name "~/.bashrc")))))
+		 ,(:prologue . `(concat "source "
+					(expand-file-name "~/.bashrc")))))
 
   (use-package ox-latex
     :config
     (setq org-latex-pdf-process '("latexmk -gg -pdf -bibtex %f"))
-
+    (setq org-latex-caption-above nil)
     (unless (boundp 'org-latex-packages-alist)
       (setq org-latex-packages-alist nil))
 
     (add-to-list 'org-latex-packages-alist '("" "microtype"))
     (add-to-list 'org-latex-packages-alist '("l2tabu" "nag"))
     (add-to-list 'org-latex-packages-alist '("" "lmodern") 't)))
-
 
 (use-package prolog
   :ensure t
@@ -349,7 +355,12 @@ beginning of the line it stays there."
 				       elpy-module-yasnippet))
 			 (remove elem elpy-modules)))
     (elpy-use-ipython))
-  (elpy-enable))
+  (elpy-enable)
+  (add-hook 'python-mode-hook #'smartparens-strict-mode))
+
+(use-package cython-mode
+  :ensure t
+  :mode (("\\.py[xdi]" . cython-mode)))
 
 (use-package sed-mode
   :load-path "site-lisp/sed-mode"
@@ -372,3 +383,4 @@ beginning of the line it stays there."
 (put 'narrow-to-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-page 'disabled nil)
+(put 'set-goal-column 'disabled nil)
