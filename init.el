@@ -46,7 +46,9 @@
 (when window-system
   (when (equal system-type 'darwin)
     (set-face-attribute 'default nil :font "menlo-14"))
-  (add-to-list 'default-frame-alist `(width . 100))
+  (add-to-list 'default-frame-alist '(top . 23))
+  (add-to-list 'default-frame-alist '(left . 557))
+  (add-to-list 'default-frame-alist '(width . 100))
   (add-to-list 'default-frame-alist `(height . ,(/ (- (display-pixel-height) 50)
                                                    (frame-char-height)))))
 
@@ -82,9 +84,9 @@ beginning of the line it stays there."
 (show-paren-mode +1)
 (tool-bar-mode -1)
 
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
 
-(defalias 'yes-or-no-p 'y-or-n-p)
+(defalias 'yes-or-no-p #'y-or-n-p)
 
 (when (and (eq 'darwin system-type)
            (file-exists-p "/usr/local/bin/gls"))
@@ -216,8 +218,7 @@ beginning of the line it stays there."
   :defer t
   :config
   (setq tramp-default-method "ssh"
-	tramp-auto-save-directory
-	(expand-file-name "~/.emacs.d/auto-save-list")))
+	tramp-auto-save-directory (expand-file-name "~/.emacs.d/auto-save-list")))
 
 (use-package uniquify
   :init
@@ -301,13 +302,13 @@ beginning of the line it stays there."
   :init (setq org-babel-safe-header-args nil)
   :config
   (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((R . t)
-       (awk . t)
-       (sed . t)
-       (sh . t)
-       (sqlite . t)
-       (python . t)))
+   'org-babel-load-languages
+   '((R . t)
+     (awk . t)
+     (sed . t)
+     (shell . t)
+     (sqlite . t)
+     (python . t)))
   (add-to-list 'load-path "site-lisp/org-mode/contrib/lisp")
 
   (setq org-babel-python-command "python3"
@@ -323,8 +324,8 @@ beginning of the line it stays there."
   (use-package ob-shell
     :commands org-babel-execute:bash
     :config
-    (add-to-list 'org-babel-default-header-args:sh
-		 ,(:prologue . `(concat "source "
+    (add-to-list 'org-babel-default-header-args:shell
+		 `(:prologue . ,(concat "source "
 					(expand-file-name "~/.bashrc")))))
 
   (use-package ox-latex
