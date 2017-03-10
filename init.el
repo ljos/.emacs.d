@@ -247,6 +247,10 @@ beginning of the line it stays there."
   (add-hook 'clojure-mode-hook #'cider-minor-mode)
   (add-hook 'clojure-mode-hook #'smartparens-strict-mode))
 
+(use-package cython-mode
+  :ensure t
+  :mode (("\\.py[xdi]" . cython-mode)))
+
 (use-package ess-site
   :ensure ess
   :mode ("\\.R\\'" . R-mode)
@@ -359,9 +363,12 @@ beginning of the line it stays there."
   (elpy-enable)
   (add-hook 'python-mode-hook #'smartparens-strict-mode))
 
-(use-package cython-mode
+(use-package rust-mode
   :ensure t
-  :mode (("\\.py[xdi]" . cython-mode)))
+  :mode "\\.rs\'"
+  :config
+  (require 'smartparens-rust)
+  (add-hook 'rust-mode-hook #'smartparens-strict-mode))
 
 (use-package sed-mode
   :load-path "site-lisp/sed-mode"
@@ -378,6 +385,10 @@ beginning of the line it stays there."
   :defines sparql-default-base-url
   :config
   (setq sparql-default-base-url "http://live.dbpedia.org/sparql"))
+
+(use-package toml-mode
+  :ensure t
+  :mode "\\.toml")
 
 
 ;;; init.el ends here
