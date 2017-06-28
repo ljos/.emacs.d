@@ -1,8 +1,6 @@
 ;;; init.el -- Initializes emacs
 (eval-when-compile
   (require 'package)
-
-  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
   (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 
   (package-initialize)
@@ -188,7 +186,13 @@ beginning of the line it stays there."
 
 (use-package restclient
   :ensure t
-  :commands restclient-mode)
+  :commands restclient-mode
+  :init
+  (use-package company-restclient
+    :ensure t
+    :commands company-restclient)
+  (with-eval-after-load 'company-mode
+    (add-to-list 'company-backends 'company-restclient)))
 
 (use-package saveplace
   :preface (setq-default save-place t)
@@ -211,8 +215,11 @@ beginning of the line it stays there."
   :ensure t
   :init
   (setq-default sml/vc-mode-show-backend t
-		sml/theme 'respectful)
-  (sml/setup))
+		sml/theme 'respectful
+		sm/name-with 30)
+  (sml/setup)
+  :config
+  (add-to-list 'sml/replacer-regexp-list '("^~/workspace/" ":WS:") t))
 
 (use-package tramp
   :defer t
@@ -256,6 +263,7 @@ beginning of the line it stays there."
   :mode ("\\.R\\'" . R-mode)
   :commands R
   :config
+  (require 'smartparens-ess)
   (add-hook 'R-mode-hook #'subword-mode)
   (add-hook 'R-mode-hook #'smartparens-strict-mode))
 
@@ -361,6 +369,7 @@ beginning of the line it stays there."
 			 (remove elem elpy-modules)))
     (elpy-use-ipython))
   (elpy-enable)
+  (require 'smartparens-python)
   (add-hook 'python-mode-hook #'smartparens-strict-mode))
 
 (use-package rust-mode
@@ -371,7 +380,7 @@ beginning of the line it stays there."
   (add-hook 'rust-mode-hook #'smartparens-strict-mode))
 
 (use-package sed-mode
-  :load-path "site-lisp/sed-mode"
+  :ensure t
   :mode "\\.sed\\'")
 
 (use-package simple
