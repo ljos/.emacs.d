@@ -258,6 +258,12 @@ beginning of the line it stays there."
   :ensure t
   :mode (("\\.py[xdi]" . cython-mode)))
 
+(use-package eshell
+  :init
+  (use-package em-smart :demand t)
+  (use-package em-cmpl)
+  (use-package em-prompt))
+
 (use-package ess-site
   :ensure ess
   :mode ("\\.R\\'" . R-mode)
