@@ -13,27 +13,27 @@
 
   (require 'use-package))
 
-(setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
-      auto-save-interval 200
-      backup-by-copying t
-      backup-directory-alist '(("." . "~/.emacs.d/backups"))
-      default-directory "~/"
-      delete-by-moving-to-trash t
-      delete-old-versions t
-      gc-cons-threshold 100000000
-      indent-tabs-mode nil
-      inhibit-startup-screen t
-      kept-new-versions 6
-      load-prefer-newer t
-      mac-command-modifier 'super
-      mac-option-modifier 'meta
-      message-log-max 1000
-      require-final-newline t
-      ring-bell-function 'ignore
-      save-interprogram-paste-before-kill t
-      show-paren-style 'parenthesis
-      tab-width 4
-      version-control t)
+(setq-default auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+              auto-save-interval 200
+              backup-by-copying t
+              backup-directory-alist '(("." . "~/.emacs.d/backups"))
+              default-directory "~/"
+              delete-by-moving-to-trash t
+              delete-old-versions t
+              gc-cons-threshold 100000000
+              indent-tabs-mode nil
+              inhibit-startup-screen t
+              kept-new-versions 6
+              load-prefer-newer t
+              mac-command-modifier 'super
+              mac-option-modifier 'meta
+              message-log-max 1000
+              require-final-newline t
+              ring-bell-function 'ignore
+              save-interprogram-paste-before-kill t
+              show-paren-style 'parenthesis
+              tab-width 4
+              version-control t)
 
 (setq custom-file "~/.emacs.d/custom.el")
 (unless (file-exists-p custom-file)
@@ -43,7 +43,8 @@
 
 (when window-system
   (when (equal system-type 'darwin)
-    (set-face-attribute 'default nil :font "menlo-14"))
+    (set-face-attribute 'default nil :font "menlo-14")
+    (setq mac-frame-tabbing nil))
   (add-to-list 'default-frame-alist '(top . 23))
   (add-to-list 'default-frame-alist '(left . 557))
   (add-to-list 'default-frame-alist '(width . 100))
@@ -109,10 +110,16 @@ beginning of the line it stays there."
 (use-package dired
   :defer t
   :config
-  (setq dired-listing-switches "-alh")
-  (use-package dired+
-    :ensure t
-    :demand))
+  (setq dired-listing-switches "-alh"))
+
+(use-package dumb-jump
+  :ensure t
+  :bind (("M-g o" . dumb-jump-go-other-window)
+         ("M-g j" . dumb-jump-go)
+         ("M-g i" . dumb-jump-go-prompt)
+         ("M-g x" . dumb-jump-go-prefer-external)
+         ("M-g z" . dumb-jump-go-prefer-external-other-window))
+  :config (setq dumb-jump-selector 'helm))
 
 (use-package exec-path-from-shell
   :if (eq 'darwin system-type)
@@ -156,6 +163,9 @@ beginning of the line it stays there."
 (use-package paragraphs
   :bind (("s-[" . backward-paragraph)
 	 ("s-]" . forward-paragraph)))
+
+(use-package pass
+  :ensure t)
 
 (use-package perspective
   :ensure t
@@ -262,7 +272,8 @@ beginning of the line it stays there."
   :init
   (use-package em-smart :demand t)
   (use-package em-cmpl)
-  (use-package em-prompt))
+  (use-package em-prompt)
+  (use-package em-tramp))
 
 (use-package ess-site
   :ensure ess
@@ -319,6 +330,9 @@ beginning of the line it stays there."
 	 ("C-c a" . org-archive-to-archive-sibling))
   :init (setq org-babel-safe-header-args nil)
   :config
+
+  (use-package ob)
+
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((R . t)
@@ -326,7 +340,8 @@ beginning of the line it stays there."
      (sed . t)
      (shell . t)
      (sqlite . t)
-     (python . t)))
+     (python . t)
+     (dot . t)))
   (add-to-list 'load-path "site-lisp/org-mode/contrib/lisp")
 
   (setq org-babel-python-command "python3"
